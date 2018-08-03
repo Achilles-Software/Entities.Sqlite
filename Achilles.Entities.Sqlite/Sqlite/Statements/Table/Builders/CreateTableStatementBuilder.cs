@@ -1,0 +1,53 @@
+﻿#region Namespaces
+
+using Achilles.Entities.Extensions;
+using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Statements;
+using System.Collections.Generic;
+using System.Linq;
+
+#endregion
+
+namespace Achilles.Entities.Sqlite.Statements.Table
+{
+    internal class CreateTableStatementBuilder : ISqlStatementBuilder<CreateTableStatement>
+    {
+        private readonly IEntityMapping EntityMapping;
+
+        public CreateTableStatementBuilder( IEntityMapping EntityMapping )
+        {
+            this.EntityMapping = EntityMapping;
+        }
+
+        public CreateTableStatement BuildStatement()
+        {
+            var keyMembers = EntityMapping.PropertyMappings.Where( p => p.IsKey ).ToList();
+
+            // Only create a CompositePrimaryKeyStatement if there is a composite primary key.
+            // If there is just one key member this is handled using a constraint.
+            CompositePrimaryKeyStatement compositePrimaryKeyStatement = null;
+
+            if ( keyMembers.Count > 1 )
+            {
+                compositePrimaryKeyStatement = new CompositePrimaryKeyStatementBuilder( keyMembers ).BuildStatement();
+            }
+
+            var simpleColumnCollection = new ColumnStatementCollectionBuilder( EntityMapping.PropertyMappings, keyMembers ).BuildStatement();
+            
+            // FIXME: Foreign Key
+            
+            //var foreignKeyCollection = new ForeignKeyStatementBuilder( associationTypeContainer.GetAssociationTypes( EntityMapping.Name ) ).BuildStatement();
+
+            var columnStatements = new List<ISqlStatement>();
+            columnStatements.AddRange( simpleColumnCollection );
+            columnStatements.AddIfNotNull( compositePrimaryKeyStatement );
+            // columnStatements.AddRange( foreignKeyCollection );
+
+            return new CreateTableStatement
+            {
+                TableName = NameCreator.EscapeName( EntityMapping.TableName ),
+                ColumnStatementCollection = new ColumnStatementCollection( columnStatements )
+            };
+        }
+    }
+}

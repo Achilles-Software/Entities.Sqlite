@@ -13,23 +13,29 @@
 
 #region Namespaces
 
+using Achilles.Entities.Relational.Query;
+using Achilles.Entities.Storage;
+using Remotion.Linq.Parsing.Structure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
 namespace Achilles.Entities
 {
-    public class DbTable<TEntity> : IDbTable<TEntity>, IQueryable<TEntity>, IListSource
+    public class DbTable<TEntity> : IQueryable<TEntity> //, IAsyncEnumerableAccessor<TEntity>, IListSource
         where TEntity : class
     {
         #region Fields
 
-        private DbContext _context;
+        private readonly DbContext _context;
+        private DbTableQueryable<TEntity> _dbTableQueryable;
 
         #endregion
 
@@ -42,27 +48,80 @@ namespace Achilles.Entities
 
         #endregion
 
-        public bool ContainsListCollection => throw new NotImplementedException();
+        #region Public Properties
 
-        public Type ElementType => throw new NotImplementedException();
+        public DbContext DbContext => _context;
 
-        public Expression Expression => throw new NotImplementedException();
+        #endregion
 
-        public IQueryProvider Provider => throw new NotImplementedException();
+        #region Public CRUD Methods
 
-        public IEnumerator<TEntity> GetEnumerator()
+        public void Add( TEntity entity ) 
+            => _context.Add( entity );
+
+        //public Task AddAsync( TEntity entity, CancellationToken cancellationToken = default )
+        //   => _context.AddAsync( entity, cancellationToken );
+
+        public void Update( Expression<Func<TEntity,bool>> predicate )
         {
-            throw new NotImplementedException();
+
         }
 
-        public IList GetList()
+        public void Update( TEntity entity )
+        => _context.Update( entity );
+
+        //public Task UpdateAsync( TEntity entity, CancellationToken cancellationToken = default )
+        //   => _context.UpdateAsync( entity, cancellationToken );
+
+        public void Delete( TEntity entity )
+            => _context.Delete( entity );
+
+        //public Task DeleteAsync( TEntity entity, CancellationToken cancellationToken = default )
+        //   => _context.DeleteAsync( entity, cancellationToken );
+
+
+        #endregion
+
+        #region Private IQueryable Methods
+
+        private DbTableQueryable<TEntity> DbTableQueryable
         {
-            throw new NotImplementedException();
+            get
+            {
+                if ( _dbTableQueryable == null )
+                {
+                    //var entityType = GetType().GetGenericTypeDefinition();
+                    //var queryParser = QueryParser.CreateDefault();
+                    //var executer = new DbTableQueryExecuter( _context._connection );
+
+                    _dbTableQueryable = new DbTableQueryable<TEntity>( _context );//._connection ); //new DbTableQueryProvider( entityType, queryParser, executer) );
+                }
+
+                return _dbTableQueryable;
+            }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        Type IQueryable.ElementType => DbTableQueryable.ElementType;
+
+        Expression IQueryable.Expression => DbTableQueryable.Expression;
+
+        IQueryProvider IQueryable.Provider => DbTableQueryable.Provider;
+
+        //public IAsyncEnumerable<TEntity> AsyncEnumerable => DbTableQueryable.ToAsyncEnumerable<TEntity>();
+
+        //IAsyncEnumerable<TEntity> IAsyncEnumerableAccessor<TEntity>.AsyncEnumerable => DbTableQueryable;
+
+        public IEnumerator<TEntity> GetEnumerator() => DbTableQueryable.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => DbTableQueryable.GetEnumerator();
+
+        //IList IListSource.GetList()
+        //{
+        //    throw new NotSupportedException();
+        //}
+
+        //bool IListSource.ContainsListCollection => false;
+
+        #endregion
     }
 }

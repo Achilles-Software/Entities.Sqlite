@@ -1,99 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿#region Namespaces
+
+using Achilles.Entities.Sqlite.Statements.Database;
+using Achilles.Entities.Storage;
+using System.Transactions;
+
+#endregion
 
 namespace Achilles.Entities.Sqlite.Storage
 {
+    /// <summary>
+    /// Sqlite specific implementation of the abstract <see cref="RelationalDatabaseCreator"/> base class.
+    /// </summary>
     public class SqliteDatabaseCreator : RelationalDatabaseCreator
     {
-        // ReSharper disable once InconsistentNaming
-        private const int SQLITE_CANTOPEN = 14;
+        #region Fields
 
-        private readonly ISqliteRelationalConnection _connection;
-        private readonly IRawSqlCommandBuilder _rawSqlCommandBuilder;
+       private readonly SqliteRelationalConnection _connection;
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public SqliteDatabaseCreator(
-            [NotNull] RelationalDatabaseCreatorDependencies dependencies,
-            [NotNull] ISqliteRelationalConnection connection,
-            [NotNull] IRawSqlCommandBuilder rawSqlCommandBuilder )
-            : base( dependencies )
+        #endregion
+
+        #region Constructor(s)
+
+        public SqliteDatabaseCreator( IDbContextService dbContext, IRelationalConnection connection )
+            : base( dbContext )
         {
-            _connection = connection;
-            _rawSqlCommandBuilder = rawSqlCommandBuilder;
+            _connection = connection as SqliteRelationalConnection;
         }
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public override void Create()
-        {
-            Dependencies.Connection.Open();
-            Dependencies.Connection.Close();
-        }
+        #endregion
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public override bool Exists()
+        #region Public API Methods
+
+        public override bool CreateIfNotExists()
         {
-            using ( var readOnlyConnection = _connection.CreateReadOnlyConnection() )
+            using ( new TransactionScope( TransactionScopeOption.Suppress, TransactionScopeAsyncFlowOption.Enabled ) )
             {
-                try
+                if ( !_dbContext.Instance.Database.Exists() )
                 {
-                    readOnlyConnection.Open( errorsExpected: true );
+                    _dbContext.Instance.Database.Create();
+
+                    CreateDatabase();
+
+                    return true;
                 }
-                catch ( SqliteException ex ) when ( ex.SqliteErrorCode == SQLITE_CANTOPEN )
+
+                if ( !_dbContext.Instance.Database.HasTables() )
                 {
-                    return false;
+                    CreateDatabase();
+
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        protected override bool HasTables()
+        public override string GenerateCreateScript()
         {
-            var count = (long)_rawSqlCommandBuilder
-                .Build( "SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"type\" = 'table' AND \"rootpage\" IS NOT NULL;" )
-                .ExecuteScalar( Connection );
-
-            return count != 0;
+            return GetCreateDatabaseCommands();
         }
 
-        public override void Delete()
+        #endregion
+
+        #region Private Methods
+
+        private void CreateDatabase()
         {
-            string path = null;
+            var createDatabaseCommand = GetCreateDatabaseCommands();
 
-            Dependencies.Connection.Open();
-            try
+            using ( var command = _connection.DbConnection.CreateCommand() )
             {
-                path = Dependencies.Connection.DbConnection.DataSource;
-            }
-            catch
-            {
-                // any exceptions here can be ignored
-            }
-            finally
-            {
-                Dependencies.Connection.Close();
-            }
+                command.CommandText = createDatabaseCommand;
 
-            if ( !string.IsNullOrEmpty( path ) )
-            {
-                File.Delete( path );
+                command.ExecuteNonQuery();
             }
         }
+
+        private string GetCreateDatabaseCommands()
+        {
+            var databaseBuilder = new CreateDatabaseStatementBuilder( _dbContext.Instance.Model.EntityMappings );
+
+            return databaseBuilder.BuildStatement().GetText();
+        }
+
+        #endregion
     }
-
 }
