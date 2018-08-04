@@ -1,0 +1,11 @@
+﻿<Project>
+  <PropertyGroup>
+    <Authors>Todd J. Thomson</Authors>
+    <Company>Achilles Software</Company>
+    <Product>Achilles Entities.Sqlite</Product>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <Copyright>Copyright © 2018 Achilles Software</Copyright>
+    <PackageReleaseNotes>Prerelease package</PackageReleaseNotes>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+</Project>

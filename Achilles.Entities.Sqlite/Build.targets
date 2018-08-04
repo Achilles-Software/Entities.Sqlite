@@ -1,0 +1,10 @@
+﻿<Project>
+  
+  <Target Name="SetVersion" BeforeTargets="Build" >
+    <PropertyGroup>
+      <BuildNumber>$([System.DateTime]::Now.ToString(yyyyMMdd-mmss))</BuildNumber>
+      <PackageVersion Condition="'$(VersionSuffix)' != '' AND '$(BuildNumber)' != ''">$(VersionPrefix)-$(VersionSuffix)-$(BuildNumber)</PackageVersion>      
+    </PropertyGroup>
+  </Target>
+  
+</Project>

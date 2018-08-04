@@ -1,0 +1,7 @@
+﻿<Project>
+
+  <Import Project="Package.props"/>
+  <Import Project="Version.props" />
+  <Import Project="Build.targets" />
+
+</Project>

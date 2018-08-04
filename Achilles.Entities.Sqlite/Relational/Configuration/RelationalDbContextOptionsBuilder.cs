@@ -4,7 +4,7 @@ using System;
 
 namespace Achilles.Entities.Relational.Configuration
 {
-    public abstract class RelationalDbContextOptionsBuilder<TBuilder, TOption> : IDbContextOptionsBuilder
+    public abstract class RelationalDbContextOptionsBuilder<TBuilder, TOption>  //IDbContextOptionsBuilder
         where TBuilder : RelationalDbContextOptionsBuilder<TBuilder, TOption>
         where TOption : RelationalOptions, new()
     {
@@ -29,6 +29,5 @@ namespace Achilles.Entities.Relational.Configuration
         }
 
         protected abstract void AddServices( IServiceCollection services );
-
     }
 }

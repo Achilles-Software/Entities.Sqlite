@@ -11,21 +11,21 @@ namespace Achilles.Entities.Sqlite.Configuration
 {
     public static class SqliteDbContextOptionsBuilderExtensions
     {
-        public static DbContextOptionsBuilder<TContext> UseSqlite<TContext>(
-            this DbContextOptionsBuilder<TContext> optionsBuilder,
-            string connectionString,
-            Action<SqliteDbContextOptionsBuilder> sqliteOptionsAction = null )
-            where TContext : DbContext
-            => (DbContextOptionsBuilder<TContext>)UseSqlite(
-                (DbContextOptionsBuilder)optionsBuilder, connectionString, sqliteOptionsAction );
+        //public static DbContextOptionsBuilder<TContext> UseSqlite<TContext>(
+        //    this DbContextOptionsBuilder<TContext> optionsBuilder,
+        //    string connectionString,
+        //    Action<SqliteDbContextOptionsBuilder> sqliteOptionsAction = null )
+        //    where TContext : DbContext
+        //    => (DbContextOptionsBuilder<TContext>)UseSqlite(
+        //        (DbContextOptionsBuilder)optionsBuilder, connectionString, sqliteOptionsAction );
 
-        public static DbContextOptionsBuilder<TContext> UseSqlite<TContext>(
-            this DbContextOptionsBuilder<TContext> optionsBuilder,
-            DbConnection connection,
-            Action<SqliteDbContextOptionsBuilder> sqliteOptionsAction = null )
-            where TContext : DbContext
-            => (DbContextOptionsBuilder<TContext>)UseSqlite(
-                (DbContextOptionsBuilder)optionsBuilder, connection, sqliteOptionsAction );
+        //public static DbContextOptionsBuilder<TContext> UseSqlite<TContext>(
+        //    this DbContextOptionsBuilder<TContext> optionsBuilder,
+        //    DbConnection connection,
+        //    Action<SqliteDbContextOptionsBuilder> sqliteOptionsAction = null )
+        //    where TContext : DbContext
+        //    => (DbContextOptionsBuilder<TContext>)UseSqlite(
+        //        (DbContextOptionsBuilder)optionsBuilder, connection, sqliteOptionsAction );
 
         public static DbContextOptionsBuilder UseSqlite(
             this DbContextOptionsBuilder optionsBuilder,

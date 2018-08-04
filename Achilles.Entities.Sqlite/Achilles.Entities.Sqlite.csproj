@@ -1,7 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Achilles Entities.Sqlite micro-ORM library</Description>
+    <PackageProjectUrl>https://github.com/Achilles-Software/Entities.Sqlite</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/Achilles-Software/Entities.Sqlite/achilles-icon.png</PackageIconUrl>
+    <PackageTags>Entities; ORM; Mobile</PackageTags>
+    <RepositoryUrl>https://github.com/Achilles-Software/Entities.Sqlite</RepositoryUrl>
     <RootNamespace>Achilles.Entities</RootNamespace>
   </PropertyGroup>
 

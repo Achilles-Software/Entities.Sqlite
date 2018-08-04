@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Achilles.Entities.Configuration
 {
-    public interface IDbContextOptionsBuilder
-    {
-        //void AddServices( IServiceCollection services );
-    }
+    //public interface IDbContextOptionsBuilder
+    //{
+    //    //void AddServices( IServiceCollection services );
+    //}
 }

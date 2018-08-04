@@ -5,18 +5,18 @@
         #region Constructor(s)
 
         public DbContextOptionsBuilder()
-            : this( new DbContextOptions<TContext>())
+            : this( new DbContextOptions<TContext>() )
         {
         }
 
         public DbContextOptionsBuilder( DbContextOptions<TContext> options )
-            :base( options)
+            : base( options )
         {
-            
+
         }
 
         #endregion
 
-        public new virtual DbContextOptions<TContext> Options => (DbContextOptions<TContext>) base.Options;
+        public new virtual DbContextOptions<TContext> Options => (DbContextOptions<TContext>)base.Options;
     }
 }

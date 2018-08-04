@@ -39,7 +39,7 @@ namespace Achilles.Entities
                     typeof( DbContextOptions ),
                     p => p.GetRequiredService<DbContextOptions<TContext>>(),
                     optionsLifetime ) );
-            
+
             serviceCollection.TryAdd( new ServiceDescriptor( typeof( TContext ), typeof( TContext ), contextLifetime ) );
 
             return serviceCollection;

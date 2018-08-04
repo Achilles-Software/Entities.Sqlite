@@ -1,6 +1,10 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
 
-using Microsoft.Extensions.DependencyInjection;
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
 
 #endregion
 
@@ -15,10 +19,6 @@ namespace Achilles.Entities.Configuration
         #region Properties
 
         public DbContextOptions Options { get; internal set; }
-
-        //////internal virtual void AddServices( IServiceCollection services )
-        //////{
-        //////}
 
         #endregion
     }
