@@ -8,7 +8,7 @@
     <PackageTags>Entities; ORM; Mobile; .NET</PackageTags>
     <RepositoryUrl>https://github.com/Achilles-Software/Entities.Sqlite</RepositoryUrl>
     <RootNamespace>Achilles.Entities</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
