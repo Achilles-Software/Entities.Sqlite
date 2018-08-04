@@ -6,22 +6,22 @@ namespace TodoApp
 {
     public class TodoDbContext: DbContext
     {
-        private static TestDbContext _dbContext;
+        private static TodoDbContext _dbContext;
 
-        public DbTable<Product> Products { get; set; }
+        public DbTable<TodoItem> Products { get; set; }
 
-        public TestDbContext( DbContextOptions options ) : base( options )
+        public TodoDbContext( DbContextOptions options ) : base( options )
         {
             Products = new DbTable<Product>( this );
         }
 
-        public static TestDbContext Create( string connectionString )
+        public static TodoDbContext Create( string connectionString )
         {
             if ( _dbContext == null )
             {
                 var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-                _dbContext = new TestDbContext( options );
+                _dbContext = new TodoDbContext( options );
             }
 
             return _dbContext;
@@ -44,7 +44,7 @@ namespace TodoApp
         /// <param name="config"></param>
         protected internal override void OnModelMapping( MappingConfiguration config )
         {
-            config.Entity<Product>( builder =>
+            config.Entity<TodoItem>( builder =>
             {
                 builder.ToTable( "Products" );
 

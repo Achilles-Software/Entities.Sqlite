@@ -5,9 +5,10 @@
     <Description>Achilles Entities.Sqlite micro-ORM library</Description>
     <PackageProjectUrl>https://github.com/Achilles-Software/Entities.Sqlite</PackageProjectUrl>
     <PackageIconUrl>https://github.com/Achilles-Software/Entities.Sqlite/achilles-icon.png</PackageIconUrl>
-    <PackageTags>Entities; ORM; Mobile</PackageTags>
+    <PackageTags>Entities; ORM; Mobile; .NET</PackageTags>
     <RepositoryUrl>https://github.com/Achilles-Software/Entities.Sqlite</RepositoryUrl>
     <RootNamespace>Achilles.Entities</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
