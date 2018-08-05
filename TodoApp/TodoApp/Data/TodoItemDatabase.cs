@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Achilles.Entities;
+using Achilles.Entities.Configuration;
+using Achilles.Entities.Sqlite.Configuration;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TodoApp
@@ -12,39 +16,39 @@ namespace TodoApp
             var options = new DbContextOptionsBuilder().UseSqlite( dbPath ).Options;
 
             _dbContext = new TodoDbContext( options );
-            _dbContext = new SQLiteAsyncConnection(dbPath);
-			_dbContext.CreateTableAsync<TodoItem>().Wait();
+
+            _dbContext.Database.Creator.CreateIfNotExists();
 		}
 
 		public Task<List<TodoItem>> GetItemsAsync()
 		{
-			return _dbContext.Table<TodoItem>().ToListAsync();
+			return _dbContext.TodoItems.ToListAsync();
 		}
 
 		public Task<List<TodoItem>> GetItemsNotDoneAsync()
 		{
-			return _dbContext.QueryAsync<TodoItem>("SELECT * FROM [TodoItem] WHERE [Done] = 0");
+            return _dbContext.TodoItems.Select( i => i ).Where( i => i.Done == false ).ToListAsync();
 		}
 
 		public Task<TodoItem> GetItemAsync(int id)
 		{
-			return _dbContext.Table<TodoItem>().Where(i => i.ID == id).FirstOrDefaultAsync();
-		}
+            return _dbContext.TodoItems.FirstAsync( p => p.Id == 1 );
+        }
 
 		public Task<int> SaveItemAsync(TodoItem item)
 		{
-			if (item.ID != 0)
+			if (item.Id != 0)
 			{
-				return _dbContext.UpdateAsync(item);
+				return _dbContext.TodoItems.UpdateAsync(item);
 			}
 			else {
-				return _dbContext.InsertAsync(item);
+				return _dbContext.TodoItems.AddAsync(item);
 			}
 		}
 
 		public Task<int> DeleteItemAsync(TodoItem item)
 		{
-			return _dbContext.DeleteAsync(item);
+			return _dbContext.TodoItems.DeleteAsync(item);
 		}
 	}
 }

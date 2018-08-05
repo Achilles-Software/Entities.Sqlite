@@ -13,6 +13,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -164,7 +166,13 @@ namespace Achilles.Entities
 
         #region Public CRUD Methods
 
-        public void Add<TEntity>( TEntity entity ) where TEntity : class
+        /// <summary>
+        /// Adds an entity to the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="entity">The entity to add.</param>
+        /// <returns>1 if the entity was added succssfully; 0 otherwise.</returns>
+        public int Add<TEntity>( TEntity entity ) where TEntity : class
         {
             var entityMapping = Model.EntityMappings.GetMapping( typeof( TEntity ) );
 
@@ -181,26 +189,52 @@ namespace Achilles.Entities
 
                 entityMapping.SetPropertyValue( entity, key.PropertyName, rowId );
             }
+
+            return result;
         }
 
-        public void Update<TEntity>( TEntity entity ) where TEntity : class
+        public virtual Task<int> AddAsync<TEntity>( TEntity entity, CancellationToken cancellationToken = default ) where TEntity : class
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult( Add( entity ) );
+        }
+
+        public int Update<TEntity>( TEntity entity ) where TEntity : class
         {
             var entityMapping = Model.EntityMappings.GetMapping( typeof( TEntity ) );
 
             var updateCommand = CommandBuilder.Build( RelationalStatementKind.Update, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( updateCommand.Sql, updateCommand.Parameters.ToDictionary() );
+
+            return result;
         }
 
-        public void Delete<TEntity>( TEntity entity ) where TEntity : class
+        public virtual Task<int> UpdateAsync<TEntity>( TEntity entity, CancellationToken cancellationToken = default ) where TEntity : class
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult( Update( entity ) );
+        }
+
+        public int Delete<TEntity>( TEntity entity ) where TEntity : class
         {
             var entityMapping = Model.EntityMappings.GetMapping( typeof( TEntity ) );
 
             var deleteCommand = CommandBuilder.Build( RelationalStatementKind.Delete, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( deleteCommand.Sql, deleteCommand.Parameters.ToDictionary() );
+
+            return result;
         }
-        
+
+        public virtual Task<int> DeleteAsync<TEntity>( TEntity entity, CancellationToken cancellationToken = default ) where TEntity : class
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult( Delete( entity ) );
+        }
         #endregion
 
         #region Public Methods

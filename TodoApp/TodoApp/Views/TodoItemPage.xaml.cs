@@ -1,7 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 
-namespace Todo
+namespace TodoApp
 {
 	public partial class TodoItemPage : ContentPage
 	{

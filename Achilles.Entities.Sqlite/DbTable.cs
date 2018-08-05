@@ -56,29 +56,23 @@ namespace Achilles.Entities
 
         #region Public CRUD Methods
 
-        public void Add( TEntity entity ) 
+        public int Add( TEntity entity ) 
             => _context.Add( entity );
 
-        //public Task AddAsync( TEntity entity, CancellationToken cancellationToken = default )
-        //   => _context.AddAsync( entity, cancellationToken );
+        public Task<int> AddAsync( TEntity entity, CancellationToken cancellationToken = default )
+           => _context.AddAsync( entity, cancellationToken );
 
-        public void Update( Expression<Func<TEntity,bool>> predicate )
-        {
-
-        }
-
-        public void Update( TEntity entity )
+        public int Update( TEntity entity )
         => _context.Update( entity );
 
-        //public Task UpdateAsync( TEntity entity, CancellationToken cancellationToken = default )
-        //   => _context.UpdateAsync( entity, cancellationToken );
+        public Task UpdateAsync( TEntity entity, CancellationToken cancellationToken = default )
+           => _context.UpdateAsync( entity, cancellationToken );
 
         public void Delete( TEntity entity )
             => _context.Delete( entity );
 
-        //public Task DeleteAsync( TEntity entity, CancellationToken cancellationToken = default )
-        //   => _context.DeleteAsync( entity, cancellationToken );
-
+        public Task<int> DeleteAsync( TEntity entity, CancellationToken cancellationToken = default )
+           => _context.DeleteAsync( entity, cancellationToken );
 
         #endregion
 

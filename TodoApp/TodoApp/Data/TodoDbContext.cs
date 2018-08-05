@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Achilles.Entities;
+using Achilles.Entities.Configuration;
+using Achilles.Entities.Sqlite.Configuration;
 
 namespace TodoApp
 {
@@ -8,11 +8,11 @@ namespace TodoApp
     {
         private static TodoDbContext _dbContext;
 
-        public DbTable<TodoItem> Products { get; set; }
+        public DbTable<TodoItem> TodoItems { get; set; }
 
         public TodoDbContext( DbContextOptions options ) : base( options )
         {
-            Products = new DbTable<Product>( this );
+            TodoItems = new DbTable<TodoItem>( this );
         }
 
         public static TodoDbContext Create( string connectionString )
@@ -31,7 +31,7 @@ namespace TodoApp
         /// Overrided for context options configuration.
         /// </summary>
         /// <param name="optionsBuilder"></param>
-        protected internal override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+        protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
         {
             base.OnConfiguring( optionsBuilder );
 
@@ -42,22 +42,16 @@ namespace TodoApp
         /// Override for configuring entity mapping.
         /// </summary>
         /// <param name="config"></param>
-        protected internal override void OnModelMapping( MappingConfiguration config )
+        protected override void OnModelMapping( MappingConfiguration config )
         {
             config.Entity<TodoItem>( builder =>
             {
-                builder.ToTable( "Products" );
-
-                builder.Property( p => p.Price )
-                    .IsRequired();
-
-                builder.Property( p => p.Salutation )
-                    .Ignore();
+                builder.ToTable( "Todos" );
 
                 builder.Property( p => p.Id )
                     .IsKey();
 
-                builder.Index( p => p.Name ).Name( "IX__Products_Name" ).IsUnique();
+                builder.Index( p => p.Name ).Name( "IX_TodoItem_Name" ).IsUnique();
 
             } );
 

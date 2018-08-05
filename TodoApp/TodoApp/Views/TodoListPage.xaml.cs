@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Xamarin.Forms;
 
-namespace Todo
+namespace TodoApp
 {
 	public partial class TodoListPage : ContentPage
 	{
