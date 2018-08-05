@@ -65,7 +65,7 @@ namespace Achilles.Entities
         public int Update( TEntity entity )
         => _context.Update( entity );
 
-        public Task UpdateAsync( TEntity entity, CancellationToken cancellationToken = default )
+        public Task<int> UpdateAsync( TEntity entity, CancellationToken cancellationToken = default )
            => _context.UpdateAsync( entity, cancellationToken );
 
         public void Delete( TEntity entity )
