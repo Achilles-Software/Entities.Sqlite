@@ -12,6 +12,7 @@ using System.Data;
 using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ namespace Achilles.Entities.Sqlite.Storage
         #region Fields
 
         private readonly bool _enforceForeignKeys = true;
+        private readonly object _concurrencyLock = new object(); 
 
         #endregion
 
@@ -177,5 +179,20 @@ namespace Achilles.Entities.Sqlite.Storage
 
             return command;
         }
+
+        #region Internal Threading/Concurrency Methods
+
+        internal Task<TResult> ExecuteAsync<TResult>( Func<TResult> dbMethod, CancellationToken cancellationToken )
+        {
+            return Task.Factory.StartNew( () =>
+            {
+                lock ( _concurrencyLock )
+                {
+                    return dbMethod();
+                }
+            }, cancellationToken );
+        }
+
+        #endregion
     }
 }

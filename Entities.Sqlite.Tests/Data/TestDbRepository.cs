@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Achilles.Entities.Relational.Query;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq;
-using Achilles.Entities;
+using System.Threading.Tasks;
 
 namespace Entities.Sqlite.Tests.Data
 {

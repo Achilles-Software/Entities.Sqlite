@@ -16,15 +16,12 @@ using System.Text;
 
 namespace Achilles.Entities.Relational.Query
 {
-    public class DbTableQueryable<TResult> : QueryableBase<TResult> //, IAsyncEnumerable<TResult>, IListSource
+    public class DbTableQueryable<TResult> : QueryableBase<TResult>
     {
-        //public DbTableQueryable( IAsyncQueryProvider provider )
-        //    : base( provider )
-        //{
-        //}
+        #region Constructor(s)
 
         public DbTableQueryable( DbContext context )
-            : base( QueryParser.CreateDefault(), new DbTableQueryExecuter( context ) )
+            : base( new DbTableQueryProvider( context, typeof( DbTableQueryable<> ), QueryParser.CreateDefault(), new DbTableQueryExecuter( context ) ) )
         {
         }
 
@@ -33,34 +30,6 @@ namespace Achilles.Entities.Relational.Query
         {
         }
 
-        #region IListSource Implementation
-
-        public bool ContainsListCollection => false;
-
-        public IList GetList()
-        {
-            throw new NotSupportedException();
-        }
-
-        #endregion
-
-        #region IAsyncEnumerable Implementation
-
-        // Required for async linq
-
-        //IAsyncEnumerator<TResult> IAsyncEnumerable<TResult>.GetEnumerator()
-        //{
-        //    var temp = ((IAsyncQueryProvider)Provider).ExecuteAsync<TResult>( Expression ).GetEnumerator();
-
-        //    return temp;
-        //}
-
-        //IAsyncEnumerator<TResult> IAsyncEnumerable<TResult>.GetEnumerator()
-        //{
-        //    var temp = GetEnumerator() as IAsyncEnumerator<TResult>;
-        //    return temp;
-        //}
-        
         #endregion
     }
 }

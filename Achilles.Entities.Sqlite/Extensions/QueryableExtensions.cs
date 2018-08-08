@@ -24,22 +24,22 @@ using System.Linq;
 
 namespace Achilles.Entities.Extensions
 {
-    public static class QueryableExtensions
-    {
-        public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(
-            this IQueryable<TSource> source )
-        {
-            if ( source is IAsyncEnumerable<TSource> enumerable )
-            {
-                return enumerable;
-            }
+    //public static class QueryableExtensions
+    //{
+    //    public static IAsyncEnumerable<TSource> AsAsyncEnumerable<TSource>(
+    //        this IQueryable<TSource> source )
+    //    {
+    //        if ( source is IAsyncEnumerable<TSource> enumerable )
+    //        {
+    //            return enumerable;
+    //        }
 
-            if ( source is IAsyncEnumerableAccessor<TSource> entityQueryableAccessor )
-            {
-                return entityQueryableAccessor.AsyncEnumerable;
-            }
+    //        if ( source is IAsyncEnumerableAccessor<TSource> entityQueryableAccessor )
+    //        {
+    //            return entityQueryableAccessor.AsyncEnumerable;
+    //        }
 
-            throw new InvalidOperationException( "IQueryable not async" );
-        }
-    }
+    //        throw new InvalidOperationException( "IQueryable not async" );
+    //    }
+    //}
 }

@@ -23,6 +23,9 @@ namespace Achilles.Entities.Storage
         protected readonly int? _commandTimeout;
         protected readonly DbConnection _connection;
 
+        //TJT: Not sure where this lives yet!
+        //private readonly object _concurrencyLock = new object(); 
+
         protected bool _isConnectionOwned;
 
         protected int _openCount = 0;
@@ -143,6 +146,7 @@ namespace Achilles.Entities.Storage
         public abstract int LastInsertRowId();
 
         #endregion
+
 
         #region IDisposable Support
 

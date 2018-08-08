@@ -13,7 +13,8 @@ namespace TodoApp
 
 		public TodoItemDatabase(string dbPath)
 		{
-            var options = new DbContextOptionsBuilder().UseSqlite( dbPath ).Options;
+            var connectionString = "Data Source=" + dbPath;
+            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
             _dbContext = new TodoDbContext( options );
 

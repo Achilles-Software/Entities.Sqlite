@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace Achilles.Entities
 {
-    public class DbTable<TEntity> : IQueryable<TEntity> //, IAsyncEnumerableAccessor<TEntity>, IListSource
+    public class DbTable<TEntity> : IQueryable<TEntity>
         where TEntity : class
     {
         #region Fields
@@ -84,11 +84,7 @@ namespace Achilles.Entities
             {
                 if ( _dbTableQueryable == null )
                 {
-                    //var entityType = GetType().GetGenericTypeDefinition();
-                    //var queryParser = QueryParser.CreateDefault();
-                    //var executer = new DbTableQueryExecuter( _context._connection );
-
-                    _dbTableQueryable = new DbTableQueryable<TEntity>( _context );//._connection ); //new DbTableQueryProvider( entityType, queryParser, executer) );
+                    _dbTableQueryable = new DbTableQueryable<TEntity>( _context );
                 }
 
                 return _dbTableQueryable;
@@ -101,20 +97,9 @@ namespace Achilles.Entities
 
         IQueryProvider IQueryable.Provider => DbTableQueryable.Provider;
 
-        //public IAsyncEnumerable<TEntity> AsyncEnumerable => DbTableQueryable.ToAsyncEnumerable<TEntity>();
-
-        //IAsyncEnumerable<TEntity> IAsyncEnumerableAccessor<TEntity>.AsyncEnumerable => DbTableQueryable;
-
         public IEnumerator<TEntity> GetEnumerator() => DbTableQueryable.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => DbTableQueryable.GetEnumerator();
-
-        //IList IListSource.GetList()
-        //{
-        //    throw new NotSupportedException();
-        //}
-
-        //bool IListSource.ContainsListCollection => false;
 
         #endregion
     }
