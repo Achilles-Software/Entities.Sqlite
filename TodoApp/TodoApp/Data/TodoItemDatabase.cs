@@ -1,5 +1,5 @@
-﻿using Achilles.Entities;
-using Achilles.Entities.Configuration;
+﻿using Achilles.Entities.Configuration;
+using Achilles.Entities.Relational.Query;
 using Achilles.Entities.Sqlite.Configuration;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TodoApp
 {
-	public class TodoItemDatabase
+    public class TodoItemDatabase
 	{
 		readonly TodoDbContext _dbContext;
 
