@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Achilles Entities.Sqlite micro-ORM library</Description>
+    <Description>A lightweight, micro-ORM for Sqlite providing database services for cross-platform mobile apps built using Xamarin.</Description>
     <PackageProjectUrl>https://github.com/Achilles-Software/Entities.Sqlite</PackageProjectUrl>
     <PackageIconUrl>https://github.com/Achilles-Software/Entities.Sqlite/achilles-icon.png</PackageIconUrl>
-    <PackageTags>Entities; ORM; Mobile; .NET</PackageTags>
+    <PackageTags>Sqlite; Linq; Entities; ORM; Mobile; NetStandard; Xamarin; cross-platform; Database</PackageTags>
     <RepositoryUrl>https://github.com/Achilles-Software/Entities.Sqlite</RepositoryUrl>
     <RootNamespace>Achilles.Entities</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
