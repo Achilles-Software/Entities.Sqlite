@@ -6,7 +6,7 @@ Entities.Sqlite is primarily used for Sqlite database services for Cross-Platfor
 # Prerelease Notice
 Entities.Sqlite is currently in alpha stage development. We have published this early source to get feedback and feature ideas and hopefully many beta testers.
 
-If you are willing to contribute to this repo by beta testing, please add a comment to the [Beta Testing Issue](https://github/achilles-software/entities.sqlite/issues/4)
+If you are willing to contribute to this repo by beta testing, please add a comment to the [Beta Testing Issue](https://github.com/achilles-software/entities.sqlite/issues/4)
 
 # Features
 * Linq provider for entity queries
@@ -21,7 +21,7 @@ Entiites.Sqlite is availabe as a NuGet package. The package details can be viewe
 # Dependencies
 Entities.Sqlite is dependent on a few amazing open source NuGet packages:
 
-* [Remotion Relinq](https://www.nuget.org/packages/Remotion/)
+* [Remotion Relinq](https://www.nuget.org/packages/Remotion)
 * [Microsoft.Data.Sqlite](https://www.nuget.org/packages/Microsoft.Data.Sqlite)
 * [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection)
 * [System.Interactivve.Async](https://www.nuget.org/packages/System.Interactive.Async)
