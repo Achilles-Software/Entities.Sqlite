@@ -9,12 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-
 #endregion
 
 namespace Achilles.Entities.Relational.Query.Linq
 {
-    public class SqlQueryModelVisitor : QueryModelVisitorBase
+    public class SqliteQueryModelVisitor : QueryModelVisitorBase
     {
         #region Fields
 
@@ -29,9 +28,11 @@ namespace Achilles.Entities.Relational.Query.Linq
         private List<string> _orderByParts;
         private List<string> _joinParts;
 
+        private string _fromClauseItemName;
+
         #endregion
 
-        public SqlQueryModelVisitor( DbContext context )
+        public SqliteQueryModelVisitor( DbContext context )
         {
             _context = context;
 
@@ -73,6 +74,13 @@ namespace Achilles.Entities.Relational.Query.Linq
             if ( !string.IsNullOrEmpty( EntityMapping.TableName ) )
             {
                 fromTableName = EntityMapping.TableName;
+            }
+
+            if ( fromClause.ItemName.StartsWith( "<generated>_", StringComparison.Ordinal ) )
+            {
+                // TODO: Use a shortened unique identifier.
+
+                fromClause.ItemName= fromClause.ItemName.Replace( "<generated>_", fromTableName + "_" );
             }
 
             _fromPart = string.Format( "{0} as {1}", fromTableName , fromClause.ItemName );

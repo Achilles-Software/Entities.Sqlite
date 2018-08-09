@@ -23,14 +23,12 @@ namespace TodoApp
 
         public Task<List<TodoItem>> GetItemsAsync()
         {
-            // TJT: Select( i => i ) is required as a workaround for a prerelease bug.
-            return _dbContext.TodoItems.Select( i => i ).ToListAsync();
+            return _dbContext.TodoItems.ToListAsync();
         }
 
         public Task<List<TodoItem>> GetItemsNotDoneAsync()
         {
-            // TJT: Select( i => i ) is required as a workaround for a prerelease bug.
-            return _dbContext.TodoItems.Select( i => i ).Where( i => i.Done == false ).ToListAsync();
+            return _dbContext.TodoItems.Where( i => i.Done == false ).ToListAsync();
         }
 
         public Task<TodoItem> GetItemAsync( int id )

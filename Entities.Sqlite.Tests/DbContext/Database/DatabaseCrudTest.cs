@@ -93,8 +93,6 @@ namespace Entities.Sqlite.Tests
                 var product = context.Products.First( p => p.Id == 1 );
                 var product2 = context.Products.First( p => p.Id == 2 );
 
-                var products = context.Products;
-
                 Assert.Equal( "Banana", product.Name );
                 Assert.Equal( "Plum", product2.Name );
             }
@@ -110,8 +108,9 @@ namespace Entities.Sqlite.Tests
             {
                 InitializeContext( context );
 
-                Assert.Equal( 2, context.Products.Select( p => p.Id ).Count() );
-                var products = context.Products.Select( p => p ).ToList();
+                Assert.Equal( 2, context.Products.Count() );
+                var products = context.Products.ToList();
+
                 Assert.Equal( 2, products.Count() );
                 Assert.Equal( "Banana", products[ 0 ].Name );
                 Assert.Equal( "Plum", products[ 1 ].Name );
@@ -128,7 +127,7 @@ namespace Entities.Sqlite.Tests
             {
                 InitializeContext( context );
 
-                var products = await context.Products.Select( p => p).ToListAsync();
+                var products = await context.Products.ToListAsync();
 
                 Assert.Equal( 2, products.Count() );
                 Assert.Equal( "Banana", products[ 0 ].Name );
@@ -187,7 +186,7 @@ namespace Entities.Sqlite.Tests
                 };
 
                 await context.Products.AddAsync( product );
-                var productsCount = context.Products.Select( p => p.Id ).Count();
+                var productsCount = context.Products.Count();
 
                 Assert.Equal( 1, productsCount );
 
@@ -219,13 +218,13 @@ namespace Entities.Sqlite.Tests
                 };
 
                 context.Products.Add( product );
-                var productsCount = context.Products.Select( p => p ).Count();
+                var productsCount = context.Products.Count();
 
                 Assert.Equal( 1, productsCount );
 
                 context.Products.Delete( product );
 
-                Assert.Equal( 0, context.Products.Select(p => p.Id).Count() );
+                Assert.Equal( 0, context.Products.Select( p => p.Id ).Count() );
            }
         }
 
@@ -248,7 +247,7 @@ namespace Entities.Sqlite.Tests
                 };
 
                 context.Products.Add( product );
-                var productsCount = context.Products.Select( p => p ).Count();
+                var productsCount = context.Products.Count();
 
                 Assert.Equal( 1, productsCount );
 

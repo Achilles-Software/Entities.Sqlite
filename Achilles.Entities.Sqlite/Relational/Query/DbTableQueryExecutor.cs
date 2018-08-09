@@ -28,12 +28,11 @@ namespace Achilles.Entities.Relational.Query
 
         public T ExecuteScalar<T>( QueryModel queryModel )
         {
-            SqlQueryModelVisitor visitor = new SqlQueryModelVisitor( _context );
+            SqliteQueryModelVisitor visitor = new SqliteQueryModelVisitor( _context );
 
             visitor.VisitQueryModel( queryModel );
-            string sql = visitor.GetSql();
-
-            var result = _connection.ExecuteScalar( sql, visitor.Parameters.ToDictionary() );//, _transaction );
+            
+            var result = _connection.ExecuteScalar( visitor.GetSql(), visitor.Parameters.ToDictionary() );//, _transaction );
 
             return (T)Convert.ChangeType( result, typeof( T ) ); 
         }
@@ -47,7 +46,7 @@ namespace Achilles.Entities.Relational.Query
 
         public IEnumerable<T> ExecuteCollection<T>( QueryModel queryModel )
         {
-            SqlQueryModelVisitor visitor = new SqlQueryModelVisitor( _context );
+            SqliteQueryModelVisitor visitor = new SqliteQueryModelVisitor( _context );
             visitor.VisitQueryModel( queryModel );
             string sql = visitor.GetSql();
 
