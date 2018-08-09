@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Achilles.Entities.Sqlite", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F41A4A4-7A97-4704-BCCA-FA13DCC6BD3C}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\Documents\Expression\Expression Design\achilles-icon.png = ..\..\..\..\Documents\Expression\Expression Design\achilles-icon.png
+		achilles-icon.png = achilles-icon.png
 		LICENSE.txt = LICENSE.txt
 		NuGet.config = NuGet.config
 		README.md = README.md
