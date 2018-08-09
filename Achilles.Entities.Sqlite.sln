@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Achilles.Entities.Sqlite", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F41A4A4-7A97-4704-BCCA-FA13DCC6BD3C}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Documents\Expression\Expression Design\achilles-icon.png = ..\..\..\..\Documents\Expression\Expression Design\achilles-icon.png
 		LICENSE.txt = LICENSE.txt
 		NuGet.config = NuGet.config
 		README.md = README.md
@@ -18,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApp.Android", "TodoApp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApp.iOS", "TodoApp\TodoApp.iOS\TodoApp.iOS.csproj", "{05B6613D-687A-4089-9247-97BC4E0066F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApp", "TodoApp\TodoApp\TodoApp.csproj", "{133207E0-58CE-4F31-9422-DB07B874A483}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoApp", "TodoApp\TodoApp\TodoApp.csproj", "{133207E0-58CE-4F31-9422-DB07B874A483}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{A6D3E419-D8A9-4183-8D9E-A2791B34186A}"
 EndProject

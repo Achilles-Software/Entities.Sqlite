@@ -21,7 +21,7 @@ Entiites.Sqlite is availabe as a NuGet package. The package details can be viewe
 # Dependencies
 Entities.Sqlite is dependent on a few amazing open source NuGet packages:
 
-* [Remotion Relinq](https://www.nuget.org/packages/Remotion)
+* [Remotion.Linq](https://www.nuget.org/packages/Remotion.Linq)
 * [Microsoft.Data.Sqlite](https://www.nuget.org/packages/Microsoft.Data.Sqlite)
 * [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection)
 * [System.Interactivve.Async](https://www.nuget.org/packages/System.Interactive.Async)
