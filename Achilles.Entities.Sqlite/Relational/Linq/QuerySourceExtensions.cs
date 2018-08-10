@@ -5,7 +5,7 @@ using System;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query.Linq
+namespace Achilles.Entities.Relational.Linq
 {
     internal static class QuerySourceExtensions
     {

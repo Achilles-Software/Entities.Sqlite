@@ -1,6 +1,5 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Relational.Query.Linq;
 using Achilles.Entities.Mapping;
 using Achilles.Entities.Storage;
 using Remotion.Linq;
@@ -11,20 +10,30 @@ using System;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query
+namespace Achilles.Entities.Relational.Linq
 {
-    public class DbTableQueryExecuter : IQueryExecutor
+    public class EntityQueryExecutor : IQueryExecutor
     {
+        #region Private Fields
+
         private readonly DbContext _context;
         private readonly IRelationalConnection _connection;
         private readonly IDbTransaction _transaction;
 
-        public DbTableQueryExecuter( DbContext context )
+        #endregion
+
+        #region Constructor(s)
+
+        public EntityQueryExecutor( DbContext context )
         {
             _context = context;
             _connection = context.Database.Connection;
             //_transaction = transaction;
         }
+
+        #endregion
+
+        #region IQueryExecutor API
 
         public T ExecuteScalar<T>( QueryModel queryModel )
         {
@@ -54,5 +63,7 @@ namespace Achilles.Entities.Relational.Query
 
             return AutoMapper.MapDynamic<T>( queryResult );
         }
+
+        #endregion
     }
 }

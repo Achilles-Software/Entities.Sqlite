@@ -12,11 +12,11 @@ namespace Entities.Sqlite.Tests.Data
     {
         private static TestDbContext _dbContext;
 
-        public DbTable<Product> Products { get; set; }
+        public Entity<Product> Products { get; set; }
 
         public TestDbContext( DbContextOptions options ) : base( options )
         {
-            Products = new DbTable<Product>( this );
+            Products = new Entity<Product>( this );
         }
 
         public static TestDbContext Create( string connectionString )

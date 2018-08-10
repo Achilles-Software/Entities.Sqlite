@@ -1,7 +1,6 @@
 ﻿#region Namespaces
 
 using Achilles.Entities.Relational;
-using Achilles.Entities.Relational.Query.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;

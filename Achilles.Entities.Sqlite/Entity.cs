@@ -1,25 +1,19 @@
 ﻿#region Copyright Notice
 
-// Copyright (c) by Achilles Software, http://achilles-software.com
+// Copyright (c) by Achilles Software, All rights reserved.
 //
-// The source code contained in this file may not be copied, modified, distributed or
-// published by any means without the express written agreement by Achilles Software.
+// Licensed under the MIT License. See License.txt in the project root for license information.
 //
 // Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
-//
-// All rights reserved.
 
 #endregion
 
 #region Namespaces
 
-using Achilles.Entities.Relational.Query;
-using Achilles.Entities.Storage;
-using Remotion.Linq.Parsing.Structure;
+using Achilles.Entities.Relational.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -29,19 +23,23 @@ using System.Threading.Tasks;
 
 namespace Achilles.Entities
 {
-    public class DbTable<TEntity> : IQueryable<TEntity>
+    /// <summary>
+    /// Represents a database table.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of entities stored in the database table.</typeparam>
+    public class Entity<TEntity> : IQueryable<TEntity>
         where TEntity : class
     {
         #region Fields
 
         private readonly DbContext _context;
-        private DbTableQueryable<TEntity> _dbTableQueryable;
+        private EntityQueryable<TEntity> _entityQueryable;
 
         #endregion
 
         #region Constructor(s)
 
-        public DbTable( DbContext context )
+        public Entity( DbContext context )
         {
             _context = context;
         }
@@ -78,28 +76,28 @@ namespace Achilles.Entities
 
         #region Private IQueryable Methods
 
-        private DbTableQueryable<TEntity> DbTableQueryable
+        private EntityQueryable<TEntity> EntityQueryable
         {
             get
             {
-                if ( _dbTableQueryable == null )
+                if ( _entityQueryable == null )
                 {
-                    _dbTableQueryable = new DbTableQueryable<TEntity>( _context );
+                    _entityQueryable = new EntityQueryable<TEntity>( _context );
                 }
 
-                return _dbTableQueryable;
+                return _entityQueryable;
             }
         }
 
-        Type IQueryable.ElementType => DbTableQueryable.ElementType;
+        Type IQueryable.ElementType => EntityQueryable.ElementType;
 
-        Expression IQueryable.Expression => DbTableQueryable.Expression;
+        Expression IQueryable.Expression => EntityQueryable.Expression;
 
-        IQueryProvider IQueryable.Provider => DbTableQueryable.Provider;
+        IQueryProvider IQueryable.Provider => EntityQueryable.Provider;
 
-        public IEnumerator<TEntity> GetEnumerator() => DbTableQueryable.GetEnumerator();
+        public IEnumerator<TEntity> GetEnumerator() => EntityQueryable.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => DbTableQueryable.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => EntityQueryable.GetEnumerator();
 
         #endregion
     }

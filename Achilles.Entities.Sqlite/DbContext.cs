@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using Achilles.Entities.Configuration;
 using Achilles.Entities.Properties;
@@ -29,7 +39,6 @@ namespace Achilles.Entities
         private IRelationalDatabase _database = null;
         private IRelationalModel _model = null;
         private IDbContextService _contextService = null;
-        private IRelationalCommandExecutor _commandExecutor = null;
         private IRelationalCommandBuilder _commandBuilder = null;
 
         private bool _isConfiguring = false;
@@ -85,21 +94,6 @@ namespace Achilles.Entities
                 }
 
                 return _serviceProvider;
-            }
-        }
-
-        private IRelationalCommandExecutor CommandExecutor
-        {
-            get
-            {
-                if ( _commandExecutor != null )
-                {
-                    return _commandExecutor;
-                }
-
-                _commandExecutor = ServiceProvider.GetRequiredService<IRelationalCommandExecutor>();
-
-                return _commandExecutor;
             }
         }
 
@@ -235,74 +229,6 @@ namespace Achilles.Entities
 
             return Task.FromResult( Delete( entity ) );
         }
-        #endregion
-
-        #region Public Methods
-
-        //public IAsyncQueryProvider QueryProvider { get; }
-
-        internal IEnumerable<T> QueryInternal<T>( string sql, object parameters ) where T : class
-        {
-            Action<IDbCommand, object> paramReader = ( command, obj ) =>
-            {
-                var properties = obj.GetType()
-                    .GetProperties()
-                    .Select( property => new { property.Name, Value = property.GetValue( obj, null ) } )
-                    .ToList();
-
-                foreach ( var propertyMap in properties )
-                {
-                    IDbDataParameter dbparam = command.CreateParameter();
-                    dbparam.ParameterName = propertyMap.Name;
-                    dbparam.Value = propertyMap.Value;
-                    command.Parameters.Add( dbparam );
-                }
-            };
-
-            using ( IDbCommand command = SetupStoredCommand( null, sql, parameters != null ? paramReader : null, parameters, null ) )
-            {
-                //Connection.OpenIfNot();
-
-                using ( IDataReader reader = command.ExecuteReader() )
-                {
-                    // Materializer<T> mapper = new Materializer<T>( reader );
-                    while ( reader.Read() )
-                    {
-                        yield return null;// (T)mapper.Materialize( reader );
-                    }
-                }
-            }
-        }
-
-        private IDbCommand SetupStoredCommand( IDbTransaction transaction, string sql, Action<IDbCommand, object> paramReader, object obj, int? commandTimeout )
-        {
-            return SetupCommand( transaction, sql, paramReader, obj, commandTimeout, CommandType.StoredProcedure );
-        }
-
-        private IDbCommand SetupCommand( IDbTransaction transaction, string sql, Action<IDbCommand, object> paramReader, object obj, int? commandTimeout, CommandType? commandType )
-        {
-            IDbCommand command = Database.Connection.DbConnection.CreateCommand();
-
-            if ( transaction != null )
-            {
-                command.Transaction = transaction;
-            }
-            if ( commandTimeout.HasValue )
-            {
-                command.CommandTimeout = commandTimeout.Value;
-            }
-            if ( commandType.HasValue )
-            {
-                command.CommandType = commandType.Value;
-            }
-            command.CommandText = sql;
-            if ( paramReader != null )
-            {
-                paramReader( command, obj );
-            }
-
-            return command;
-        }
 
         #endregion
 
@@ -312,7 +238,7 @@ namespace Achilles.Entities
         {
         }
 
-        protected internal virtual void OnModelMapping( MappingConfiguration config )
+        protected internal virtual void OnModelMapping( MappingConfiguration modelBuilder )
         {
         }
 
@@ -322,7 +248,7 @@ namespace Achilles.Entities
 
         private void InitializeServices( DbContextOptions options )
         {
-            // Each DbContext has it's own set of services provider.
+            // Each DbContext has it's own set of services and provider.
             _services = new ServiceCollection();
 
             // Add the services required for the specific relational options.

@@ -16,7 +16,7 @@
 #region Namespaces
 
 using Achilles.Entities.Extensions;
-using Achilles.Entities.Relational.Query;
+using Achilles.Entities.Relational.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query
+namespace Achilles.Entities.Relational.Linq
 {
     public static class AsyncQueryableExtensions
     {

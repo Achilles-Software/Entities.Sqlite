@@ -1,7 +1,7 @@
 ﻿#region Namespaces
 
 using Achilles.Entities.Extensions;
-using Achilles.Entities.Relational.Query.Linq.ExpressionVisitors;
+using Achilles.Entities.Relational.Linq.ExpressionVisitors;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
@@ -11,7 +11,7 @@ using System.Text;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query.Linq
+namespace Achilles.Entities.Relational.Linq
 {
     public class SqliteQueryModelVisitor : QueryModelVisitorBase
     {

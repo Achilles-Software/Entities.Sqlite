@@ -13,15 +13,15 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query
+namespace Achilles.Entities.Relational.Linq
 {
-    public class DbTableQueryProvider : QueryProviderBase, IAsyncQueryProvider
+    public class EntityQueryProvider : QueryProviderBase, IAsyncQueryProvider
     {
         private readonly Type _queryableType;
 
         #region Constructor(s)
 
-        public DbTableQueryProvider( DbContext context, Type queryableType, IQueryParser queryParser, IQueryExecutor executor )
+        public EntityQueryProvider( DbContext context, Type queryableType, IQueryParser queryParser, IQueryExecutor executor )
           : base( queryParser, executor )
         {
             CheckQueryableType( queryableType );

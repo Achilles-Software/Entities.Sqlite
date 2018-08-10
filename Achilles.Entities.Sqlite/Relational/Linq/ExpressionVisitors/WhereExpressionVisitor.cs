@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query.Linq.ExpressionVisitors
+namespace Achilles.Entities.Relational.Linq.ExpressionVisitors
 {
     class WhereExpressionVisitor : SqlExpressionVisitor
     {

@@ -1,4 +1,4 @@
-﻿using Achilles.Entities.Relational.Query;
+﻿using Achilles.Entities.Relational.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,23 +42,7 @@ namespace Entities.Sqlite.Tests.Data
 
         public async Task<List<Product>> GetAllAsync()
         {
-            try
-            {
-                //var query = from p in connection.Queryable<Session>() select p;
-                //var list = query.ToList();
-
-                var query = from p in _context.Products select p;
-
-                var result = query.ToList();
-
-                return await _context.Products.ToListAsync();
-            }
-            catch ( Exception e )
-            {
-                int step = 1;
-            }
-
-            return null;
+            return await _context.Products.ToListAsync();
         }
 
         #endregion
@@ -71,7 +55,7 @@ namespace Entities.Sqlite.Tests.Data
             {
                 if ( item.Id == 0 )
                 {
-                    //await _context.Products.AddAsync( item );
+                    await _context.Products.AddAsync( item );
                 }
             }
             catch ( Exception e )
@@ -84,21 +68,18 @@ namespace Entities.Sqlite.Tests.Data
 
         public async Task<DataServiceResult> DeleteAsync( Product item )
         {
-            //try
-            //{
-            //    _context.Sessions.Remove( item );
-
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch ( DbUpdateException e )
-            //{
-            //    return DataServiceResult.Failed( DataServiceErrorType.Repository, e );
-            //}
+            try
+            {
+                await _context.Products.DeleteAsync( item );
+            }
+            catch ( Exception e )
+            {
+                return DataServiceResult.Failed( DataServiceErrorType.Repository, e );
+            }
 
             return DataServiceResult.Success;
         }
 
         #endregion
     }
-
 }

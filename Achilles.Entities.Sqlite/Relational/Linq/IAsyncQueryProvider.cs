@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query
+namespace Achilles.Entities.Relational.Linq
 {
     public interface IAsyncQueryProvider : IQueryProvider
     {

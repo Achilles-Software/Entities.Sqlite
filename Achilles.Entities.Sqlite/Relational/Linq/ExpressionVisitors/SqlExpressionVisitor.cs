@@ -8,7 +8,7 @@ using System.Text;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Query.Linq.ExpressionVisitors
+namespace Achilles.Entities.Relational.Linq.ExpressionVisitors
 {
     public class SqlExpressionVisitor : ThrowingExpressionVisitor
     {
