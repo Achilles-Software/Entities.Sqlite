@@ -1,5 +1,5 @@
 ﻿using Achilles.Entities.Configuration;
-using Achilles.Entities.Relational.Query;
+using Achilles.Entities.Relational.Linq;
 using Achilles.Entities.Sqlite.Configuration;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,48 +9,48 @@ namespace TodoApp
 {
     public class TodoItemDatabase
     {
-        readonly TodoDbContext _dbContext;
+        readonly TodoDataContext _dataContext;
 
         public TodoItemDatabase( string dbPath )
         {
             var connectionString = "Data Source=" + dbPath;
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            _dbContext = new TodoDbContext( options );
+            _dataContext = new TodoDataContext( options );
 
-            _dbContext.Database.Creator.CreateIfNotExists();
+            _dataContext.Database.Creator.CreateIfNotExists();
         }
 
         public Task<List<TodoItem>> GetItemsAsync()
         {
-            return _dbContext.TodoItems.ToListAsync();
+            return _dataContext.TodoItems.ToListAsync();
         }
 
         public Task<List<TodoItem>> GetItemsNotDoneAsync()
         {
-            return _dbContext.TodoItems.Where( i => i.Done == false ).ToListAsync();
+            return _dataContext.TodoItems.Where( i => i.Done == false ).ToListAsync();
         }
 
         public Task<TodoItem> GetItemAsync( int id )
         {
-            return _dbContext.TodoItems.FirstAsync( p => p.Id == 1 );
+            return _dataContext.TodoItems.FirstAsync( p => p.Id == 1 );
         }
 
         public Task<int> SaveItemAsync( TodoItem item )
         {
             if ( item.Id != 0 )
             {
-                return _dbContext.TodoItems.UpdateAsync( item );
+                return _dataContext.TodoItems.UpdateAsync( item );
             }
             else
             {
-                return _dbContext.TodoItems.AddAsync( item );
+                return _dataContext.TodoItems.AddAsync( item );
             }
         }
 
         public Task<int> DeleteItemAsync( TodoItem item )
         {
-            return _dbContext.TodoItems.DeleteAsync( item );
+            return _dataContext.TodoItems.DeleteAsync( item );
         }
     }
 }

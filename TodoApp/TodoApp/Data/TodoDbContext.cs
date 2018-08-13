@@ -1,37 +1,52 @@
 ﻿using Achilles.Entities;
 using Achilles.Entities.Configuration;
+using Achilles.Entities.Relational.Modelling;
 using Achilles.Entities.Sqlite.Configuration;
+using System.Linq;
 
 namespace TodoApp
 {
-    public class TodoDbContext: DbContext
+    /// <summary>
+    /// The Todo app data context.
+    /// </summary>
+    /// <remarks>
+    /// Custom data contexts derive from <see cref="DataContext"/>.
+    /// </remarks>
+    public class TodoDataContext: DataContext
     {
-        private static TodoDbContext _dbContext;
+        private static TodoDataContext _dataContext;
 
-        public DbTable<TodoItem> TodoItems { get; set; }
+        /// <summary>
+        /// Gets or sets the Todo items.
+        /// </summary>
+        /// <remarks>
+        /// Entity sets support the <see cref="IQueryable"/> interface.
+        /// </remarks>
+        public EntitySet<TodoItem> TodoItems { get; set; }
 
-        public TodoDbContext( DbContextOptions options ) : base( options )
+        public TodoDataContext( DataContextOptions options ) : base( options )
         {
-            TodoItems = new DbTable<TodoItem>( this );
+            // Add your entity sets to the context in the data context constructor.
+            TodoItems = new EntitySet<TodoItem>( this );
         }
 
-        public static TodoDbContext Create( string connectionString )
+        public static TodoDataContext Create( string connectionString )
         {
-            if ( _dbContext == null )
+            if ( _dataContext == null )
             {
-                var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+                var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-                _dbContext = new TodoDbContext( options );
+                _dataContext = new TodoDataContext( options );
             }
 
-            return _dbContext;
+            return _dataContext;
         }
 
         /// <summary>
         /// Overrided for context options configuration.
         /// </summary>
         /// <param name="optionsBuilder"></param>
-        protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+        protected override void OnConfiguring( DataContextOptionsBuilder optionsBuilder )
         {
             base.OnConfiguring( optionsBuilder );
 
@@ -41,22 +56,21 @@ namespace TodoApp
         /// <summary>
         /// Override for configuring entity mapping.
         /// </summary>
-        /// <param name="config"></param>
-        protected override void OnModelMapping( MappingConfiguration config )
+        /// <param name="modelBuilder"></param>
+        protected override void OnModelBuilding( RelationalModelBuilder modelBuilder )
         {
-            config.Entity<TodoItem>( builder =>
+            modelBuilder.Entity<TodoItem>( entity =>
             {
-                builder.ToTable( "Todos" );
+                entity.ToTable( "Todos" );
 
-                builder.Property( p => p.Id )
+                entity.Column( p => p.Id )
                     .IsKey();
 
-                builder.Index( p => p.Name ).Name( "IX_TodoItem_Name" ).IsUnique();
+                entity.HasIndex( p => p.Name ).Name( "IX_TodoItem_Name" ).IsUnique();
 
             } );
 
-            base.OnModelMapping( config );
+            base.OnModelBuilding( modelBuilder );
         }
     }
-
 }
