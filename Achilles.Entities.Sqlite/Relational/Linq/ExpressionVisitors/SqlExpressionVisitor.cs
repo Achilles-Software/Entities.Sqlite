@@ -14,14 +14,14 @@ namespace Achilles.Entities.Relational.Linq.ExpressionVisitors
     {
         #region Private Fields
 
-        protected readonly DbContext _dbContext;
+        protected readonly DataContext _dbContext;
         protected readonly SqlParameterCollection _parameters;
 
         #endregion
 
         #region Constructor(s)
 
-        public SqlExpressionVisitor( DbContext context, SqlParameterCollection parameters )
+        public SqlExpressionVisitor( DataContext context, SqlParameterCollection parameters )
         {
             _dbContext = context;
             _parameters = parameters;

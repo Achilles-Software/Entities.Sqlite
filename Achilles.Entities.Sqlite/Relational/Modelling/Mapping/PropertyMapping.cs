@@ -1,33 +1,49 @@
 ﻿#region Namespaces
 
+using Achilles.Entities.Mapping;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Relational.Modelling.Mapping
 {
-    public class PropertyMapping : IPropertyMapping
+    /// <summary>
+    /// Implements the <see cref="IColumnMapping"/> interface.
+    /// </summary>
+    public class ColumnMapping : IColumnMapping
     {
         #region  Constructor(s)
 
-        public PropertyMapping( PropertyInfo propertyInfo )
+        /// <summary>
+        /// Constructs a new instance of <see cref="ColumnMapping "/> from the provided <see cref="MemberInfo"/> parameter.
+        /// </summary>
+        /// <param name="memberInfo">A <see cref="System.Reflection.MemberInfo"/> instance.</param>
+        /// <param name="isProperty">True indicates a <see cref="PropertyInfo"/> backed column; False indicates a <see cref="FieldInfo"/> backed column.</param>
+        public ColumnMapping( MemberInfo memberInfo, bool isProperty = true )
         {
-            PropertyInfo = propertyInfo;
-            ColumnName = PropertyInfo.Name;
+            MemberInfo = memberInfo;
+            IsPropertyMember = isProperty;
 
             // TODO: TypeMapping Must be a Sqlite specific DI service
 
-            var columnTypeMapping = SqliteTypeMapping.FindMapping( PropertyType );
+            var typeMapping = SqliteTypeMapping.FindMapping( MemberType );
 
-            if ( columnTypeMapping != null )
+            if ( typeMapping != null )
             {
-                ColumnType = columnTypeMapping.MappingTypeName;
+                // The property is a simple scalar type. It is mapped to a database column.
+                IsColumn = true;
+                ColumnName = MemberInfo.Name;
+                ColumnType = typeMapping.MappingTypeName;
             }
             else
             {
-                throw new NotSupportedException( "The property cannot be mapped. Name: " + PropertyName + ", Type: " + PropertyType.ToString() );
+                // The property is either a foreign key or an entity reference 
+                // single entity reference for a 1 to 1 relationship; 
+                // collection entity reference for a 1 to many relationhip;
+
+                // TJT: FIXME
             }
         }
 
@@ -37,42 +53,59 @@ namespace Achilles.Entities.Mapping
 
         //public Action<TEntity> Setter => CreateSetter<TEntity>(); 
 
-        public PropertyInfo PropertyInfo { get; }
+        /// <inheritdoc />
+        public MemberInfo MemberInfo { get; }
 
-        public Type PropertyType => PropertyInfo.PropertyType;
+        /// <inheritdoc />
+        public bool IsPropertyMember { get; } = true;
 
-        public string PropertyName
+        /// <inheritdoc />
+        public Type MemberType => IsPropertyMember ? (MemberInfo as PropertyInfo).PropertyType : (MemberInfo as FieldInfo).FieldType;
+        
+        /// <inheritdoc />
+        public string MemberName
         {
-            get { return PropertyInfo.Name; }
+            get { return MemberInfo.Name; }
         }
 
-        public string ColumnType { get; set; }
+        /// <inheritdoc />
+        public bool IsColumn { get; } = false;
 
+        /// <inheritdoc />
         public string ColumnName { get; set; }
 
+        /// <inheritdoc />
+        public string ColumnType { get; set; }
+
+        /// <inheritdoc />
         public bool IsKey { get; set; } = false;
 
+        /// <inheritdoc />
         public bool IsRequired { get; set; } = false;
 
+        /// <inheritdoc />
         public bool Ignore { get; set; } = false;
 
+        /// <inheritdoc />
         public int? MaxLength { get; set; }
 
+        /// <inheritdoc />
         public string DefaultValue { get; set; } = string.Empty;
 
+        /// <inheritdoc />
         public bool IsUnique { get; set; } = false;
 
         #endregion
 
-        private Action<TEntity> CreateSetter<TEntity>()
-        {
-            ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
-            //ParameterExpression parameter = Expression.Parameter( typeof( TProperty ), "param" );
+        //private Action<TEntity> CreateSetter<TEntity>()
+        //{
+        //    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
+        //    //ParameterExpression parameter = Expression.Parameter( typeof( TProperty ), "param" );
 
-            var body = Expression.Call( instance, PropertyInfo.GetSetMethod() );
-            // parameters = new ParameterExpression[] { instance, parameter };
+        //    var body = Expression.Call( instance, MethodInfo.GetSetMethod() );
+        //    // parameters = new ParameterExpression[] { instance, parameter };
 
-            return Expression.Lambda<Action<TEntity>>( body ).Compile();
-        }
+        //    return Expression.Lambda<Action<TEntity>>( body ).Compile();
+        //}
     }
 }

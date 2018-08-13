@@ -11,5 +11,6 @@ namespace Achilles.Entities.Mapping
         PropertyInfo PropertyInfo { get; }
 
         string Name { get; }
+
     }
 }

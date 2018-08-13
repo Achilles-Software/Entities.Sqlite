@@ -1,6 +1,16 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
 
-using Achilles.Entities.Helpers;
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
+
+using Achilles.Entities.Reflection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +19,14 @@ using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Mapping.Builders
+namespace Achilles.Entities.Relational.Modelling.Mapping.Builders
 {
     public class EntityMappingBuilder<TEntity> : IEntityMappingBuilder<TEntity> where TEntity : class
     {
-        private readonly List<IPropertyMappingBuilder> _propertyMappingBuilders = new List<IPropertyMappingBuilder>();
+        private readonly List<IColumnMappingBuilder> _columnMappingBuilders = new List<IColumnMappingBuilder>();
         private readonly List<IIndexMappingBuilder> _indexMappingBuilders = new List<IIndexMappingBuilder>();
-        private readonly List<IAssociationMappingBuilder> _relationshipMappingBuilders = new List<IAssociationMappingBuilder>();
+        private readonly List<IHasManyMappingBuilder> _hasManyMappingBuilders = new List<IHasManyMappingBuilder>();
+        private readonly List<IHasOneMappingBuilder<TEntity>> _hasOneMappingBuilders = new List<IHasOneMappingBuilder<TEntity>>();
 
         public EntityMappingBuilder()
         {
@@ -24,29 +35,31 @@ namespace Achilles.Entities.Mapping.Builders
 
         protected virtual IEntityMapping CreateEntityMapping() => new EntityMapping<TEntity>();
 
-        protected virtual IPropertyMappingBuilder CreatePropertyMappingBuilder( PropertyInfo propertyInfo ) => new PropertyMappingBuilder( propertyInfo );
+        protected virtual IColumnMappingBuilder CreateColumnMappingBuilder( MemberInfo propertyOrFieldInfo ) => new ColumnMappingBuilder( propertyOrFieldInfo );
 
         public IEntityMapping EntityMapping { get; }
 
-        public IPropertyMappingBuilder Property( Expression<Func<TEntity, object>> mapping )
+        public IColumnMappingBuilder Column( Expression<Func<TEntity, object>> columnMapping )
         {
             // Resolve property info from expression and guard against duplicate mappings.
-            var propertyInfo = (PropertyInfo)ReflectionHelper.GetMemberInfo( mapping );
+            var memberInfo = ReflectionHelper.GetMemberInfo( columnMapping );
 
-            if ( _propertyMappingBuilders.Any( builder => builder.Property == propertyInfo ) )
-            {
-                throw new Exception( $"Duplicate mapping detected. Property '{propertyInfo.Name}' is already mapped." );
-            }
+            //var propertyInfo = (PropertyInfo)ReflectionHelper.GetMemberInfo( columnMapping );
+
+            //if ( _columnMappingBuilders.Any( builder => builder.MemberInfo == propertyInfo ) )
+            //{
+            //    throw new Exception( $"Duplicate mapping detected. Property '{propertyInfo.Name}' is already mapped." );
+            //}
 
             // Create a mapping builder from the property info and assign it to the entity mapping.
-            var propertyMappingBuilder = CreatePropertyMappingBuilder( propertyInfo );
-            _propertyMappingBuilders.Add( propertyMappingBuilder );
+            var columnMappingBuilder = CreateColumnMappingBuilder( memberInfo );
+            _columnMappingBuilders.Add( columnMappingBuilder );
 
             // Return mapping builder for chaining
-            return propertyMappingBuilder;
+            return columnMappingBuilder;
         }
 
-        public IIndexMappingBuilder Index( Expression<Func<TEntity, object>> mapping )
+        public IIndexMappingBuilder HasIndex( Expression<Func<TEntity, object>> mapping )
         {
             // Resolve property info from expression and guard against duplicate mappings.
             var propertyInfo = (PropertyInfo)ReflectionHelper.GetMemberInfo( mapping );
@@ -62,7 +75,25 @@ namespace Achilles.Entities.Mapping.Builders
             return indexMappingBuilder;
         }
 
-        public IAssociationMappingBuilder Relationship( Expression<Func<TEntity, object>> mapping )
+        public IHasManyMappingBuilder HasMany( Expression<Func<TEntity, object>> mapping )
+        {
+            // TODO:
+
+            // Resolve property info from expression and guard against duplicate mappings.
+            //var propertyInfo = (PropertyInfo)ReflectionHelper.GetMemberInfo( mapping );
+
+            //if ( _relationshipMappingBuilders.Any( builder => builder.Property == propertyInfo ) )
+            //{
+            //    throw new Exception( $"Duplicate mapping detected. Property '{propertyInfo.Name}' is already mapped." );
+            //}
+
+            var hasManyRelationshipMappingBuilder = new HasManyMappingBuilder();
+            _hasManyMappingBuilders.Add( hasManyRelationshipMappingBuilder );
+
+            return hasManyRelationshipMappingBuilder;
+        }
+
+        public IHasOneMappingBuilder<TEntity> HasOne( Expression<Func<TEntity, object>> mapping )
         {
             // FIXME:
 
@@ -74,10 +105,10 @@ namespace Achilles.Entities.Mapping.Builders
             //    throw new Exception( $"Duplicate mapping detected. Property '{propertyInfo.Name}' is already mapped." );
             //}
 
-            var relationshipMappingBuilder = new RelationshipMappingBuilder();
-            _relationshipMappingBuilders.Add( relationshipMappingBuilder );
+            var hasOneRelationshipMappingBuilder = new HasOneMappingBuilder<TEntity>();
+            _hasOneMappingBuilders.Add( hasOneRelationshipMappingBuilder );
 
-            return relationshipMappingBuilder;
+            return hasOneRelationshipMappingBuilder;
         }
 
         public void IsCaseSensitive( bool caseSensitive ) => EntityMapping.IsCaseSensitive = caseSensitive;
@@ -86,20 +117,20 @@ namespace Achilles.Entities.Mapping.Builders
 
         public IEntityMapping Build()
         {
-            var propertyMaps = _propertyMappingBuilders.Select( b => b.Build() ).ToList();
+            var columnMappings = _columnMappingBuilders.Select( b => b.Build() ).ToList();
 
-            // Add or update the properties in the EntityMapping
-            foreach ( var propertyMap in propertyMaps )
+            // Add or update the column in the EntityMapping
+            foreach ( var columnMapping in columnMappings )
             {
-                var propertyMappingIndex = EntityMapping.PropertyMappings.FindIndex( p => p.PropertyName == propertyMap.PropertyName );
+                var propertyMappingIndex = EntityMapping.ColumnMappings.FindIndex( p => p.MemberName == columnMapping.MemberName );
 
                 if ( propertyMappingIndex >= 0 )
                 {
-                    EntityMapping.PropertyMappings[ propertyMappingIndex ] = propertyMap;
+                    EntityMapping.ColumnMappings[ propertyMappingIndex ] = columnMapping;
                 }
                 else
                 {
-                    EntityMapping.PropertyMappings.Add( propertyMap );
+                    EntityMapping.ColumnMappings.Add( columnMapping );
                 }
             }
 
@@ -107,10 +138,9 @@ namespace Achilles.Entities.Mapping.Builders
             var indexMappings = _indexMappingBuilders.Select( b => b.Build() ).ToList();
             EntityMapping.IndexMappings.AddRange( indexMappings );
 
-            // Add relatinship mappings
-            // TODO:
-            //var relationshipMappings = _relationshipMappingBuilders.Select( b => b.Build() ).ToList();
-            //EntityMapping.RelationshipMappings.AddRange( relationshipMappings );
+            // Add association mappings
+            var hasManyMappings = _hasManyMappingBuilders.Select( b => b.Build() ).ToList();
+            EntityMapping.ForeignKeyMappings.AddRange( hasManyMappings );
 
             return EntityMapping;
         }

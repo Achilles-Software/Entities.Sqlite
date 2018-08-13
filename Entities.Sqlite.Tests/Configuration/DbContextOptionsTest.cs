@@ -17,7 +17,7 @@ namespace Entities.Sqlite.Tests
         [Fact]
         public void Options_with_command_timeout()
         {
-            var optionsBuilder = new DbContextOptionsBuilder();
+            var optionsBuilder = new DataContextOptionsBuilder();
             optionsBuilder.UseSqlite( "Database=TestDb", o => o.CommandTimeout( 45 ) );
 
             var options = optionsBuilder.Options as SqliteOptions;
@@ -33,7 +33,7 @@ namespace Entities.Sqlite.Tests
 
             var ex = Assert.Throws<ArgumentOutOfRangeException>( () =>
             {
-                var optionsBuilder = new DbContextOptionsBuilder();
+                var optionsBuilder = new DataContextOptionsBuilder();
                 optionsBuilder.UseSqlite( "Database=test.db", o => o.CommandTimeout( commandTimeout ) );
             } );
 
@@ -47,7 +47,7 @@ namespace Entities.Sqlite.Tests
 
             var ex = Assert.Throws<ArgumentException>( () =>
             {
-                var optionsBuilder = new DbContextOptionsBuilder<TestDbContext>().UseSqlite( connectionString );
+                var optionsBuilder = new DataContextOptionsBuilder<TestDataContext>().UseSqlite( connectionString );
 
                 // var context = new TestDbContext( optionsBuilder.Options );
             } );
@@ -62,7 +62,7 @@ namespace Entities.Sqlite.Tests
 
             var ex = Assert.Throws<ArgumentException>( () =>
             {
-                var options = new DbContextOptionsBuilder<TestDbContext>().UseSqlite( connectionString ).Options;
+                var options = new DataContextOptionsBuilder<TestDataContext>().UseSqlite( connectionString ).Options;
 
                 //new TestDbContext( options );
             } );
@@ -77,7 +77,7 @@ namespace Entities.Sqlite.Tests
 
             var ex = Assert.Throws<ArgumentNullException>( () =>
             {
-                var options = new DbContextOptionsBuilder<TestDbContext>().UseSqlite( connection ).Options;
+                var options = new DataContextOptionsBuilder<TestDataContext>().UseSqlite( connection ).Options;
             } );
 
             Assert.StartsWith( "Value cannot be null.", ex.Message );

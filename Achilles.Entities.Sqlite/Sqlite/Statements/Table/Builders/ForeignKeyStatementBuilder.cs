@@ -1,6 +1,7 @@
 ﻿#region Namespaces
 
 using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace Achilles.Entities.Sqlite.Statements.Table
 {
     internal class ForeignKeyStatementBuilder : ISqlStatementBuilder<ColumnStatementCollection>
     {
-        private readonly IEnumerable<SqliteAssociationType> associationTypes;
+        private readonly IEnumerable<IForeignKeyMapping> _foreignKeyMappings;
 
-        public ForeignKeyStatementBuilder( IEnumerable<SqliteAssociationType> associationTypes )
+        public ForeignKeyStatementBuilder( IEnumerable<IForeignKeyMapping> foreignKeyMappings )
         {
-            this.associationTypes = associationTypes;
+            _foreignKeyMappings = foreignKeyMappings;
         }
 
         public ColumnStatementCollection BuildStatement()
@@ -27,14 +28,14 @@ namespace Achilles.Entities.Sqlite.Statements.Table
 
         private IEnumerable<ForeignKeyStatement> GetForeignKeyStatements()
         {
-            foreach ( var associationType in associationTypes )
+            foreach ( var foreignKeyMapping in _foreignKeyMappings )
             {
                 yield return new ForeignKeyStatement
                 {
-                    ForeignKey = associationType.ForeignKey,
-                    ForeignTable = associationType.FromTableName,
-                    ForeignPrimaryKey = associationType.ForeignPrimaryKey,
-                    CascadeDelete = associationType.CascadeDelete
+                    //ForeignKey = foreignKeyMapping.ForeignKey,
+                    //ForeignTable = foreignKeyMapping.FromTableName,
+                    //ForeignPrimaryKey = foreignKeyMapping.ForeignPrimaryKey,
+                    //CascadeDelete = foreignKeyMapping.CascadeDelete
                 };
             }
         }

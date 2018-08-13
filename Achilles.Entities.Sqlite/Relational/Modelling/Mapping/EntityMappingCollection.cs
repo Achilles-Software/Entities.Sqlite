@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using System;
 using System.Collections;
@@ -7,7 +17,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Relational.Modelling.Mapping
 {
     /// <summary>
     /// Collection class for entity mappings. 
@@ -22,26 +32,26 @@ namespace Achilles.Entities.Mapping
 
         #region Public Methods
 
-        public IEntityMapping GetMapping( Type entityType )
+        public IEntityMapping GetOrAddMapping( Type entityType )
         {
-            IEntityMapping map;
+            IEntityMapping mapping;
 
-            if ( !_EntityMappings.TryGetValue( entityType, out map ) )
+            if ( !_EntityMappings.TryGetValue( entityType, out mapping ) )
             {
                 var EntityMappingType = typeof( EntityMapping<> );
                 var mapType = EntityMappingType.MakeGenericType( entityType );
 
-                map = Activator.CreateInstance( mapType ) as IEntityMapping;
+                mapping = Activator.CreateInstance( mapType ) as IEntityMapping;
 
-                _EntityMappings[ entityType ] = map;
+                _EntityMappings[ entityType ] = mapping;
             }
 
-            return map;
+            return mapping;
         }
 
         public IEntityMapping GetMapping<TEntity>() where TEntity : class
         {
-            return GetMapping( typeof( TEntity ) );
+            return GetOrAddMapping( typeof( TEntity ) );
         }
 
         #endregion

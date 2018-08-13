@@ -5,29 +5,39 @@ using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Relational.Modelling.Mapping
 {
-    public interface IPropertyMapping
+    /// <summary>
+    /// Represents an entity column mapping.
+    /// </summary>
+    public interface IColumnMapping
     {
         /// <summary>
-        /// Gets the <see cref="PropertyInfo"/> metadata.
+        /// Gets the <see cref="MemberInfo"/> metadata.
         /// </summary>
-        PropertyInfo PropertyInfo { get; }
+        MemberInfo MemberInfo { get; }
+
+        bool IsPropertyMember { get; }
 
         /// <summary>
-        /// Gets the property name obtained from the <see cref="PropertyInfo"/>.
+        /// Gets the backing method name obtained from the <see cref="MemberInfo"/>.
         /// </summary>
-        string PropertyName { get; }
+        string MemberName { get; }
 
         /// <summary>
-        /// Gets the property <see cref="Type"/> obtained from the <see cref="PropertyInfo"/>.
+        /// Gets the method <see cref="Type"/> obtained from the <see cref="MemberInfo"/>.
         /// </summary>
-        Type PropertyType { get; }
+        Type MemberType { get; }
 
+        /// <summary>
+        /// Gets the flag indicating that the property is a mapped to a database column.
+        /// </summary>
+        bool IsColumn { get; }
+        
         /// <summary>
         /// Gets or sets the column type.
         /// </summary>
-        string ColumnType { get; set; }
+        string ColumnType { get; }
 
         /// <summary>
         /// Gets or sets the column name.

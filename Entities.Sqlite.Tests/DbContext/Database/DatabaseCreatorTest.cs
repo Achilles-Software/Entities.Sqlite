@@ -15,9 +15,9 @@ namespace Entities.Sqlite.Tests
         public void DatabaseCreator_CreateIfNotExists_ExistsAndHasTables()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var result = context.Database.Connection.DbConnection.Database;
                 Assert.Equal( "main", result );

@@ -11,14 +11,14 @@ namespace Achilles.Entities.Relational.Linq.ExpressionVisitors
     {
         #region Constructor(s)
 
-        public OrderByExpressionVisitor(DbContext dbContext, SqlParameterCollection parameters )
+        public OrderByExpressionVisitor(DataContext dbContext, SqlParameterCollection parameters )
             : base( dbContext,parameters )
         {
         }
 
         #endregion
 
-        public static string GetStatement( DbContext dbContext, SqlParameterCollection parameters, Expression expression, OrderingDirection orderingDirection )
+        public static string GetStatement( DataContext dbContext, SqlParameterCollection parameters, Expression expression, OrderingDirection orderingDirection )
         {
             var expressionVisitor = new OrderByExpressionVisitor( dbContext, parameters );
             expressionVisitor.Visit( expression );

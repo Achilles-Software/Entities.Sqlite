@@ -1,24 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Entities.Sqlite.Tests.Data
 {
     public class Product
     {
-        public Product()
-        {
-            //Categories = new HashSet<Category>();
-        }
+        //public Product()
+        //{
+        //    //Orders = new HashSet<Order>();
+        //}
 
+        /// <summary>
+        /// Gets or sets the order id. Primary key.
+        /// </summary>
         public int Id { get; set; }
+
         public string Name { get; set; }
+
         public double Price { get; set; }
+
         public string Salutation { get; set; }
 
-        //public virtual HashSet<Category> Categories {get; set;}
+        //public int OrderId { get; set; }
 
-        //public int CategoryId { get; set; }
-        //public Category Category { get; set; }
+        /// <summary>
+        /// Gets or sets the SupplierId. Foreign key. Not Required.
+        /// </summary>
+        //public int SupplierId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the supplier entity.
+        /// </summary>
+        //public virtual Supplier Supplier { get; set; }
     }
 }

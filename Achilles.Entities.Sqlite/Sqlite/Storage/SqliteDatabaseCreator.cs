@@ -21,7 +21,7 @@ namespace Achilles.Entities.Sqlite.Storage
 
         #region Constructor(s)
 
-        public SqliteDatabaseCreator( IDbContextService dbContext, IRelationalConnection connection )
+        public SqliteDatabaseCreator( IDataContextService dbContext, IRelationalConnection connection )
             : base( dbContext )
         {
             _connection = connection as SqliteRelationalConnection;

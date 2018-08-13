@@ -24,31 +24,33 @@ using System.Threading.Tasks;
 namespace Achilles.Entities
 {
     /// <summary>
-    /// Represents a database table.
+    /// Represents the set of queryable entities of a specific type stored in a database table.
     /// </summary>
     /// <typeparam name="TEntity">The type of entities stored in the database table.</typeparam>
-    public class Entity<TEntity> : IQueryable<TEntity>
+    public class EntitySet<TEntity> : IQueryable<TEntity>, IEntitySet
         where TEntity : class
     {
         #region Fields
 
-        private readonly DbContext _context;
+        private readonly DataContext _context;
         private EntityQueryable<TEntity> _entityQueryable;
 
         #endregion
 
         #region Constructor(s)
 
-        public Entity( DbContext context )
+        public EntitySet( DataContext context )
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException( nameof( context ) );
+
+            _context.AddEntitySet( this );
         }
 
         #endregion
 
         #region Public Properties
 
-        public DbContext DbContext => _context;
+        public DataContext DataContext => _context;
 
         #endregion
 
@@ -100,5 +102,7 @@ namespace Achilles.Entities
         IEnumerator IEnumerable.GetEnumerator() => EntityQueryable.GetEnumerator();
 
         #endregion
+
+
     }
 }

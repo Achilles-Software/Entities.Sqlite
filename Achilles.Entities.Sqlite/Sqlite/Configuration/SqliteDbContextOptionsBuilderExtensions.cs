@@ -27,8 +27,8 @@ namespace Achilles.Entities.Sqlite.Configuration
         //    => (DbContextOptionsBuilder<TContext>)UseSqlite(
         //        (DbContextOptionsBuilder)optionsBuilder, connection, sqliteOptionsAction );
 
-        public static DbContextOptionsBuilder UseSqlite(
-            this DbContextOptionsBuilder optionsBuilder,
+        public static DataContextOptionsBuilder UseSqlite(
+            this DataContextOptionsBuilder optionsBuilder,
             string connectionString,
             Action<SqliteDbContextOptionsBuilder> sqliteOptionsAction = null )
         {
@@ -50,8 +50,8 @@ namespace Achilles.Entities.Sqlite.Configuration
             return optionsBuilder;
         }
 
-        public static DbContextOptionsBuilder UseSqlite(
-            this DbContextOptionsBuilder optionsBuilder,
+        public static DataContextOptionsBuilder UseSqlite(
+            this DataContextOptionsBuilder optionsBuilder,
             DbConnection connection,
             Action<SqliteDbContextOptionsBuilder> sqliteOptionsAction = null )
         {

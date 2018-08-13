@@ -11,12 +11,12 @@ namespace Achilles.Entities.Relational.Linq.ExpressionVisitors
 {
     public class SelectExpressionVisitor : SqlExpressionVisitor
     {
-        public SelectExpressionVisitor( DbContext dbContext, SqlParameterCollection parameters )
+        public SelectExpressionVisitor( DataContext dbContext, SqlParameterCollection parameters )
             : base( dbContext, parameters )
         {
         }
 
-        public static string GetStatement( DbContext dbContext, SqlParameterCollection parameters, Expression expression )
+        public static string GetStatement( DataContext dbContext, SqlParameterCollection parameters, Expression expression )
         {
             var expressionVisitor = new SelectExpressionVisitor( dbContext, parameters );
 
@@ -27,7 +27,7 @@ namespace Achilles.Entities.Relational.Linq.ExpressionVisitors
 
         protected override Expression VisitQuerySourceReference( QuerySourceReferenceExpression expression )
         {
-            var EntityMapping = _dbContext.Model.EntityMappings.GetMapping( expression.ReferencedQuerySource.ItemType );
+            var EntityMapping = _dbContext.Model.EntityMappings.GetOrAddMapping( expression.ReferencedQuerySource.ItemType );
 
             Statement.AppendEnumerable( 
                 expression.ReferencedQuerySource.ItemType.GetProperties().Select( p => p.Name ), 

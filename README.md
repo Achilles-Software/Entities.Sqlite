@@ -9,9 +9,9 @@ Entities.Sqlite is currently in alpha stage development. We have published this 
 If you are willing to contribute to this repo by beta testing, please add a comment to the [Beta Testing Issue](https://github.com/achilles-software/entities.sqlite/issues/4)
 
 # Features
-* Linq provider for entity queries
-* Fluent interface for configuring entity mappings
+* Code First fluent API for database modelling
 * Database creation from entity model
+* Linq provider for entity queries
 
 # Getting Started
 Please review the included sample Todo App to help you get started with developing your mobile app with Entities.Sqlite.

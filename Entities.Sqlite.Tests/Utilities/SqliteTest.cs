@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Sqlite.Tests.Utilities
 {
-    public class SqliteTest<TContext> : IDisposable where TContext : DbContext
+    public class SqliteTest<TContext> : IDisposable where TContext : DataContext
     {
         public const int CommandTimeout = 30;
         public string Name { get; }
@@ -38,7 +38,7 @@ namespace Entities.Sqlite.Tests.Utilities
 
             Connection = new SqliteConnection( ConnectionString );
 
-            services = services.AddDbContext<TContext>( options =>
+            services = services.AddDataContext<TContext>( options =>
                 options.UseSqlite( Connection ),
                 ServiceLifetime.Transient, ServiceLifetime.Singleton );
 
@@ -62,7 +62,7 @@ namespace Entities.Sqlite.Tests.Utilities
 
         public DbTransaction BeginTransaction() => Connection.BeginTransaction();
 
-        public void Clean( DbContext context )
+        public void Clean( DataContext context )
         { 
             //=> context.Database.EnsureClean();
         }

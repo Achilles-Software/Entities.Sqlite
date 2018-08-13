@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Relational.Modelling.Mapping
 {
     public class IndexMapping : IIndexMapping
     {

@@ -14,13 +14,13 @@ namespace Achilles.Entities.Storage
     {
         #region Fields
 
-        protected IDbContextService _dbContext;
+        protected IDataContextService _dbContext;
 
         #endregion
 
         #region Constructor(s)
 
-        protected RelationalDatabaseCreator( IDbContextService dbContext )
+        protected RelationalDatabaseCreator( IDataContextService dbContext )
         {
             _dbContext = dbContext ?? throw new ArgumentNullException( "dbContext" );
         }

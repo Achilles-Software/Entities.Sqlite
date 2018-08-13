@@ -34,7 +34,7 @@ namespace Achilles.Entities.Storage
 
         #region Constructor(s)
 
-        protected RelationalConnection( IDbContextService dbContext )
+        protected RelationalConnection( IDataContextService dbContext )
         {
             var options = dbContext.Instance.Options as IRelationalOptions;
 

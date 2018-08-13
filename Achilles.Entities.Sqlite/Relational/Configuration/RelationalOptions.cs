@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using Achilles.Entities.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +19,7 @@ using System.Data.Common;
 
 namespace Achilles.Entities.Relational.Configuration
 {
-    public abstract class RelationalOptions : DbContextOptions, IRelationalOptions
+    public abstract class RelationalOptions : DataContextOptions, IRelationalOptions
     {
         private string _connectionString;
         private DbConnection _connection;

@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using Achilles.Entities.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,12 +21,12 @@ namespace Achilles.Entities
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddDbContext<TContext>(
+        public static IServiceCollection AddDataContext<TContext>(
             this IServiceCollection serviceCollection,
-            Action<DbContextOptionsBuilder<TContext>> optionsAction,
+            Action<DataContextOptionsBuilder<TContext>> optionsAction,
             ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
             ServiceLifetime optionsLifetime = ServiceLifetime.Scoped )
-            where TContext : DbContext
+            where TContext : DataContext
         {
             if ( serviceCollection == null )
             {
@@ -30,14 +40,14 @@ namespace Achilles.Entities
 
             serviceCollection.TryAdd(
                 new ServiceDescriptor(
-                    typeof( DbContextOptions<TContext> ),
-                    p => DbContextOptionsFactory<TContext>( p, optionsAction ),
+                    typeof( DataContextOptions<TContext> ),
+                    p => DataContextOptionsFactory<TContext>( p, optionsAction ),
                     optionsLifetime ) );
 
             serviceCollection.Add(
                 new ServiceDescriptor(
-                    typeof( DbContextOptions ),
-                    p => p.GetRequiredService<DbContextOptions<TContext>>(),
+                    typeof( DataContextOptions ),
+                    p => p.GetRequiredService<DataContextOptions<TContext>>(),
                     optionsLifetime ) );
 
             serviceCollection.TryAdd( new ServiceDescriptor( typeof( TContext ), typeof( TContext ), contextLifetime ) );
@@ -45,13 +55,13 @@ namespace Achilles.Entities
             return serviceCollection;
         }
 
-        private static DbContextOptions<TContext> DbContextOptionsFactory<TContext>(
+        private static DataContextOptions<TContext> DataContextOptionsFactory<TContext>(
             IServiceProvider applicationServiceProvider,
-            Action<DbContextOptionsBuilder<TContext>> optionsAction )
-            where TContext : DbContext
+            Action<DataContextOptionsBuilder<TContext>> optionsAction )
+            where TContext : DataContext
         {
-            var builder = new DbContextOptionsBuilder<TContext>(
-                new DbContextOptions<TContext>() );
+            var builder = new DataContextOptionsBuilder<TContext>(
+                new DataContextOptions<TContext>() );
 
             optionsAction?.Invoke( builder );
 

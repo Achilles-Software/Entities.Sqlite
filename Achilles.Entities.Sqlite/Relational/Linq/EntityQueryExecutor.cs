@@ -1,12 +1,13 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Storage;
 using Remotion.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System;
+using Achilles.Entities.Mapping;
 
 #endregion
 
@@ -16,7 +17,7 @@ namespace Achilles.Entities.Relational.Linq
     {
         #region Private Fields
 
-        private readonly DbContext _context;
+        private readonly DataContext _context;
         private readonly IRelationalConnection _connection;
         private readonly IDbTransaction _transaction;
 
@@ -24,7 +25,7 @@ namespace Achilles.Entities.Relational.Linq
 
         #region Constructor(s)
 
-        public EntityQueryExecutor( DbContext context )
+        public EntityQueryExecutor( DataContext context )
         {
             _context = context;
             _connection = context.Database.Connection;

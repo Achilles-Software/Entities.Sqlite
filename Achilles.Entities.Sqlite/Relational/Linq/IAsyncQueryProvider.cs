@@ -11,7 +11,7 @@ namespace Achilles.Entities.Relational.Linq
 {
     public interface IAsyncQueryProvider : IQueryProvider
     {
-        DbContext Context { get; }
+        DataContext Context { get; }
 
         Task<TResult> ExecuteAsync<TResult>( Expression expression, CancellationToken cancellationToken );
     }

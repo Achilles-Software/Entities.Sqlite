@@ -8,22 +8,22 @@
 
 #endregion
 
-#region Namespaces
-
-using Microsoft.Extensions.DependencyInjection;
-
-#endregion
-
 namespace Achilles.Entities.Configuration
 {
-    public abstract class DbContextOptions
+    public class DataContextOptions<TContext> : DataContextOptions where TContext : DataContext
     {
-        public DbContextOptions()
+        #region Contructor(s)
+
+        public DataContextOptions()
         {
         }
 
-        internal virtual void AddServices( IServiceCollection services )
-        {
-        }
+        #endregion
+
+        #region Properties
+
+        public DataContextOptions Options { get; internal set; }
+
+        #endregion
     }
 }

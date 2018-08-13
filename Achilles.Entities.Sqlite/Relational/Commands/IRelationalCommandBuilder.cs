@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 
 #endregion
 

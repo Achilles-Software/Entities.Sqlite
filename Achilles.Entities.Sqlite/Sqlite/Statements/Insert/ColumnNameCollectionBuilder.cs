@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using Achilles.Entities.Sqlite.Statements.Common;
 using System.Collections.Generic;
@@ -19,8 +19,8 @@ namespace Achilles.Entities.Sqlite.Statements.Insert
             _entityMapping = entityMapping;
         }
 
-        private IEnumerable<IPropertyMapping> Properties => _entityMapping.PropertyMappings.Where( p => !p.IsKey ).ToList();
-        private IEnumerable<IPropertyMapping> KeyMembers => _entityMapping.PropertyMappings.Where(p => p.IsKey ).ToList();
+        private IEnumerable<IColumnMapping> Properties => _entityMapping.ColumnMappings.Where( p => !p.IsKey ).ToList();
+        private IEnumerable<IColumnMapping> KeyMembers => _entityMapping.ColumnMappings.Where(p => p.IsKey ).ToList();
 
         public ColumnNameStatementCollection BuildStatement()
         {

@@ -15,7 +15,7 @@ namespace Achilles.Entities.Relational.Linq
     {
         #region Constructor(s)
 
-        public EntityQueryable( DbContext context )
+        public EntityQueryable( DataContext context )
             : base( new EntityQueryProvider( context, typeof( EntityQueryable<> ), QueryParser.CreateDefault(), new EntityQueryExecutor( context ) ) )
         {
         }

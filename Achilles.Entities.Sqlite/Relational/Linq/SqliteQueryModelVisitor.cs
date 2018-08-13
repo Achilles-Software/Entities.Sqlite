@@ -17,7 +17,7 @@ namespace Achilles.Entities.Relational.Linq
     {
         #region Fields
 
-        private readonly DbContext _context;
+        private readonly DataContext _context;
 
         private SqlParameterCollection _parameters;
 
@@ -32,7 +32,7 @@ namespace Achilles.Entities.Relational.Linq
 
         #endregion
 
-        public SqliteQueryModelVisitor( DbContext context )
+        public SqliteQueryModelVisitor( DataContext context )
         {
             _context = context;
 
@@ -69,7 +69,7 @@ namespace Achilles.Entities.Relational.Linq
         {
             string fromTableName = fromClause.ItemType.Name;
 
-            var EntityMapping = _context.Model.EntityMappings.GetMapping( fromClause.ItemType );
+            var EntityMapping = _context.Model.EntityMappings.GetOrAddMapping( fromClause.ItemType );
 
             if ( !string.IsNullOrEmpty( EntityMapping.TableName ) )
             {

@@ -10,7 +10,7 @@ namespace Achilles.Entities.Sqlite.Configuration
 {
     public class SqliteDbContextOptionsBuilder : RelationalDbContextOptionsBuilder<SqliteDbContextOptionsBuilder, SqliteOptions>
     {
-        public SqliteDbContextOptionsBuilder( DbContextOptionsBuilder optionsBuilder )
+        public SqliteDbContextOptionsBuilder( DataContextOptionsBuilder optionsBuilder )
             : base( optionsBuilder )
         {
         }

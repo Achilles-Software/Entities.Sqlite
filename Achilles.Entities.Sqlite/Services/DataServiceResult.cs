@@ -1,13 +1,10 @@
 ﻿#region Copyright Notice
 
-// Copyright (c) by Achilles Software, http://achilles-software.com
+// Copyright (c) by Achilles Software, All rights reserved.
 //
-// The source code contained in this file may not be copied, modified, distributed or
-// published by any means without the express written agreement by Achilles Software.
+// Licensed under the MIT License. See License.txt in the project root for license information.
 //
-// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
-//
-// All rights reserved.
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
 
 #endregion
 
@@ -17,7 +14,7 @@ using System;
 
 #endregion
 
-namespace Entities.Sqlite.Tests.Data
+namespace Achilles.Entities.Services
 {
     /// <summary>
     /// Data service layer API call result.

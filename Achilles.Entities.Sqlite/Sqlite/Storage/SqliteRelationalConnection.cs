@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational;
 using Achilles.Entities.Sqlite.Statements.Insert;
 using Achilles.Entities.Storage;
@@ -31,7 +31,7 @@ namespace Achilles.Entities.Sqlite.Storage
 
         #region Constructor(s)
 
-        public SqliteRelationalConnection( IDbContextService dbContext )
+        public SqliteRelationalConnection( IDataContextService dbContext )
             : base( dbContext )
         {
         }

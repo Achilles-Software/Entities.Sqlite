@@ -17,39 +17,54 @@ using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Mapping.Builders
+namespace Achilles.Entities.Relational.Modelling.Mapping.Builders
 {
-    public interface IPropertyMappingBuilder
+    public interface IColumnMappingBuilder
     {
         /// <summary>
-        /// Gets a reference to the <see cref="IPropertyMapping"/> being built.
+        /// Gets a reference to the <see cref="IColumnMapping"/> being built.
         /// </summary>
-        IPropertyMapping PropertyMapping { get; }
+        IColumnMapping ColumnMapping { get; }
 
         /// <summary>
         /// Gets the <see cref="PropertyInfo"/> instance associated with this builder.
         /// </summary>
-        PropertyInfo Property { get; }
+        MemberInfo MemberInfo { get; }
 
         /// <summary>
         /// Specifies the column name for this property.
         /// </summary>
         /// <param name="columnName">The name of the column in the underlying data store.</param>
-        /// <returns>This <see cref="IPropertyMappingBuilder"/> instance.</returns>
-        IPropertyMappingBuilder ToColumn( string columnName );
+        /// <returns>This <see cref="IColumnMappingBuilder"/> instance.</returns>
+        IColumnMappingBuilder ToColumn( string columnName );
 
-        IPropertyMappingBuilder IsKey();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>This <see cref="IColumnMappingBuilder"/> instance.</returns>
+        IColumnMappingBuilder IsKey();
 
-        IPropertyMappingBuilder IsRequired();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>This <see cref="IColumnMappingBuilder"/> instance.</returns>
+        IColumnMappingBuilder IsRequired();
 
-        IPropertyMappingBuilder IsUnique();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>This <see cref="IColumnMappingBuilder"/> instance.</returns>
+        IColumnMappingBuilder IsUnique();
 
+        /// <summary>
+        /// 
+        /// </summary>
         void Ignore();
         
         /// <summary>
-        /// Builds the <see cref="IPropertyMapping"/> instance from this builder instance.
+        /// Builds the <see cref="IColumnMapping"/> instance from this builder instance.
         /// </summary>
-        /// <returns>A <see cref="IPropertyMapping"/> instance.</returns>
-        IPropertyMapping Build();
+        /// <returns>A <see cref="IColumnMapping"/> instance.</returns>
+        IColumnMapping Build();
     }
 }

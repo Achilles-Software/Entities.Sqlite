@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -6,58 +16,58 @@ using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Mapping.Builders
+namespace Achilles.Entities.Relational.Modelling.Mapping.Builders
 {
-    public class PropertyMappingBuilder : IPropertyMappingBuilder
+    public class ColumnMappingBuilder : IColumnMappingBuilder
     {
-        public PropertyMappingBuilder( PropertyInfo propertyInfo )
+        public ColumnMappingBuilder( MemberInfo memberInfo )
         {
-            Property = propertyInfo;
-            PropertyMapping = CreatePropertyMap( propertyInfo );
+            MemberInfo = memberInfo;
+            ColumnMapping = CreateColumnMapping( memberInfo );
         }
 
-        public PropertyInfo Property { get; }
+        public MemberInfo MemberInfo { get; }
 
-        public IPropertyMapping PropertyMapping { get; }
+        public IColumnMapping ColumnMapping { get; }
 
-        protected virtual IPropertyMapping CreatePropertyMap( PropertyInfo propertyInfo ) => new PropertyMapping( propertyInfo );
+        protected virtual IColumnMapping CreateColumnMapping( MemberInfo memberInfo ) => new ColumnMapping( memberInfo );
 
-        public IPropertyMappingBuilder ToColumn( string columnName )
+        public IColumnMappingBuilder ToColumn( string columnName )
         {
-            PropertyMapping.ColumnName = columnName;
+            ColumnMapping.ColumnName = columnName;
 
             return this;
         }
 
-        public IPropertyMappingBuilder IsKey()
+        public IColumnMappingBuilder IsKey()
         {
-            PropertyMapping.IsKey = true;
+            ColumnMapping.IsKey = true;
 
             return this;
         }
 
-        public IPropertyMappingBuilder IsRequired()
+        public IColumnMappingBuilder IsRequired()
         {
-            PropertyMapping.IsRequired = true;
+            ColumnMapping.IsRequired = true;
 
             return this;
         }
 
-        public IPropertyMappingBuilder IsUnique()
+        public IColumnMappingBuilder IsUnique()
         {
-            PropertyMapping.IsUnique = true;
+            ColumnMapping.IsUnique = true;
 
             return this;
         }
 
         public void Ignore()
         {
-            PropertyMapping.Ignore = true;
+            ColumnMapping.Ignore = true;
         }
 
-        public IPropertyMapping Build()
+        public IColumnMapping Build()
         {
-            return PropertyMapping;
+            return ColumnMapping;
         }
     }
 }

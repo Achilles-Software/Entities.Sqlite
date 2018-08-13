@@ -11,6 +11,6 @@ namespace Entities.Sqlite.Tests.Utilities
     {
         public abstract IServiceCollection AddProviderServices( IServiceCollection services );
 
-        protected abstract void UseProviderOptions( DbContextOptionsBuilder optionsBuilder );
+        protected abstract void UseProviderOptions( DataContextOptionsBuilder optionsBuilder );
     }
 }

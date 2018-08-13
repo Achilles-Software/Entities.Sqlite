@@ -21,7 +21,7 @@ namespace Achilles.Entities.Relational.Linq
 
         #region Constructor(s)
 
-        public EntityQueryProvider( DbContext context, Type queryableType, IQueryParser queryParser, IQueryExecutor executor )
+        public EntityQueryProvider( DataContext context, Type queryableType, IQueryParser queryParser, IQueryExecutor executor )
           : base( queryParser, executor )
         {
             CheckQueryableType( queryableType );
@@ -33,7 +33,7 @@ namespace Achilles.Entities.Relational.Linq
 
         #endregion
 
-        public DbContext Context { get; }
+        public DataContext Context { get; }
 
         /// <summary>
         /// Gets the type of queryable created by this provider. This is the generic type definition of an implementation of <see cref="IQueryable{T}"/>

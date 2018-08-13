@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational;
 using Achilles.Entities.Relational.Statements;
 using System.Linq;
@@ -25,10 +25,10 @@ namespace Achilles.Entities.Sqlite.Statements.Delete
 
         public DeleteStatement BuildStatement()
         {
-            var keyMembers = _entityMapping.PropertyMappings.Where( p => p.IsKey ).ToList();
+            var keyMembers = _entityMapping.ColumnMappings.Where( p => p.IsKey ).ToList();
 
             var pk = keyMembers.First();
-            var pkValue = _entityMapping.GetPropertyValue( _entity, pk.PropertyName );
+            var pkValue = _entityMapping.GetPropertyValue( _entity, pk.MemberName );
 
             var pkParameter = _parameters.Add( pkValue );
 

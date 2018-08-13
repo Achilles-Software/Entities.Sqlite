@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Storage;
 using System.Data;
 
@@ -10,11 +10,11 @@ namespace Achilles.Entities.Relational.Statements
 {
     public class RelationalCommandExecutor : IRelationalCommandExecutor
     {
-        private readonly DbContext _dbContext;
+        private readonly DataContext _dbContext;
         private readonly IRelationalCommandBuilder _commandBuilder;
         private readonly IDbTransaction _transaction;
 
-        public RelationalCommandExecutor( DbContext context, IRelationalCommandBuilder commandBuilder )
+        public RelationalCommandExecutor( DataContext context, IRelationalCommandBuilder commandBuilder )
         {
             _dbContext = context;
             _commandBuilder = commandBuilder;

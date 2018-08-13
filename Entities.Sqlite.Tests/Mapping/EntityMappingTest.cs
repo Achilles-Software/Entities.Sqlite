@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Entities.Sqlite.Tests.Data;
 using System.Linq;
 using Xunit;
@@ -16,7 +16,7 @@ namespace Entities.Sqlite.Tests
         {
             string connectionString = "Data Source=test.db";
 
-            using ( var context = TestDbContext.Create( connectionString ) )
+            using ( var context = TestDataContext.Create( connectionString ) )
             {
                 // TJT: Specific test for datasource
                 //var result = context.Database.DbConnection.DataSource;
@@ -30,26 +30,26 @@ namespace Entities.Sqlite.Tests
                 var productEntityMapping = (EntityMapping<Product>)entityMapping;
                 Assert.Equal( "Products", productEntityMapping.TableName );
 
-                Assert.Equal( 4, productEntityMapping.PropertyMappings.Count );
+                Assert.Equal( 4, productEntityMapping.ColumnMappings.Count );
 
-                var idPropertyMapping = productEntityMapping.PropertyMappings.First( p => p.PropertyName == "Id" );
-                Assert.IsType<PropertyMapping>( idPropertyMapping );
+                var idPropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Id" );
+                Assert.IsType<ColumnMapping>( idPropertyMapping );
                 Assert.True( idPropertyMapping.IsKey );
 
-                var pricePropertyMapping = productEntityMapping.PropertyMappings.First( p => p.PropertyName == "Price" );
-                Assert.IsType<PropertyMapping>( pricePropertyMapping );
+                var pricePropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Price" );
+                Assert.IsType<ColumnMapping>( pricePropertyMapping );
                 Assert.False( pricePropertyMapping.IsKey );
                 Assert.True( pricePropertyMapping.IsRequired );
 
-                var salutationPropertyMapping = productEntityMapping.PropertyMappings.First( p => p.PropertyName == "Salutation" );
-                Assert.IsType<PropertyMapping>( salutationPropertyMapping );
+                var salutationPropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Salutation" );
+                Assert.IsType<ColumnMapping>( salutationPropertyMapping );
                 Assert.False( salutationPropertyMapping.IsKey );
                 Assert.Equal( "Salutation", salutationPropertyMapping.ColumnName );
                 Assert.True( salutationPropertyMapping.Ignore );
 
                 var nameIndexMapping = productEntityMapping.IndexMappings.First( p => p.PropertyName == "Name" );
                 Assert.IsType<IndexMapping>( nameIndexMapping );
-                Assert.Equal( "IX__Products_Name", nameIndexMapping.Name );
+                Assert.Equal( "IX_Products_Name", nameIndexMapping.Name );
                 Assert.True( nameIndexMapping.IsUnique );
             }
         }
@@ -59,7 +59,7 @@ namespace Entities.Sqlite.Tests
         {
             string connectionString = "Data Source=test.db";
 
-            using ( var context = TestDbContext.Create( connectionString ) )
+            using ( var context = TestDataContext.Create( connectionString ) )
             {
                 Assert.Single( context.Model.EntityMappings );
 

@@ -1,22 +1,26 @@
-﻿using Achilles.Entities.Relational.Linq;
+﻿#region Namespaces
+
+using Achilles.Entities.Relational.Linq;
+using Achilles.Entities.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+
+#endregion
 
 namespace Entities.Sqlite.Tests.Data
 {
-    public class TestDbRepository
+    public class TestRepository
     {
         #region Fields, Constants
 
-        private static TestDbContext _context;
+        private static TestDataContext _context;
 
         #endregion
 
         #region Constructor(s)
 
-        public TestDbRepository()
+        public TestRepository()
         {
             // TJT: Review this. 
             if ( _context == null )
@@ -25,10 +29,10 @@ namespace Entities.Sqlite.Tests.Data
             }
         }
 
-        public TestDbRepository( string databasePath )
+        public TestRepository( string databasePath )
         {
             // Creates or gets the database context singleton
-            _context = TestDbContext.Create( databasePath );
+            _context = TestDataContext.Create( databasePath );
         }
 
         #endregion

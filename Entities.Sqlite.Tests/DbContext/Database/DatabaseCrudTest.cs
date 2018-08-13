@@ -15,7 +15,7 @@ namespace Entities.Sqlite.Tests
 {
     public class DatabaseCrudTest
     {
-        private void InitializeContext( TestDbContext context )
+        private void InitializeContext( TestDataContext context )
         {
             var createResult = context.Database.Creator.CreateIfNotExists();
 
@@ -34,9 +34,9 @@ namespace Entities.Sqlite.Tests
         public void Database_can_insert()
         {           
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var createResult = context.Database.Creator.CreateIfNotExists();
 
@@ -60,9 +60,9 @@ namespace Entities.Sqlite.Tests
         public async Task Database_can_insert_async()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var createResult = context.Database.Creator.CreateIfNotExists();
 
@@ -84,9 +84,9 @@ namespace Entities.Sqlite.Tests
         public void Database_can_read_with_pk()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
             
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 InitializeContext( context );
 
@@ -102,9 +102,9 @@ namespace Entities.Sqlite.Tests
         public void Database_Query_CanReadList()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 InitializeContext( context );
 
@@ -121,9 +121,9 @@ namespace Entities.Sqlite.Tests
         public async Task Database_Query_CanReadListAsync()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 InitializeContext( context );
 
@@ -139,9 +139,9 @@ namespace Entities.Sqlite.Tests
         public void Database_can_update()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var createResult = context.Database.Creator.CreateIfNotExists();
 
@@ -171,9 +171,9 @@ namespace Entities.Sqlite.Tests
         public async Task Database_can_update_async()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var createResult = context.Database.Creator.CreateIfNotExists();
 
@@ -203,9 +203,9 @@ namespace Entities.Sqlite.Tests
         public void Database_can_delete_by_pk()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var createResult = context.Database.Creator.CreateIfNotExists();
 
@@ -232,9 +232,9 @@ namespace Entities.Sqlite.Tests
         public async Task Database_can_delete_by_pk_async()
         {
             const string connectionString = "Data Source=:memory:";
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var createResult = context.Database.Creator.CreateIfNotExists();
 

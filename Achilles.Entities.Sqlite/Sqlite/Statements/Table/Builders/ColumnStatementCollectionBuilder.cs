@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using Achilles.Entities.Sqlite.Statements;
 using System.Collections.Generic;
@@ -12,10 +12,10 @@ namespace Achilles.Entities.Sqlite.Statements.Table
 {
     internal class ColumnStatementCollectionBuilder : ISqlStatementBuilder<ColumnStatementCollection>
     {
-        private readonly IEnumerable<IPropertyMapping> properties;
-        private readonly IEnumerable<IPropertyMapping> keyMembers;
+        private readonly IEnumerable<IColumnMapping> properties;
+        private readonly IEnumerable<IColumnMapping> keyMembers;
 
-        public ColumnStatementCollectionBuilder( IEnumerable<IPropertyMapping> properties, IEnumerable<IPropertyMapping> keyMembers)
+        public ColumnStatementCollectionBuilder( IEnumerable<IColumnMapping> properties, IEnumerable<IColumnMapping> keyMembers)
         {
             this.properties = properties;
             this.keyMembers = keyMembers;
@@ -51,7 +51,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             }
         }
 
-        private static void AddMaxLengthConstraintIfNecessary( IPropertyMapping property, ColumnStatement columnStatement )
+        private static void AddMaxLengthConstraintIfNecessary( IColumnMapping property, ColumnStatement columnStatement )
         {
             if ( property.MaxLength.HasValue )
             {
@@ -59,7 +59,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             }
         }
 
-        private static void AdjustDatatypeForAutogenerationIfNecessary(IPropertyMapping property, ColumnStatement columnStatement)
+        private static void AdjustDatatypeForAutogenerationIfNecessary(IColumnMapping property, ColumnStatement columnStatement)
         {
             // FIXME:
 
@@ -70,7 +70,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             //}
         }
 
-        private static void AddNullConstraintIfNecessary( IPropertyMapping property, ColumnStatement columnStatement)
+        private static void AddNullConstraintIfNecessary( IColumnMapping property, ColumnStatement columnStatement)
         {
             if ( property.IsRequired ) // TJT: Review this --> && ( property.StoreGeneratedPattern != StoreGeneratedPattern.Identity ) )
             {
@@ -79,7 +79,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             }
         }
 
-        private static void AddCollationConstraintIfNecessary(IPropertyMapping property, ColumnStatement columnStatement)
+        private static void AddCollationConstraintIfNecessary(IColumnMapping property, ColumnStatement columnStatement)
         {
             // FIXME:
 
@@ -90,7 +90,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             //}
         }
 
-        private static void AddUniqueConstraintIfNecessary( IPropertyMapping property, ColumnStatement columnStatement )
+        private static void AddUniqueConstraintIfNecessary( IColumnMapping property, ColumnStatement columnStatement )
         {
             var value = property.IsUnique;
 
@@ -101,7 +101,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             }
         }
 
-        private static void AddDefaultValueConstraintIfNecessary( IPropertyMapping property, ColumnStatement columnStatement)
+        private static void AddDefaultValueConstraintIfNecessary( IColumnMapping property, ColumnStatement columnStatement)
         {
             if ( !string.IsNullOrEmpty( property.DefaultValue ) )
             {
@@ -109,7 +109,7 @@ namespace Achilles.Entities.Sqlite.Statements.Table
             }
         }
 
-        private void AddPrimaryKeyConstraintAndAdjustTypeIfNecessary(IPropertyMapping property, ColumnStatement columnStatement)
+        private void AddPrimaryKeyConstraintAndAdjustTypeIfNecessary(IColumnMapping property, ColumnStatement columnStatement)
         {
             // Only handle a single primary key this way.
 

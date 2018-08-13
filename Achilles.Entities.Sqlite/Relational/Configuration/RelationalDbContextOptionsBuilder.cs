@@ -1,6 +1,20 @@
-﻿using Achilles.Entities.Configuration;
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
+
+using Achilles.Entities.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+
+#endregion
 
 namespace Achilles.Entities.Relational.Configuration
 {
@@ -8,12 +22,12 @@ namespace Achilles.Entities.Relational.Configuration
         where TBuilder : RelationalDbContextOptionsBuilder<TBuilder, TOption>
         where TOption : RelationalOptions, new()
     {
-        protected RelationalDbContextOptionsBuilder( DbContextOptionsBuilder optionsBuilder )
+        protected RelationalDbContextOptionsBuilder( DataContextOptionsBuilder optionsBuilder )
         {
             OptionsBuilder = optionsBuilder ?? throw new ArgumentNullException( nameof( optionsBuilder ) );
         }
 
-        protected virtual DbContextOptionsBuilder OptionsBuilder { get; }
+        protected virtual DataContextOptionsBuilder OptionsBuilder { get; }
 
         public virtual TBuilder CommandTimeout( int? commandTimeout )
             => WithOption( e => (TOption)e.WithCommandTimeout( commandTimeout ) );

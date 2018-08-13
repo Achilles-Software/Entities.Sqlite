@@ -18,6 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.1</LangVersion>
     <DefineConstants>TRACE;DEBUG;USE_SQLITEPCL_RAW</DefineConstants>
+    <DocumentationFile>bin\Debug\netstandard2.0\Achilles.Entities.Sqlite.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

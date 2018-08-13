@@ -8,18 +8,16 @@
 
 #endregion
 
-namespace Achilles.Entities.Configuration
+namespace Achilles.Entities
 {
-    public class DbContextOptions<TContext> : DbContextOptions where TContext : DbContext
+    public class DataContextService : IDataContextService
     {
-        public DbContextOptions()
+        public DataContext Instance { get; private set; }
+
+        public IDataContextService Initialize( DataContext context )
         {
+            Instance = context;
+            return this;
         }
-
-        #region Properties
-
-        public DbContextOptions Options { get; internal set; }
-
-        #endregion
     }
 }

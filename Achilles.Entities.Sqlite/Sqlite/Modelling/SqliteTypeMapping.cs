@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -22,6 +32,7 @@ namespace Achilles.Entities.Mapping
 
         private static readonly Dictionary<Type, TypeMapping> _TypeMappings = new Dictionary<Type, TypeMapping>
             {
+                // ALL .NET Primitive types to sqlite types...
                 { typeof(string), _text },
                 { typeof(byte[]), _blob },
                 { typeof(bool), _integer  },
@@ -41,7 +52,7 @@ namespace Achilles.Entities.Mapping
                 { typeof(double), _real },
                 { typeof(float),_real },
                 { typeof(Guid), _blob }
-            };
+        };
 
         public static TypeMapping FindMapping( Type type )
         {

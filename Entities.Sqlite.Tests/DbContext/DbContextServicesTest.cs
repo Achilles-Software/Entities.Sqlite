@@ -20,8 +20,8 @@ namespace Entities.Sqlite.Tests
 
             var ex = Assert.Throws<ArgumentException>( () =>
             {
-                var context = new TestDbContext(
-                    new DbContextOptionsBuilder()
+                var context = new TestDataContext(
+                    new DataContextOptionsBuilder()
                         .UseSqlite( connectionString )
                         .Options );
 
@@ -36,7 +36,7 @@ namespace Entities.Sqlite.Tests
         {
             string connectionString = "Data Source=test.db";
 
-            using ( var context = TestDbContext.Create( connectionString ) )
+            using ( var context = TestDataContext.Create( connectionString ) )
             {
                 var result = context.Database.Connection.DbConnection.DataSource;
 
@@ -51,9 +51,9 @@ namespace Entities.Sqlite.Tests
 
             // FIXME: Why does the generic options fail
             //var options = new DbContextOptionsBuilder<TestDbContext>().UseSqlite( connectionString ).Options;
-            var options = new DbContextOptionsBuilder().UseSqlite( connectionString ).Options;
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = new TestDbContext( options ) )
+            using ( var context = new TestDataContext( options ) )
             {
                 var result = context.Database.Connection.DbConnection.Database;
                 Assert.Equal( "main", result );

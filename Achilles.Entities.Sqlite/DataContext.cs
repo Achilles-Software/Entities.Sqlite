@@ -13,6 +13,7 @@
 using Achilles.Entities.Configuration;
 using Achilles.Entities.Properties;
 using Achilles.Entities.Relational.Modelling;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using Achilles.Entities.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,10 @@ using System.Threading.Tasks;
 
 namespace Achilles.Entities
 {
-    public class DbContext : IDisposable
+    /// <summary>
+    /// Provides entity data services over a single database connection.  
+    /// </summary>
+    public class DataContext : IDisposable
     {
         #region Fields
 
@@ -38,9 +42,11 @@ namespace Achilles.Entities
         private IServiceProvider _serviceProvider = null;
         private IRelationalDatabase _database = null;
         private IRelationalModel _model = null;
-        private IDbContextService _contextService = null;
+        private IDataContextService _contextService = null;
         private IRelationalCommandBuilder _commandBuilder = null;
 
+        private List<IEntitySet> _entitySets = new List<IEntitySet>();
+        
         private bool _isConfiguring = false;
         private bool _isModelBuilding = false;
 
@@ -48,12 +54,19 @@ namespace Achilles.Entities
 
         #region Constructor(s)
 
-        protected DbContext()
-            : this( new DbContextOptions<DbContext>() )
+        /// <summary>
+        /// Constructs an new DataContext instance with default context options. 
+        /// </summary>
+        protected DataContext()
+            : this( new DataContextOptions<DataContext>() )
         {
         }
 
-        public DbContext( DbContextOptions options )
+        /// <summary>
+        /// Constructs a new DataContext with the provided <see cref="DataContextOptions"/>.
+        /// </summary>
+        /// <param name="options"></param>
+        public DataContext( DataContextOptions options )
         {
             Options = options ?? throw new ArgumentNullException( nameof( options ) );
         }
@@ -80,7 +93,7 @@ namespace Achilles.Entities
                 {
                     _isConfiguring = true;
 
-                    var optionsBuilder = new DbContextOptionsBuilder( Options );
+                    var optionsBuilder = new DataContextOptionsBuilder( Options );
 
                     OnConfiguring( optionsBuilder );
 
@@ -116,8 +129,14 @@ namespace Achilles.Entities
 
         #region Public Properties
 
-        public DbContextOptions Options { get; }
+        /// <summary>
+        /// Gets the data context options.
+        /// </summary>
+        public DataContextOptions Options { get; }
 
+        /// <summary>
+        /// Gets the relational database model.
+        /// </summary>
         public IRelationalModel Model
         {
             get
@@ -148,6 +167,9 @@ namespace Achilles.Entities
             }
         }
 
+        /// <summary>
+        /// Gets the relational database.
+        /// </summary>
         public IRelationalDatabase Database
         {
             get
@@ -161,32 +183,39 @@ namespace Achilles.Entities
         #region Public CRUD Methods
 
         /// <summary>
-        /// Adds an entity to the database.
+        /// Adds an entity of <typeparamref name="TEntity"/> to the database.
         /// </summary>
         /// <typeparam name="TEntity">The entity type.</typeparam>
         /// <param name="entity">The entity to add.</param>
         /// <returns>1 if the entity was added succssfully; 0 otherwise.</returns>
         public int Add<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.EntityMappings.GetMapping( typeof( TEntity ) );
+            var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
 
             var insertCommand = CommandBuilder.Build( RelationalStatementKind.Insert, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( insertCommand.Sql, insertCommand.Parameters.ToDictionary() );
 
-            var key = entityMapping.PropertyMappings.Where( p => p.IsKey ).FirstOrDefault();
+            var key = entityMapping.ColumnMappings.Where( p => p.IsKey ).FirstOrDefault();
 
             if ( key != null )
             {
                // TJT: Sqlite specific
                 var rowId = Database.Connection.LastInsertRowId();
 
-                entityMapping.SetPropertyValue( entity, key.PropertyName, rowId );
+                entityMapping.SetPropertyValue( entity, key.MemberName, rowId );
             }
 
             return result;
         }
 
+        /// <summary>
+        /// Asynchronously adds an entity of <typeparamref name="TEntity"/> to the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="entity">The entity to add.</param>
+        /// <param name="cancellationToken">The cancellaion token.</param>
+        /// <returns></returns>
         public virtual Task<int> AddAsync<TEntity>( TEntity entity, CancellationToken cancellationToken = default ) where TEntity : class
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -194,9 +223,15 @@ namespace Achilles.Entities
             return Task.FromResult( Add( entity ) );
         }
 
+        /// <summary>
+        /// Updates an entity of <typeparamref name="TEntity"/> to the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="entity">The entity to update.</param>
+        /// <returns>1 if the entity was updated succssfully; 0 otherwise.</returns>
         public int Update<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.EntityMappings.GetMapping( typeof( TEntity ) );
+            var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
 
             var updateCommand = CommandBuilder.Build( RelationalStatementKind.Update, entity, entityMapping );
 
@@ -205,6 +240,13 @@ namespace Achilles.Entities
             return result;
         }
 
+        /// <summary>
+        /// Updates an entity of <typeparamref name="TEntity"/> to the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="entity">The entity to update.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>1 if the entity was updated succssfully; 0 otherwise.</returns>
         public virtual Task<int> UpdateAsync<TEntity>( TEntity entity, CancellationToken cancellationToken = default ) where TEntity : class
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -212,9 +254,15 @@ namespace Achilles.Entities
             return Task.FromResult( Update( entity ) );
         }
 
+        /// <summary>
+        /// Deletes an entity of <typeparamref name="TEntity"/> from the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="entity">The entity to delete.</param>
+        /// <returns>1 if the entity was deleted succssfully; 0 otherwise.</returns>
         public int Delete<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.EntityMappings.GetMapping( typeof( TEntity ) );
+            var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
 
             var deleteCommand = CommandBuilder.Build( RelationalStatementKind.Delete, entity, entityMapping );
 
@@ -223,6 +271,13 @@ namespace Achilles.Entities
             return result;
         }
 
+        /// <summary>
+        /// Asynchronously deletes an entity of <typeparamref name="TEntity"/> from the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="entity">The entity to delete.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>1 if the entity was deleted succssfully; 0 otherwise.</returns>
         public virtual Task<int> DeleteAsync<TEntity>( TEntity entity, CancellationToken cancellationToken = default ) where TEntity : class
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -234,11 +289,19 @@ namespace Achilles.Entities
 
         #region Configuration 
 
-        protected internal virtual void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+        /// <summary>
+        /// Override to configure the <see cref="DataContext"/>.
+        /// </summary>
+        /// <param name="optionsBuilder">The data context options builder.</param>
+        protected internal virtual void OnConfiguring( DataContextOptionsBuilder optionsBuilder )
         {
         }
 
-        protected internal virtual void OnModelMapping( MappingConfiguration modelBuilder )
+        /// <summary>
+        /// Override to configure and build an entities database model.
+        /// </summary>
+        /// <param name="modelBuilder">A <see cref="RelationalModelBuilder"/> instance.</param>
+        protected internal virtual void OnModelBuilding( RelationalModelBuilder modelBuilder )
         {
         }
 
@@ -246,7 +309,7 @@ namespace Achilles.Entities
 
         #region Private Methods
 
-        private void InitializeServices( DbContextOptions options )
+        private void InitializeServices( DataContextOptions options )
         {
             // Each DbContext has it's own set of services and provider.
             _services = new ServiceCollection();
@@ -257,18 +320,32 @@ namespace Achilles.Entities
             _serviceProvider = _services.BuildServiceProvider();
 
             // Initialize the DbContextService for this context
-            _contextService = _serviceProvider.GetRequiredService<IDbContextService>();
+            _contextService = _serviceProvider.GetRequiredService<IDataContextService>();
             _contextService.Initialize( this );
         }
+
+        #endregion
+
+        #region Internal Methods
+
+        internal void AddEntitySet( IEntitySet entitySet )
+        {
+            _entitySets.Add( entitySet );
+        }
+
+        internal List<IEntitySet> EntitySets => _entitySets;
+
         #endregion
 
         #region Dispose Pattern
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose( true );
         }
 
+        /// <inheritdoc />
         protected void Dispose( bool disposing )
         {
             if ( disposing )

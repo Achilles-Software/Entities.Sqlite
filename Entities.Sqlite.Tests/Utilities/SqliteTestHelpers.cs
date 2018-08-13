@@ -20,7 +20,7 @@ namespace Entities.Sqlite.Tests.Utilities
         public override IServiceCollection AddProviderServices( IServiceCollection services )
             => services.AddSqliteServices();
 
-        protected override void UseProviderOptions( DbContextOptionsBuilder optionsBuilder )
+        protected override void UseProviderOptions( DataContextOptionsBuilder optionsBuilder )
             => optionsBuilder.UseSqlite( new SqliteConnection( "Data Source=:memory:" ) );
     }
 }

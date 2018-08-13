@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Mapping;
+using Achilles.Entities.Relational.Modelling.Mapping;
 using Achilles.Entities.Relational;
 using Achilles.Entities.Relational.Statements;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace Achilles.Entities.Sqlite.Statements.Update
             Parameters = updateParameters;
         }
 
-        private IEnumerable<IPropertyMapping> Properties => _entityMapping.PropertyMappings.Where( p => !p.IsKey ).ToList();
+        private IEnumerable<IColumnMapping> Properties => _entityMapping.ColumnMappings.Where( p => !p.IsKey ).ToList();
 
         public SqlParameterCollection Parameters { get; private set; }
 
@@ -38,7 +38,7 @@ namespace Achilles.Entities.Sqlite.Statements.Update
         {
             foreach ( var property in Properties )
             {
-                var propertyValue = _entityMapping.GetPropertyValue( _entity, property.PropertyName );
+                var propertyValue = _entityMapping.GetPropertyValue( _entity, property.MemberName );
 
                 var propertyParameter = Parameters.Add( propertyValue );
                 

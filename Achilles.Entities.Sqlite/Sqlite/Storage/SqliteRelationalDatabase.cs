@@ -28,7 +28,7 @@ namespace Achilles.Entities.Sqlite.Storage
         /// <param name="connection">Injected Sqlite connection service.</param>
         /// <param name="creator">Injected Sqlite database creator service.</param>
         public SqliteRelationalDatabase( 
-            IDbContextService dbContext, 
+            IDataContextService dbContext, 
             IRelationalConnection connection,
             IRelationalDatabaseCreator creator )
             : base( dbContext, connection, creator )
