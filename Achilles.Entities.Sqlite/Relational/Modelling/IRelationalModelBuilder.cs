@@ -10,8 +10,8 @@
 
 #region Namespaces
 
-using Achilles.Entities.Relational.Modelling.Mapping;
-using Achilles.Entities.Relational.Modelling.Mapping.Builders;
+using Achilles.Entities.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping.Builders;
 using System;
 
 #endregion

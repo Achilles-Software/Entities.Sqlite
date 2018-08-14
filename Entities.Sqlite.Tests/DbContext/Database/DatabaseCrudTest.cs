@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Relational.Linq;
+using Achilles.Entities.Linq;
 using Achilles.Entities.Configuration;
 using Achilles.Entities.Sqlite.Configuration;
 using Entities.Sqlite.Tests.Data;

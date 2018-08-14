@@ -1,7 +1,7 @@
 ﻿#region Namespaces
 
 using Achilles.Entities.Mapping;
-using Achilles.Entities.Relational.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using System.Collections.Generic;
 using System.Linq;

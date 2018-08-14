@@ -3,7 +3,7 @@
 using Achilles.Entities;
 using Achilles.Entities.Sqlite.Configuration;
 using Achilles.Entities.Configuration;
-using Achilles.Entities.Relational.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.Modelling;
 
 #endregion
@@ -90,9 +90,9 @@ namespace Entities.Sqlite.Tests.Data
 
                 builder.HasIndex( p => p.Name ).Name( "IX_Products_Name" ).IsUnique();
 
-                //builder.HasOne( p => p.Supplier )
-                //    .WithForeignKey( p => p.SupplierId )
-                //    .IsRequired();
+            //    builder.HasOne( p => p.Supplier )
+            //        .WithForeignKey( p => p.SupplierId )
+            //        .IsRequired();
             } );
 
             base.OnModelBuilding( config );

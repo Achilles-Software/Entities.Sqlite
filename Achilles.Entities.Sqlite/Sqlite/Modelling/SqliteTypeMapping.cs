@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Modelling.Mapping
 {
     public class SqliteTypeMapping
     {

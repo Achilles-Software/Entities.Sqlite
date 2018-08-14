@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Relational.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using Achilles.Entities.Sqlite.Statements.Delete;
 using Achilles.Entities.Sqlite.Statements.Insert;

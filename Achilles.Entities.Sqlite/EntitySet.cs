@@ -10,7 +10,7 @@
 
 #region Namespaces
 
-using Achilles.Entities.Relational.Linq;
+using Achilles.Entities.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;

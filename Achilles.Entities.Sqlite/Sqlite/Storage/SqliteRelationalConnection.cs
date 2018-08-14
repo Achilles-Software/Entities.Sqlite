@@ -1,8 +1,16 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
 
-using Achilles.Entities.Relational.Modelling.Mapping;
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
+
 using Achilles.Entities.Relational;
-using Achilles.Entities.Sqlite.Statements.Insert;
 using Achilles.Entities.Storage;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
@@ -10,9 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Dynamic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,16 +45,6 @@ namespace Achilles.Entities.Sqlite.Storage
         #endregion
 
         protected override DbConnection CreateDbConnection() => new SqliteConnection( ConnectionString );
-
-        //public virtual IRelationalConnection CreateReadOnlyConnection()
-        //{
-        //    var connectionStringBuilder = new SqliteConnectionStringBuilder( ConnectionString )
-        //    {
-        //        Mode = SqliteOpenMode.ReadOnly
-        //    };
-
-        //    return new SqliteRelationalConnection( connectionStringBuilder.ConnectionString );
-        //}
 
         public override int LastInsertRowId()
         {
@@ -98,7 +94,7 @@ namespace Achilles.Entities.Sqlite.Storage
             return nonQueryCommand.ExecuteNonQuery();
         }
 
-        public override IEnumerable<dynamic> ExecuteReader( string sql, SqlParameterCollection parameters, IDbTransaction transaction )
+        public override IEnumerable<Dictionary<string,object>> ExecuteReader( string sql, SqlParameterCollection parameters, IDbTransaction transaction )
         {
             var queryCommand = CreateCommand( sql, parameters.ToDictionary() );
             
@@ -108,7 +104,7 @@ namespace Achilles.Entities.Sqlite.Storage
 
             if ( reader == null )
             {
-                yield return new ExpandoObject() as IDictionary<string, object>;
+                yield return new Dictionary<string, object>();
             }
             else
             {
@@ -116,7 +112,7 @@ namespace Achilles.Entities.Sqlite.Storage
 
                 foreach ( IDataRecord record in reader )
                 {
-                    var expando = new ExpandoObject() as IDictionary<string, object>;
+                    var expando = new Dictionary<string, object>();
 
                     foreach ( var name in names )
                         expando[ name ] = record[ name ];

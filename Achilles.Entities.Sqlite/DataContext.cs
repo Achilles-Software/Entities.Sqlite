@@ -13,7 +13,7 @@
 using Achilles.Entities.Configuration;
 using Achilles.Entities.Properties;
 using Achilles.Entities.Relational.Modelling;
-using Achilles.Entities.Relational.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using Achilles.Entities.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -311,7 +311,7 @@ namespace Achilles.Entities
 
         private void InitializeServices( DataContextOptions options )
         {
-            // Each DbContext has it's own set of services and provider.
+            // Each DataContext has it's own set of services and provider.
             _services = new ServiceCollection();
 
             // Add the services required for the specific relational options.

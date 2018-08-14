@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Relational.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Storage;
 using System.Data;
 

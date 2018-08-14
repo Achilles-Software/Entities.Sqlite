@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Modelling.Mapping
 {
     public class TypeMapping
     {

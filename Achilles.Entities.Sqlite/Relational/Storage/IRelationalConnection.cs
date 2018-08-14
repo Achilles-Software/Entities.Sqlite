@@ -40,7 +40,7 @@ namespace Achilles.Entities.Storage
 
         object ExecuteScalar( string commandText, IReadOnlyDictionary<string, object> parameters );
 
-        IEnumerable<dynamic> ExecuteReader( string sql, SqlParameterCollection parameters, IDbTransaction transaction );
+        IEnumerable<Dictionary<string,object>> ExecuteReader( string sql, SqlParameterCollection parameters, IDbTransaction transaction );
 
         int LastInsertRowId();
     }

@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region Namespaces
 
-namespace Achilles.Entities.Mapping
+using System.Collections.Generic;
+
+#endregion
+
+namespace Achilles.Entities.Modelling.Mapping
 {
     public class AssociationMapping
     {

@@ -1,6 +1,16 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
 
-using Achilles.Entities.Relational.Modelling.Mapping;
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
+
+using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.Statements;
 using System.Collections.Generic;
 using System.Linq;

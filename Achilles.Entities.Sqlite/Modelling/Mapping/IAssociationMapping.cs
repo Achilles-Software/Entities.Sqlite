@@ -4,7 +4,7 @@ using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Mapping
+namespace Achilles.Entities.Modelling.Mapping
 {
     public interface IAssociationMapping
     {

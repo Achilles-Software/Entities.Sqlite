@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -141,12 +151,11 @@ namespace Achilles.Entities.Storage
 
         public abstract int ExecuteNonQuery( String commandText, IReadOnlyDictionary<String, object> parameterValues );
 
-        public abstract IEnumerable<dynamic> ExecuteReader( string sql, SqlParameterCollection parameters, IDbTransaction transaction );
+        public abstract IEnumerable<Dictionary<string,object>> ExecuteReader( string sql, SqlParameterCollection parameters, IDbTransaction transaction );
 
         public abstract int LastInsertRowId();
 
         #endregion
-
 
         #region IDisposable Support
 
