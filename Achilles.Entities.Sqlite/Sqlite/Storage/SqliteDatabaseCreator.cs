@@ -1,6 +1,6 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Sqlite.Statements.Database;
+using Achilles.Entities.Sqlite.SqlStatements.Database;
 using Achilles.Entities.Storage;
 using System.Transactions;
 

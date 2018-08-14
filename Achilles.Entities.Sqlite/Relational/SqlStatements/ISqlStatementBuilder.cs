@@ -8,12 +8,11 @@
 
 #endregion
 
-namespace Achilles.Entities.Relational.Commands
+namespace Achilles.Entities.Relational.SqlStatements
 {
-    public interface IRelationalCommand
+    internal interface ISqlStatementBuilder<out TStatement>
+        where TStatement : ISqlStatement
     {
-        string Sql { get; }
-
-        SqlParameterCollection Parameters { get; }
+        TStatement BuildStatement();
     }
 }

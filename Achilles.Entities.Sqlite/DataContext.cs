@@ -12,18 +12,15 @@
 
 using Achilles.Entities.Configuration;
 using Achilles.Entities.Properties;
+using Achilles.Entities.Relational.Commands;
 using Achilles.Entities.Relational.Modelling;
-using Achilles.Entities.Modelling.Mapping;
-using Achilles.Entities.Relational.Statements;
+using Achilles.Entities.Relational.SqlStatements;
 using Achilles.Entities.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Remotion.Linq.Clauses;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -192,7 +189,7 @@ namespace Achilles.Entities
         {
             var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
 
-            var insertCommand = CommandBuilder.Build( RelationalStatementKind.Insert, entity, entityMapping );
+            var insertCommand = CommandBuilder.Build( SqlStatementKind.Insert, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( insertCommand.Sql, insertCommand.Parameters.ToDictionary() );
 
@@ -233,7 +230,7 @@ namespace Achilles.Entities
         {
             var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
 
-            var updateCommand = CommandBuilder.Build( RelationalStatementKind.Update, entity, entityMapping );
+            var updateCommand = CommandBuilder.Build( SqlStatementKind.Update, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( updateCommand.Sql, updateCommand.Parameters.ToDictionary() );
 
@@ -264,7 +261,7 @@ namespace Achilles.Entities
         {
             var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
 
-            var deleteCommand = CommandBuilder.Build( RelationalStatementKind.Delete, entity, entityMapping );
+            var deleteCommand = CommandBuilder.Build( SqlStatementKind.Delete, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( deleteCommand.Sql, deleteCommand.Parameters.ToDictionary() );
 

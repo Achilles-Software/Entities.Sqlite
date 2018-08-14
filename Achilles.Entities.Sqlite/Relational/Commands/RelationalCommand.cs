@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Achilles.Entities.Relational.Statements
+namespace Achilles.Entities.Relational.Commands
 {
     public class RelationalCommand : IRelationalCommand
     {

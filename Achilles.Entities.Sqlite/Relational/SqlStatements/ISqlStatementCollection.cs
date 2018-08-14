@@ -8,12 +8,15 @@
 
 #endregion
 
-namespace Achilles.Entities.Relational.Commands
-{
-    public interface IRelationalCommand
-    {
-        string Sql { get; }
+#region Namespaces
 
-        SqlParameterCollection Parameters { get; }
+using System.Collections.Generic;
+
+#endregion
+
+namespace Achilles.Entities.Relational.SqlStatements
+{
+    public interface ISqlStatementCollection : ISqlStatement, ICollection<ISqlStatement>
+    {
     }
 }

@@ -31,7 +31,7 @@ namespace Achilles.Entities.Linq.ExpressionVisitors
             var EntityMapping = _dbContext.Model.EntityMappings.GetOrAddMapping( expression.ReferencedQuerySource.ItemType );
 
             Statement.AppendEnumerable( 
-                expression.ReferencedQuerySource.ItemType.GetProperties().Select( p => p.Name ), 
+                EntityMapping.ColumnMappings.Select( p => p.ColumnName ), 
                 string.Format( "{0}.",
                 expression.ReferencedQuerySource.ItemName ), 
                 string.Format( ", {0}.", expression.ReferencedQuerySource.ItemName ) );

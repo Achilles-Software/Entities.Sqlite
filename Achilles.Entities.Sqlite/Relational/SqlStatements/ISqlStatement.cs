@@ -8,12 +8,14 @@
 
 #endregion
 
-namespace Achilles.Entities.Relational.Commands
+namespace Achilles.Entities.Relational.SqlStatements
 {
-    public interface IRelationalCommand
+    public interface ISqlStatement
     {
-        string Sql { get; }
-
-        SqlParameterCollection Parameters { get; }
+        /// <summary>
+        /// Gets the statement SQL text.
+        /// </summary>
+        /// <returns>The statement SQL text</returns>
+        string GetText();
     }
 }

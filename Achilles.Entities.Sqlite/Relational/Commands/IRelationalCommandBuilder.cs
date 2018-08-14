@@ -1,13 +1,24 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
 
-using Achilles.Entities.Modelling.Mapping;
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:Todd.Thomson@achilles-software.com
 
 #endregion
 
-namespace Achilles.Entities.Relational.Statements
+#region Namespaces
+
+using Achilles.Entities.Modelling.Mapping;
+using Achilles.Entities.Relational.SqlStatements;
+
+#endregion
+
+namespace Achilles.Entities.Relational.Commands
 {
     public interface IRelationalCommandBuilder
     {
-        IRelationalCommand Build<TEntity>( RelationalStatementKind statementKind, TEntity entity, IEntityMapping model );
+        IRelationalCommand Build<TEntity>( SqlStatementKind statementKind, TEntity entity, IEntityMapping model );
     }
 }

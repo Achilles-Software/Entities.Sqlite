@@ -30,7 +30,7 @@ namespace Entities.Sqlite.Tests
                 var productEntityMapping = (EntityMapping<Product>)entityMapping;
                 Assert.Equal( "Products", productEntityMapping.TableName );
 
-                Assert.Equal( 4, productEntityMapping.ColumnMappings.Count );
+                Assert.Equal( 5, productEntityMapping.ColumnMappings.Count );
 
                 var idPropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Id" );
                 Assert.IsType<ColumnMapping>( idPropertyMapping );

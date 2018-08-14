@@ -23,9 +23,9 @@ namespace Achilles.Entities.Relational.Modelling.Mapping
     public static class TypeExtensions
     {
         /// <summary>
-        /// The list of .NET primitive types.
+        /// The list of .NET scalar/primitive types.
         /// </summary>
-        public static readonly List<Type> PrimitiveTypes = new List<Type>
+        public static readonly List<Type> ScalarTypes = new List<Type>
         {
             typeof(string),
             typeof(byte[]),
@@ -53,6 +53,6 @@ namespace Achilles.Entities.Relational.Modelling.Mapping
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsPrimitive( this Type type ) => PrimitiveTypes.Contains( type );
+        public static bool IsScalarType( this Type type ) => ScalarTypes.Contains( type );
     }
 }

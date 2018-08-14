@@ -11,11 +11,8 @@
 #region Namespaces
 
 using Achilles.Entities.Configuration;
-using Achilles.Entities.Relational.Modelling;
-using Achilles.Entities.Modelling.Mapping;
-using Achilles.Entities.Relational.Statements;
-using Achilles.Entities.Sqlite.Modelling;
-using Achilles.Entities.Sqlite.Statements;
+using Achilles.Entities.Relational.Commands;
+using Achilles.Entities.Sqlite.SqlStatements;
 using Achilles.Entities.Sqlite.Storage;
 using Achilles.Entities.Storage;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,5 +1,5 @@
-﻿using Achilles.Entities.Sqlite.Statements;
-using Achilles.Entities.Sqlite.Statements.Table;
+﻿using Achilles.Entities.Sqlite.SqlStatements;
+using Achilles.Entities.Sqlite.SqlStatements.Table;
 using System;
 using System.Collections.Generic;
 using System.Text;

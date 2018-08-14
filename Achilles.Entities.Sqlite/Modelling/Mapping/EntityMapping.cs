@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Achilles.Entities.Relational.Modelling.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Achilles.Entities.Modelling.Mapping
         /// </summary>
         public EntityMapping()
         {
-            InitializePropertyMappings();
+            InitializePropertyAndFieldMappings();
         }
 
         #endregion
@@ -118,8 +119,10 @@ namespace Achilles.Entities.Modelling.Mapping
             }
         }
 
-        private void InitializePropertyMappings()
+        private void InitializePropertyAndFieldMappings()
         {
+            // TODO: GetFields()...
+
             TableName = (typeof( TEntity ).Name);
 
             bool hasKey = false;
@@ -132,6 +135,12 @@ namespace Achilles.Entities.Modelling.Mapping
 
             foreach ( var propertyInfo in entityProperties )
             {
+                if ( !propertyInfo.PropertyType.IsScalarType() )
+                {
+                    // Non scalar types must be mapped in OnModelBuilding()
+                    continue;
+                }
+
                 if ( ColumnMappings.Any( p => p.MemberName.Equals( propertyInfo.Name, StringComparison.InvariantCultureIgnoreCase ) ) )
                 {
                     continue;
