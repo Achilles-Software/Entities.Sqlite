@@ -63,6 +63,16 @@ namespace Achilles.Entities.Modelling.Mapping
             }
         }
 
+        public IEntityMapping GetEntityMapping( Type entityType )
+        {
+            if ( _entityMappings.TryGetValue( entityType, out var entityMapping ) )
+            {
+                return entityMapping;
+            }
+
+            throw new ArgumentException( nameof( entityType ) );
+        }
+
         #region IDictionary Implementation through _EntityMappingpings
 
         public IEntityMapping this[ Type key ] { get => ((IDictionary<Type, IEntityMapping>)_entityMappings)[ key ]; set => ((IDictionary<Type, IEntityMapping>)_entityMappings)[ key ] = value; }

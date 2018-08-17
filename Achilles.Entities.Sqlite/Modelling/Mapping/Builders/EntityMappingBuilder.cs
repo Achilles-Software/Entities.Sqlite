@@ -29,6 +29,8 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
     {
         #region Private Fields
 
+        private EntityMappingCollection _entityMappings;
+
         private readonly List<ColumnMappingBuilder> _columnMappingBuilders = new List<ColumnMappingBuilder>();
         private readonly List<IndexMappingBuilder> _indexMappingBuilders = new List<IndexMappingBuilder>();
 
@@ -45,9 +47,9 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// </summary>
         public EntityMappingBuilder( EntityMappingCollection entityMappings )
         {
-            var entityType = typeof( TEntity );
-
-            EntityMapping = entityMappings.GetOrAddEntityMapping( entityType );
+            _entityMappings = entityMappings;
+            
+            EntityMapping = entityMappings.GetOrAddEntityMapping( EntityType );
         }
 
         #endregion
@@ -56,6 +58,11 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 
         /// <inheritdoc/>
         public IEntityMapping EntityMapping { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type EntityType => typeof( TEntity );
 
         /// <inheritdoc/>
         public IColumnMappingBuilder Column( Expression<Func<TEntity, object>> columnPropertyLambda )
@@ -154,9 +161,27 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
             var indexMappings = _indexMappingBuilders.Select( b => b.Build() ).ToList();
             EntityMapping.IndexMappings.AddRange( indexMappings );
 
-            // Add foreign key mappings
+            // Add foreign key mappings...
+
+            // HasMany mappings may have the foreign key constaint on another Entity ( unless self referencing )
             var hasManyFKMappings = _hasManyMappingBuilders.Select( b => b.Build( EntityMapping ) ).ToList();
-            EntityMapping.ForeignKeyMappings.AddRange( hasManyFKMappings );
+
+            foreach ( var foreignKeyMapping in hasManyFKMappings )
+            {
+                var t = foreignKeyMapping.ForeignKeyProperty.DeclaringType;
+
+                if ( t != EntityType )
+                {
+                    var foreignKeyConstraintMapping = _entityMappings.GetOrAddEntityMapping( t );
+                    foreignKeyConstraintMapping.ForeignKeyMappings.Add( foreignKeyMapping );
+                }
+                else
+                {
+                    EntityMapping.ForeignKeyMappings.Add( foreignKeyMapping );
+                }
+            }
+
+            
 
             var hasOneFKMappings = _hasOneMappingBuilders.Select( b => b.Build( EntityMapping) ).ToList();
             EntityMapping.ForeignKeyMappings.AddRange( hasOneFKMappings );

@@ -61,15 +61,7 @@ namespace Achilles.Entities.Modelling
             return GetEntityMapping( typeof( TEntity ) );
         }
 
-        public IEntityMapping GetEntityMapping( Type entityType )
-        {
-            if ( _entityMappings.TryGetValue( entityType, out var entityMapping ) )
-            {
-                return entityMapping;
-            }
-
-            return null;
-        }
+        public IEntityMapping GetEntityMapping( Type entityType ) => _entityMappings.GetEntityMapping( entityType );
 
         #endregion
     }

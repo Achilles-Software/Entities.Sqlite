@@ -111,9 +111,9 @@ namespace Entities.Sqlite.Tests.Data
                     .WithForeignKey( p => p.SupplierId )   // The foreign key. The Foreign Key constrain is on the Products table (Non-generice WithForeignKey).
                     .References<Supplier>( p => p.Id );    // The reference table and key 
 
-                //entity.HasMany( p => p.Parts )
-                //    .WithForeignKey<Part>( parts => parts.ProductKey )
-                //    .References<Product>( p => p.Id );
+                entity.HasMany( p => p.Parts )
+                    .WithForeignKey<Part>( parts => parts.ProductKey )
+                    .References<Product>( p => p.Id );
             } );
 
             base.OnModelBuilding( modelBuilder );

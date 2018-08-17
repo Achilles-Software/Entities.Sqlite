@@ -26,7 +26,7 @@ namespace Achilles.Entities.Modelling
         /// <returns>A read only collection of <see cref="IEntityMapping"/>.</returns>
         IReadOnlyCollection<IEntityMapping> EntityMappings { get; }
 
-        IEntityMapping GetOrAddEntityMapping( Type entityType );
+        //IEntityMapping GetOrAddEntityMapping( Type entityType );
 
         /// <summary>
         /// Gets an entity mapping by entity type.
@@ -35,6 +35,11 @@ namespace Achilles.Entities.Modelling
         /// <returns>The <see cref="IEntityMapping"/> for the entity type.</returns>
         IEntityMapping GetEntityMapping( Type entityType );
 
+        /// <summary>
+        ///  TODO
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <returns></returns>
         IEntityMapping GetEntityMapping<TEntity>() where TEntity : class;
     }
 }

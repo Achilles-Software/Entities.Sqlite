@@ -187,7 +187,7 @@ namespace Achilles.Entities
         /// <returns>1 if the entity was added succssfully; 0 otherwise.</returns>
         public int Add<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.GetOrAddEntityMapping( typeof( TEntity ) );
+            var entityMapping = Model.GetEntityMapping( typeof( TEntity ) );
 
             var insertCommand = CommandBuilder.Build( SqlStatementKind.Insert, Model, entity, entityMapping );
 
@@ -259,7 +259,7 @@ namespace Achilles.Entities
         /// <returns>1 if the entity was deleted succssfully; 0 otherwise.</returns>
         public int Delete<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.GetOrAddEntityMapping( typeof( TEntity ) );
+            var entityMapping = Model.GetEntityMapping( typeof( TEntity ) );
 
             var deleteCommand = CommandBuilder.Build( SqlStatementKind.Delete, Model, entity, entityMapping );
 
