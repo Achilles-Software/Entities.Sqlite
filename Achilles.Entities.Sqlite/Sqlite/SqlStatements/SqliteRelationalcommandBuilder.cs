@@ -18,6 +18,7 @@ using Achilles.Entities.Sqlite.SqlStatements.Table;
 using Achilles.Entities.Sqlite.SqlStatements.Update;
 using Achilles.Entities.Relational.SqlStatements;
 using System;
+using Achilles.Entities.Modelling;
 
 #endregion
 
@@ -25,13 +26,13 @@ namespace Achilles.Entities.Sqlite.SqlStatements
 {
     public class SqliteRelationalCommandBuilder : IRelationalCommandBuilder
     {
-        public IRelationalCommand Build<TEntity>( SqlStatementKind statementKind, TEntity entity, IEntityMapping entityMapping )
+        public IRelationalCommand Build<TEntity>( SqlStatementKind statementKind, IEntityModel model, TEntity entity, IEntityMapping entityMapping )
         {
             switch ( statementKind )
             {
                 case SqlStatementKind.CreateTable:
 
-                    ISqlStatementBuilder<CreateTableStatement> statementBuilder = new CreateTableStatementBuilder( entityMapping );
+                    ISqlStatementBuilder<CreateTableStatement> statementBuilder = new CreateTableStatementBuilder( model, entityMapping );
 
                     ISqlStatement statement = statementBuilder.BuildStatement();
 

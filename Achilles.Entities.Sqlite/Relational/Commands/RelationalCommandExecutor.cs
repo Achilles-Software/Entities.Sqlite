@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Achilles.Entities.Modelling;
 using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.SqlStatements;
 using Achilles.Entities.Storage;
@@ -36,9 +37,9 @@ namespace Achilles.Entities.Relational.Commands
 
         private IRelationalConnection Connection => _dbContext.Database.Connection;
 
-        public int ExecuteNonQuery<TEntity>( SqlStatementKind statementKind, TEntity entity, IEntityMapping entityMapping ) where TEntity : class
+        public int ExecuteNonQuery<TEntity>( SqlStatementKind statementKind, IEntityModel model, TEntity entity, IEntityMapping entityMapping ) where TEntity : class
         {
-            var command = _commandBuilder.Build( statementKind, entity, entityMapping );
+            var command = _commandBuilder.Build( statementKind, model, entity, entityMapping );
             
             return Connection.ExecuteNonQuery( command.Sql, command.Parameters.ToDictionary() );
         }

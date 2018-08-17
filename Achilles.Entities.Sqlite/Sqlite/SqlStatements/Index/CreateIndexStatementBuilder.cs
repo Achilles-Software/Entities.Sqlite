@@ -1,10 +1,20 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
 
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
+
+using Achilles.Entities.Modelling;
 using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.SqlStatements;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 #endregion
 
@@ -12,12 +22,22 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Index
 {
     internal class CreateIndexStatementBuilder : ISqlStatementBuilder<CreateIndexStatementCollection>
     {
+        #region Private Fields
+
+        private readonly IEntityModel _model;
         private readonly IEntityMapping _entityMapping;
 
-        public CreateIndexStatementBuilder( IEntityMapping entityMapping )
+        #endregion
+
+        #region Constructor(s)
+
+        public CreateIndexStatementBuilder( IEntityModel model, IEntityMapping entityMapping )
         {
-            this._entityMapping = entityMapping;
+            _model = model;
+            _entityMapping = entityMapping;
         }
+
+        #endregion
 
         public CreateIndexStatementCollection BuildStatement()
         {
@@ -45,7 +65,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Index
 
                 createIndexStatement.Columns.Add( new CreateIndexStatement.IndexColumn
                 {
-                    ColumnName = indexMapping.PropertyInfo.Name,
+                    ColumnName = indexMapping.PropertyName, // FIXME:
                     Order = indexMapping.Order
                 } );
             }
@@ -55,7 +75,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Index
 
         private string GetIndexName( IIndexMapping index )
         {
-            return IndexNameCreator.CreateName( _entityMapping.TableName, index.PropertyInfo.Name );
+            return IndexNameCreator.CreateName( _entityMapping.TableName, index.PropertyName /* fixme */ );
         }
     }
 }

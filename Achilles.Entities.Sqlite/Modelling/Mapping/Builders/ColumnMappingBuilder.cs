@@ -20,13 +20,21 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 {
     public class ColumnMappingBuilder : IColumnMappingBuilder
     {
-        public ColumnMappingBuilder( MemberInfo memberInfo )
+        public ColumnMappingBuilder( MemberInfo column )
         {
-            MemberInfo = memberInfo;
-            ColumnMapping = CreateColumnMapping( memberInfo );
+            Column = column ?? throw new ArgumentNullException( nameof( column ) );
+
+            if ( !(Column.MemberType == MemberTypes.Property || Column.MemberType == MemberTypes.Field ) )
+            {
+                throw new ArgumentException( nameof( column ) );
+            }
+
+            ColumnMapping = CreateColumnMapping( column );
         }
 
-        public MemberInfo MemberInfo { get; }
+        public MemberInfo Column { get; }
+
+        public bool IsProperty => ( Column.MemberType == MemberTypes.Property );
 
         public IColumnMapping ColumnMapping { get; }
 

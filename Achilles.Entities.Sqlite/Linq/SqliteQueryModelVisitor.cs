@@ -70,7 +70,8 @@ namespace Achilles.Entities.Linq
         {
             string fromTableName = fromClause.ItemType.Name;
 
-            var EntityMapping = _context.Model.EntityMappings.GetOrAddMapping( fromClause.ItemType );
+            var EntityMapping = _context.Model.GetEntityMapping( fromClause.ItemType );
+            // TODO: This should fail if null?
 
             if ( !string.IsNullOrEmpty( EntityMapping.TableName ) )
             {

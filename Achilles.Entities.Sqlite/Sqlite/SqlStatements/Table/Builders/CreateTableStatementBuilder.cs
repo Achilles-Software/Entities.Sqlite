@@ -1,6 +1,17 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using Achilles.Entities.Extensions;
+using Achilles.Entities.Modelling;
 using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.SqlStatements;
 using System.Collections.Generic;
@@ -12,16 +23,22 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Table
 {
     internal class CreateTableStatementBuilder : ISqlStatementBuilder<CreateTableStatement>
     {
-        private readonly IEntityMapping EntityMapping;
+        #region Private Fields
 
-        public CreateTableStatementBuilder( IEntityMapping EntityMapping )
+        private readonly IEntityModel _model;
+        private readonly IEntityMapping _entityMapping;
+
+        #endregion
+
+        public CreateTableStatementBuilder( IEntityModel model, IEntityMapping entityMapping )
         {
-            this.EntityMapping = EntityMapping;
+            _model = model ?? throw new System.ArgumentNullException( nameof( model ) );
+            _entityMapping = entityMapping ?? throw new System.ArgumentNullException( nameof( entityMapping ) );
         }
 
         public CreateTableStatement BuildStatement()
         {
-            var keyMembers = EntityMapping.ColumnMappings.Where( p => p.IsKey ).ToList();
+            var keyMembers = _entityMapping.ColumnMappings.Where( p => p.IsKey ).ToList();
 
             // Only create a CompositePrimaryKeyStatement if there is a composite primary key.
             // If there is just one key member this is handled using a constraint.
@@ -32,9 +49,9 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Table
                 compositePrimaryKeyStatement = new CompositePrimaryKeyStatementBuilder( keyMembers ).BuildStatement();
             }
 
-            var simpleColumnCollection = new ColumnStatementCollectionBuilder( EntityMapping.ColumnMappings, keyMembers ).BuildStatement();
+            var simpleColumnCollection = new ColumnStatementCollectionBuilder( _entityMapping.ColumnMappings, keyMembers ).BuildStatement();
             
-            var foreignKeyCollection = new ForeignKeyStatementBuilder( EntityMapping.ForeignKeyMappings ).BuildStatement();
+            var foreignKeyCollection = new ForeignKeyStatementBuilder( _model, _entityMapping.ForeignKeyMappings ).BuildStatement();
 
             var columnStatements = new List<ISqlStatement>();
             columnStatements.AddRange( simpleColumnCollection );
@@ -43,7 +60,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Table
 
             return new CreateTableStatement
             {
-                TableName = NameCreator.EscapeName( EntityMapping.TableName ),
+                TableName = NameCreator.EscapeName( _entityMapping.TableName ),
                 ColumnStatementCollection = new ColumnStatementCollection( columnStatements )
             };
         }

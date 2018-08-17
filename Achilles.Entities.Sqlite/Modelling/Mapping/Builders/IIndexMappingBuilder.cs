@@ -21,12 +21,25 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Gets the <see cref="PropertyInfo"/> instance associated with this builder.
         /// </summary>
-        PropertyInfo Property { get; }
+        //PropertyInfo IndexInfo { get; }
 
+        /// <summary>
+        /// Sets the index name.
+        /// </summary>
+        /// <param name="indexName"></param>
+        /// <returns>A <see cref="IIndexMappingBuilder"/> instance.</returns>
         IIndexMappingBuilder Name( string indexName );
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>A <see cref="IIndexMappingBuilder"/> instance.</returns>
         IIndexMappingBuilder IsUnique();
 
-        IIndexMapping Build();
+        /// <summary>
+        /// Builds and returns the <see cref="IndexMapping"/>.
+        /// </summary>
+        /// <returns>A <see cref="IIndexMapping"/> instance.</returns>
+        //IIndexMapping Build();
     }
 }

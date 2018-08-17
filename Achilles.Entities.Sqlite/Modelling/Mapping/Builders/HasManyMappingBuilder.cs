@@ -10,6 +10,8 @@
 
 #region Namespaces
 
+using Achilles.Entities.Extensions;
+using Achilles.Entities.Reflection;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -24,39 +26,52 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
     /// </summary>
     public class HasManyMappingBuilder : IHasManyMappingBuilder
     {
+        #region Private Fields
+
+        private ForeignKeyMappingBuilder _foreignKeyMappingBuilder;
+
+        #endregion
+
         #region Constructor(s)
 
-        public HasManyMappingBuilder( PropertyInfo propertyInfo )
+        /// <summary>
+        /// Constructs a HasManyMappingBuilder from the propertyInfo paarameter.
+        /// </summary>
+        /// <param name="relationshipInfo"></param>
+        public HasManyMappingBuilder( MemberInfo relationshipInfo )
         {
-            Property = propertyInfo;
-            ForeignKey = CreateForeignKeyMapping( propertyInfo );
+            Relationship = relationshipInfo;
+            ForeignKeyMapping = CreateForeignKeyMapping( relationshipInfo );
         }
 
         #endregion
 
-        private IForeignKeyMapping ForeignKey { get; }
+        private IForeignKeyMapping ForeignKeyMapping { get; }
 
         #region Public Properties
 
         /// <summary>
         /// 
         /// </summary>
-        public PropertyInfo Property { get; }
+        internal MemberInfo Relationship { get; }
 
         #endregion
 
-        public IForeignKeyBuilder WithForeignKey<TEntity>( Expression<Func<TEntity, object>> mapping )
-        {
+        public Type PropertyType => Relationship.GetPropertyType();
 
-            throw new NotImplementedException();
+        /// <inheritsdoc/>
+        public IForeignKeyMappingBuilder WithForeignKey<TEntity>( Expression<Func<TEntity, object>> foreignKeyLambda )
+        {
+            var foreignKey = ReflectionHelper.GetMemberInfo( foreignKeyLambda );
+
+            _foreignKeyMappingBuilder = new ForeignKeyMappingBuilder( foreignKey );
+
+            return _foreignKeyMappingBuilder;
         }
 
-        public IForeignKeyMapping Build()
-        {
-            throw new System.NotImplementedException();
-        }
+        internal IForeignKeyMapping Build( IEntityMapping entityMapping ) => _foreignKeyMappingBuilder.Build();
 
-        protected virtual IForeignKeyMapping CreateForeignKeyMapping( PropertyInfo propertyInfo ) 
-            => new ForeignKeyMapping( propertyInfo );
+        protected virtual IForeignKeyMapping CreateForeignKeyMapping( MemberInfo relationshipInfo ) 
+            => new ForeignKeyMapping( relationshipInfo );
     }
 }

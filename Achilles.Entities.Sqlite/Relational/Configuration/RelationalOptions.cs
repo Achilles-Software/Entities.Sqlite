@@ -73,7 +73,7 @@ namespace Achilles.Entities.Relational.Configuration
             return this;
         }
 
-        public new abstract RelationalOptions Clone();
+        public abstract RelationalOptions Clone();
 
         /// <summary>
         /// Adds the relational services for the specific relational options implementation. 

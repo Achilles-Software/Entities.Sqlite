@@ -26,7 +26,7 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Gets the <see cref="PropertyInfo"/> instance associated with this builder.
         /// </summary>
-        PropertyInfo Property { get; }
+        //PropertyInfo Property { get; }
 
         /// <summary>
         /// Provides a fluent builder interface for configuring a foreign key from an <typeparamref name="TEntity"/> type.
@@ -34,12 +34,12 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <typeparam name="TEntity">The entity type that contains the foreign key reference.</typeparam>
         /// <param name="mapping"></param>
         /// <returns>A foreign key mapping builder.</returns>
-        IForeignKeyBuilder WithForeignKey<TEntity>( Expression<Func<TEntity, object>> mapping );
+        IForeignKeyMappingBuilder WithForeignKey<TEntity>( Expression<Func<TEntity, object>> mapping );
 
         /// <summary>
         /// Builds the <see cref="IForeignKeyMapping"/> instance from this builder instance.
         /// </summary>
         /// <returns>A <see cref="IForeignKeyMapping"/> instance.</returns>
-        IForeignKeyMapping Build();
+        //IForeignKeyMapping Build( IEntityMapping entityMapping );
     }
 }

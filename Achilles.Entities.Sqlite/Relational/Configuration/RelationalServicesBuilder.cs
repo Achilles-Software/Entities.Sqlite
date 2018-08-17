@@ -10,7 +10,7 @@
 
 #region Namespaces
 
-using Achilles.Entities.Relational.Modelling;
+using Achilles.Entities.Modelling;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -31,7 +31,7 @@ namespace Achilles.Entities.Configuration
         
         public virtual RelationalServicesBuilder TryAddCoreServices()
         {
-            TryAddTransient<IRelationalModelBuilder, RelationalModelBuilder>();
+            TryAddTransient<IEntityModelBuilder, EntityModelBuilder>();
             TryAddSingleton<IDataContextService, DataContextService>();
 
             return this;

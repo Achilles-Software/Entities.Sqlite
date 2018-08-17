@@ -1,5 +1,7 @@
 ﻿#region Namespaces
 
+using Achilles.Entities.Configuration;
+using Achilles.Entities.Sqlite.Configuration;
 using Achilles.Entities.Modelling.Mapping;
 using Entities.Sqlite.Tests.Data;
 using System.Linq;
@@ -14,78 +16,66 @@ namespace Entities.Sqlite.Tests
         [Fact]
         public void Mapping_has_valid_configuration_entity_mapping()
         {
-            string connectionString = "Data Source=test.db";
+            const string connectionString = "Data Source=:memory:";
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = TestDataContext.Create( connectionString ) )
+            using ( var context = new SimpleDataContext( options ) )
             {
-                // TJT: Specific test for datasource
-                //var result = context.Database.DbConnection.DataSource;
-                //Assert.Equal( "test.db", Path.GetFileName( result ) );
-
                 Assert.Single( context.Model.EntityMappings );
 
-                var entityMapping = context.Model.EntityMappings.Values.First();
-                Assert.IsType<EntityMapping<Product>>( entityMapping );
+                var entityMapping = context.Model.EntityMappings.First();
+                Assert.IsType<EntityMapping<Address>>( entityMapping );
 
-                var productEntityMapping = (EntityMapping<Product>)entityMapping;
-                Assert.Equal( "Products", productEntityMapping.TableName );
+                var addressEntityMapping = (EntityMapping<Address>)entityMapping;
+                Assert.Equal( "Address", addressEntityMapping.TableName );
 
-                Assert.Equal( 5, productEntityMapping.ColumnMappings.Count );
+                Assert.Equal( 4, addressEntityMapping.ColumnMappings.Count );
 
-                var idPropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Id" );
+                var idPropertyMapping = addressEntityMapping.ColumnMappings.First( p => p.PropertyName == "AddressId" );
                 Assert.IsType<ColumnMapping>( idPropertyMapping );
                 Assert.True( idPropertyMapping.IsKey );
 
-                var pricePropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Price" );
-                Assert.IsType<ColumnMapping>( pricePropertyMapping );
-                Assert.False( pricePropertyMapping.IsKey );
-                Assert.True( pricePropertyMapping.IsRequired );
-
-                var salutationPropertyMapping = productEntityMapping.ColumnMappings.First( p => p.MemberName == "Salutation" );
-                Assert.IsType<ColumnMapping>( salutationPropertyMapping );
-                Assert.False( salutationPropertyMapping.IsKey );
-                Assert.Equal( "Salutation", salutationPropertyMapping.ColumnName );
-                Assert.True( salutationPropertyMapping.Ignore );
-
-                var nameIndexMapping = productEntityMapping.IndexMappings.First( p => p.PropertyName == "Name" );
-                Assert.IsType<IndexMapping>( nameIndexMapping );
-                Assert.Equal( "IX_Products_Name", nameIndexMapping.Name );
-                Assert.True( nameIndexMapping.IsUnique );
+                var streetPropertyMapping = addressEntityMapping.ColumnMappings.First( p => p.PropertyName == "Street" );
+                Assert.IsType<ColumnMapping>( streetPropertyMapping );
+                Assert.False( streetPropertyMapping.IsKey );
+                
+                var cityPropertyMapping = addressEntityMapping.ColumnMappings.First( p => p.PropertyName == "City" );
+                Assert.IsType<ColumnMapping>( cityPropertyMapping );
+                Assert.False( cityPropertyMapping.IsKey );
+                Assert.Equal( "City", cityPropertyMapping.ColumnName );
             }
         }
 
         [Fact]
         public void Mapping_can_get_set_property_value()
         {
-            string connectionString = "Data Source=test.db";
+            const string connectionString = "Data Source=:memory:";
+            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
 
-            using ( var context = TestDataContext.Create( connectionString ) )
+            using ( var context = new SimpleDataContext( options ) )
             {
                 Assert.Single( context.Model.EntityMappings );
 
-                var entityMapping = context.Model.EntityMappings.Values.First();
-                Assert.IsType<EntityMapping<Product>>( entityMapping );
+                var entityMapping = context.Model.EntityMappings.First();
+                Assert.IsType<EntityMapping<Address>>( entityMapping );
 
-                var productEntityMapping = (EntityMapping<Product>)entityMapping;
-                Assert.Equal( "Products", productEntityMapping.TableName );
+                var addressEntityMapping = (EntityMapping<Address>)entityMapping;
 
-                Product testProduct = new Product()
+                var testAddress = new Address()
                 {
-                    Id = 6,
-                    Name = "Banana",
-                    Price = 6.45,
-                    Salutation = "Mr. Banana Man"
+                    AddressId = 1,
+                    Street = "123 Banana Seat",
+                    City = "Somewhere",
+                    Country = "Canada"
                 };
 
-                var name = productEntityMapping.GetPropertyValue( testProduct, "Name" );
+                var country = addressEntityMapping.GetPropertyValue( testAddress, "Country" );
+                Assert.Equal( "Canada", country );
 
-                Assert.Equal( "Banana", name );
+                addressEntityMapping.SetPropertyValue( testAddress, "Country", "USA" );
+                var newCountry = addressEntityMapping.GetPropertyValue( testAddress, "Country" );
 
-                var price = 5.46;
-                productEntityMapping.SetPropertyValue( testProduct, "Price", price );
-                var newPrice = productEntityMapping.GetPropertyValue( testProduct, "Price" );
-
-                Assert.Equal( 5.46, newPrice );
+                Assert.Equal( "USA", newCountry );
             }
         }
 

@@ -1,10 +1,9 @@
 ﻿#region Namespaces
 
 using Achilles.Entities;
-using Achilles.Entities.Sqlite.Configuration;
 using Achilles.Entities.Configuration;
-using Achilles.Entities.Modelling.Mapping;
-using Achilles.Entities.Relational.Modelling;
+using Achilles.Entities.Modelling;
+using Achilles.Entities.Sqlite.Configuration;
 
 #endregion
 
@@ -15,10 +14,12 @@ namespace Entities.Sqlite.Tests.Data
         private static TestDataContext _dataContext;
 
         public EntitySet<Product> Products { get; set; }
+        public EntitySet<Supplier> Suppliers { get; set; }
 
         public TestDataContext( DataContextOptions options ) : base( options )
         {
             Products = new EntitySet<Product>( this );
+            Suppliers = new EntitySet<Supplier>( this );
         }
 
         public static TestDataContext Create( string connectionString )
@@ -47,55 +48,75 @@ namespace Entities.Sqlite.Tests.Data
         /// <summary>
         /// Override for configuring entity mapping.
         /// </summary>
-        /// <param name="config"></param>
-        protected internal override void OnModelBuilding( RelationalModelBuilder config )
+        /// <param name="modelBuilder"></param>
+        protected internal override void OnModelBuilding( EntityModelBuilder modelBuilder )
         {
-            //config.Entity<Customer>( builder =>
+            //config.Entity<Customer>( entity =>
             //{
-            //    builder.Column( p => p.Orders );
+            //    entity.Column( p => p.Orders );
 
-            //    builder.Column( p => p.Id )
+            //    entity.Column( p => p.Id )
             //        .IsKey();
 
-            //    builder.HasMany( p => p.Orders )
+            //    entity.HasMany( p => p.Orders )
             //        .WithForeignKey<Order>( o => o.CustomerId );
             //} );
 
-            //config.Entity<Order>( builder =>
+            //config.Entity<Order>( entity =>
             //{
-            //    builder.Column( p => p.Id )
+            //    entity.Column( p => p.Id )
             //        .IsKey();
 
-            //    builder.HasOne( p => p.Customer )
+            //    entity.HasOne( p => p.Customer )
             //        .WithForeignKey( p => p.CustomerId )
-            //        .Name( "CustomerFK" )
-            //        .IsRequired();
+            //        .Name( "CustomerFK" );
+            //        //.IsRequired();
 
-            //    builder.HasMany( p => p.Products )
+            //    entity.HasMany( p => p.Products )
             //        .WithForeignKey<Product>( p => p.OrderId );
             //} );
 
-            config.Entity<Product>( builder =>
+            modelBuilder.Entity<Supplier>( entity =>
             {
-                builder.ToTable( "Products" );
+                entity.ToTable( "Suppliers" );
 
-                builder.Column( p => p.Price )
-                    .IsRequired();
-
-                builder.Column( p => p.Salutation )
-                    .Ignore();
-
-                builder.Column( p => p.Id )
+                entity.Column( p => p.Id )
                     .IsKey();
 
-                builder.HasIndex( p => p.Name ).Name( "IX_Products_Name" ).IsUnique();
-
-            //    builder.HasOne( p => p.Supplier )
-            //        .WithForeignKey( p => p.SupplierId )
-            //        .IsRequired();
+                entity.Column( p => p.Name )
+                    .IsRequired();
             } );
 
-            base.OnModelBuilding( config );
+            modelBuilder.Entity<Product>( entity =>
+            {
+                entity.ToTable( "Products" );
+
+                entity.Column( p => p.Id )
+                    .IsKey();
+
+                entity.Column( p => p.Price )
+                    .IsRequired();
+
+                entity.Column( p => p.Salutation )
+                    .Ignore();
+
+                //entity.Column( p => p.Name )
+                //    .ToColumn( "Gerb" );
+
+                entity.HasIndex( p => p.Name )
+                    .Name( "IX_Products_Name" )
+                    .IsUnique();
+
+                entity.HasOne( p => p.Supplier )           // The relationship property
+                    .WithForeignKey( p => p.SupplierId )   // The foreign key. The Foreign Key constrain is on the Products table (Non-generice WithForeignKey).
+                    .References<Supplier>( p => p.Id );    // The reference table and key 
+
+                //entity.HasMany( p => p.Parts )
+                //    .WithForeignKey<Part>( parts => parts.ProductKey )
+                //    .References<Product>( p => p.Id );
+            } );
+
+            base.OnModelBuilding( modelBuilder );
         }
     }
 }

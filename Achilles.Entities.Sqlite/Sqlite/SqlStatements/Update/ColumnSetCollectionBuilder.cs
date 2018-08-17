@@ -38,7 +38,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Update
         {
             foreach ( var property in Properties )
             {
-                var propertyValue = _entityMapping.GetPropertyValue( _entity, property.MemberName );
+                var propertyValue = _entityMapping.GetPropertyValue( _entity, property.PropertyName );
 
                 var propertyParameter = Parameters.Add( propertyValue );
                 

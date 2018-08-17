@@ -18,32 +18,32 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 {
     public class IndexMappingBuilder : IIndexMappingBuilder
     {
-        public IndexMappingBuilder( PropertyInfo propertyInfo )
+        public IndexMappingBuilder( MemberInfo indexInfo )
         {
-            Property = propertyInfo;
-            Index = CreateIndexMapping( propertyInfo );
+            IndexInfo = indexInfo;
+            IndexMapping = CreateIndexMapping( indexInfo );
         }
 
-        public PropertyInfo Property { get; }
+        public MemberInfo IndexInfo { get; }
 
-        public IIndexMapping Index { get; }
+        public IIndexMapping IndexMapping { get; }
 
         public IIndexMappingBuilder Name( string indexName )
         {
-            Index.Name = indexName;
+            IndexMapping.Name = indexName;
 
             return this;
         }
 
         public IIndexMappingBuilder IsUnique()
         {
-            Index.IsUnique = true;
+            IndexMapping.IsUnique = true;
 
             return this;
         }
 
-        public IIndexMapping Build() => Index;
+        public IIndexMapping Build() => IndexMapping;
 
-        protected virtual IIndexMapping CreateIndexMapping( PropertyInfo propertyInfo ) => new IndexMapping( propertyInfo );
+        protected virtual IIndexMapping CreateIndexMapping( MemberInfo indexInfo ) => new IndexMapping( indexInfo );
     }
 }

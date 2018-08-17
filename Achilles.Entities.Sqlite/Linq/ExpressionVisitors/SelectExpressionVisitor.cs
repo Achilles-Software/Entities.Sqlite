@@ -28,7 +28,8 @@ namespace Achilles.Entities.Linq.ExpressionVisitors
 
         protected override Expression VisitQuerySourceReference( QuerySourceReferenceExpression expression )
         {
-            var EntityMapping = _dbContext.Model.EntityMappings.GetOrAddMapping( expression.ReferencedQuerySource.ItemType );
+            var EntityMapping = _dbContext.Model.GetEntityMapping( expression.ReferencedQuerySource.ItemType );
+            // Review: Check for null?
 
             Statement.AppendEnumerable( 
                 EntityMapping.ColumnMappings.Select( p => p.ColumnName ), 

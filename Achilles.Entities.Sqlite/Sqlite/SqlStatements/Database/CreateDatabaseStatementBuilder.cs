@@ -1,6 +1,17 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using Achilles.Entities.Modelling.Mapping;
+using Achilles.Entities.Modelling;
 using Achilles.Entities.Relational.SqlStatements;
 using Achilles.Entities.Sqlite.SqlStatements.Index;
 using Achilles.Entities.Sqlite.SqlStatements.Table;
@@ -15,15 +26,15 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Database
     {
         #region Fields
 
-        private readonly EntityMappingCollection _entityMappings;
+        private readonly IEntityModel _model;
 
         #endregion
 
         #region Constructor(s)
 
-        public CreateDatabaseStatementBuilder( EntityMappingCollection mappingConfiguration )
+        public CreateDatabaseStatementBuilder( IEntityModel model )
         {
-            _entityMappings = mappingConfiguration;
+            _model = model;
         }
 
         #endregion
@@ -46,9 +57,9 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Database
 
         private IEnumerable<CreateTableStatement> GetCreateTableStatements()
         {
-            foreach ( var entityMapping in _entityMappings.Values )
+            foreach ( var entityMapping in _model.EntityMappings )
             {
-                var tableStatementBuilder = new CreateTableStatementBuilder( entityMapping );
+                var tableStatementBuilder = new CreateTableStatementBuilder( _model, entityMapping );
 
                 yield return tableStatementBuilder.BuildStatement();
             }
@@ -56,9 +67,9 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Database
 
         private IEnumerable<CreateIndexStatementCollection> GetCreateIndexStatements()
         {
-            foreach ( var entityMapping in _entityMappings.Values )
+            foreach ( var entityMapping in _model.EntityMappings )
             {
-                var indexStatementBuilder = new CreateIndexStatementBuilder( entityMapping );
+                var indexStatementBuilder = new CreateIndexStatementBuilder( _model, entityMapping );
 
                 yield return indexStatementBuilder.BuildStatement();
             }

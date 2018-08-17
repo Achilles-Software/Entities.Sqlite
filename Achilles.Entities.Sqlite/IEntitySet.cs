@@ -17,7 +17,7 @@ using System;
 namespace Achilles.Entities
 {
     /// <summary>
-    /// Required API for <see cref="EntitySet{TEntity}"/>
+    /// Internal API for <see cref="EntitySet{TEntity}"/>
     /// </summary>
     /// <remarks>An internal interface for now.</remarks>
     internal interface IEntitySet
@@ -26,6 +26,6 @@ namespace Achilles.Entities
         /// Returns the entity set generic type.
         /// </summary>
         /// <returns></returns>
-        Type GetType();
+        Type EntityType { get; }
     }
 }

@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Achilles.Entities.Modelling;
 using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.SqlStatements;
 
@@ -19,6 +20,6 @@ namespace Achilles.Entities.Relational.Commands
 {
     public interface IRelationalCommandBuilder
     {
-        IRelationalCommand Build<TEntity>( SqlStatementKind statementKind, TEntity entity, IEntityMapping model );
+        IRelationalCommand Build<TEntity>( SqlStatementKind statementKind, IEntityModel model, TEntity entity, IEntityMapping mapping );
     }
 }

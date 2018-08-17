@@ -10,8 +10,10 @@
 
 #region Namespaces
 
+using Achilles.Entities.Extensions;
 using Achilles.Entities.Reflection;
 using System;
+using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -19,36 +21,71 @@ using System.Reflection;
 
 namespace Achilles.Entities.Modelling.Mapping.Builders
 {
-    public class HasOneMappingBuilder<TEntity> : IHasOneMappingBuilder<TEntity>
+    public class HasOneMappingBuilder<TEntity> : IHasOneMappingBuilder<TEntity> where TEntity : class
     {
-        private ForeignKeyBuilder _foreignKeyBuilder;
+        #region Private Fields
 
-        public HasOneMappingBuilder( PropertyInfo propertyInfo )
+        private ForeignKeyMappingBuilder _foreignKeyMappingBuilder;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Constructs a HasOneMappingBuilder with the provided property to build the 1-1 relationship on.
+        /// </summary>
+        /// <param name="relationship">The </param>
+        public HasOneMappingBuilder( MemberInfo relationship )
         {
-            Property = propertyInfo;
-            ForeignKey = CreateForeignKeyMapping( propertyInfo );
+            Relationship = relationship ?? throw new ArgumentNullException( nameof( relationship ) );
+
+            if ( Relationship.GetPropertyType().GetInterface( nameof(IEnumerable)) != null )
+            {
+                throw new ArgumentException( nameof( relationship ) );
+            }
+            
+            ForeignKeyMapping = CreateForeignKeyMapping( relationship );
         }
 
-        private IForeignKeyMapping ForeignKey { get; }
+        #endregion
 
-        public PropertyInfo Property { get; }
+        #region Private, Internal Properties
 
-        public IForeignKeyBuilder WithForeignKey( Expression<Func<TEntity, object>> mapping )
+        private IForeignKeyMapping ForeignKeyMapping { get; }
+        /// <inheritdoc/>
+        internal MemberInfo Relationship { get; }
+
+        #endregion
+
+        #region Public Properties and Methods
+
+        public Type PropertyType => Relationship.GetPropertyType();
+
+        //public string PropertyName => Relationship.Name;
+
+        /// <inheritdoc/>
+        public IForeignKeyMappingBuilder WithForeignKey( Expression<Func<TEntity, object>> foreignKeyLambda )
         {
-            // Resolve property info from expression
-            var propertyInfo = (PropertyInfo)ReflectionHelper.GetMemberInfo( mapping );
+            var foreignKeyProperty = ReflectionHelper.GetMemberInfo( foreignKeyLambda );
 
-            _foreignKeyBuilder = new ForeignKeyBuilder( propertyInfo );
+            _foreignKeyMappingBuilder = new ForeignKeyMappingBuilder( foreignKeyProperty );
 
-            return _foreignKeyBuilder;
+            return _foreignKeyMappingBuilder;
         }
 
-        public IForeignKeyMapping Build()
+        /// <inheritdoc/>
+        internal IForeignKeyMapping Build( IEntityMapping entityMapping )
         {
-            throw new NotImplementedException();
+            return _foreignKeyMappingBuilder.Build();
         }
 
-        protected virtual IForeignKeyMapping CreateForeignKeyMapping( PropertyInfo propertyInfo ) 
-            => new ForeignKeyMapping( propertyInfo );
+        #endregion
+
+        #region Private Methods
+
+        private IForeignKeyMapping CreateForeignKeyMapping( MemberInfo relationshipInfo ) 
+            => new ForeignKeyMapping( relationshipInfo );
+
+        #endregion
     }
 }

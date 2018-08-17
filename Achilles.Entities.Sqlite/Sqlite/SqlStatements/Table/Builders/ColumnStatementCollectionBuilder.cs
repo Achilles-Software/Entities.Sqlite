@@ -1,4 +1,14 @@
-﻿#region Namespaces
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+#region Namespaces
 
 using Achilles.Entities.Modelling.Mapping;
 using Achilles.Entities.Relational.SqlStatements;
@@ -34,7 +44,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Table
                 var columnStatement = new ColumnStatement
                 {
                     ColumnName = property.ColumnName,
-                    TypeName = property.ColumnType,
+                    TypeName = property.ColumnDataType,
 
                     ColumnConstraints = new ColumnConstraintCollection()
                 };

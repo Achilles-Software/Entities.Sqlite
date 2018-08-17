@@ -19,6 +19,9 @@ using System.Reflection;
 
 namespace Achilles.Entities.Modelling.Mapping.Builders
 {
+    /// <summary>
+    /// A fluent builder api for creating and configuring a <see cref="ColumnMapping"/>.
+    /// </summary>
     public interface IColumnMappingBuilder
     {
         /// <summary>
@@ -29,7 +32,7 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Gets the <see cref="PropertyInfo"/> instance associated with this builder.
         /// </summary>
-        MemberInfo MemberInfo { get; }
+        MemberInfo Column { get; }
 
         /// <summary>
         /// Specifies the column name for this property.
@@ -39,13 +42,13 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         IColumnMappingBuilder ToColumn( string columnName );
 
         /// <summary>
-        /// 
+        /// Sets the column to be a key.
         /// </summary>
         /// <returns>This <see cref="IColumnMappingBuilder"/> instance.</returns>
         IColumnMappingBuilder IsKey();
 
         /// <summary>
-        /// 
+        /// Sets the column ...
         /// </summary>
         /// <returns>This <see cref="IColumnMappingBuilder"/> instance.</returns>
         IColumnMappingBuilder IsRequired();
@@ -64,7 +67,7 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Builds the <see cref="IColumnMapping"/> instance from this builder instance.
         /// </summary>
-        /// <returns>A <see cref="IColumnMapping"/> instance.</returns>
+        /// <returns>The <see cref="IColumnMapping"/>.</returns>
         IColumnMapping Build();
     }
 }

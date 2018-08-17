@@ -23,37 +23,33 @@ namespace Achilles.Entities.Modelling.Mapping
     public interface IColumnMapping
     {
         /// <summary>
-        /// Gets the <see cref="MemberInfo"/> metadata.
+        /// Gets the <see cref="ColumnInfo"/> metadata.
         /// </summary>
-        MemberInfo MemberInfo { get; }
-
-        bool IsPropertyMember { get; }
+        MemberInfo ColumnInfo { get; }
 
         /// <summary>
-        /// Gets the backing method name obtained from the <see cref="MemberInfo"/>.
+        /// Gets the backing method name obtained from the <see cref="ColumnInfo"/>.
         /// </summary>
-        string MemberName { get; }
+        string PropertyName { get; }
 
         /// <summary>
-        /// Gets the method <see cref="Type"/> obtained from the <see cref="MemberInfo"/>.
+        /// Gets the method <see cref="Type"/> obtained from the <see cref="ColumnInfo"/>.
         /// </summary>
-        Type MemberType { get; }
+        Type PropertyType { get; }
 
         /// <summary>
-        /// Gets the flag indicating that the property is a mapped to a database column.
+        /// Gets the column data type.
         /// </summary>
-        bool IsColumn { get; }
-        
-        /// <summary>
-        /// Gets or sets the column type.
-        /// </summary>
-        string ColumnType { get; }
+        string ColumnDataType { get; }
 
         /// <summary>
         /// Gets or sets the column name.
         /// </summary>
         string ColumnName { get; set; }
 
+        /// <summary>
+        /// Gets or sets a default value to use for the column.
+        /// </summary>
         string DefaultValue { get; set; }
 
         int? MaxLength { get; set; }

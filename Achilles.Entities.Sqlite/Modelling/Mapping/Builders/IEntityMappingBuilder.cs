@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 namespace Achilles.Entities.Modelling.Mapping.Builders
 {
     /// <summary>
-    /// Provides a fluent interface for configuring/building entities of <typeparamref name="TEntity"/>.
+    /// Provides a fluent interface for configuring/building entities of type <typeparamref name="TEntity"/>.
     /// </summary>
     /// <typeparam name="TEntity">The entity type to configure.</typeparam>
     public interface IEntityMappingBuilder<TEntity>
@@ -26,11 +26,11 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Gets the mapping for entity. 
         /// </summary>
-        IEntityMapping EntityMapping { get; }
+        //IEntityMapping EntityMapping { get; }
 
         /// <summary>
         /// Returns a <see cref="IColumnMappingBuilder"/> instance to configure 
-        /// the mapping for the specified property of <typeparamref name="TEntity"/>.
+        /// the mapping for the specified property from <typeparamref name="TEntity"/>.
         /// </summary>
         /// <param name="property">An expression which represents the property to be mapped.</param>
         /// <returns>A <see cref="IColumnMappingBuilder"/> instance.</returns>
@@ -38,9 +38,9 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 
         /// <summary>
         /// Returns a <see cref="IIndexMappingBuilder"/> instance to configure 
-        /// the index for the specified property of <typeparamref name="TEntity"/>.
+        /// the index for the specified property.
         /// </summary>
-        /// <param name="indexProperty">An expression which represents the property to be indexed.</param>
+        /// <param name="indexProperty">A lambda expression which represents the property to be indexed.</param>
         /// <returns>A <see cref="IIndexMappingBuilder"/> instance.</returns>
         IIndexMappingBuilder HasIndex( Expression<Func<TEntity, object>> indexProperty );
 
@@ -75,6 +75,6 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// Builds the <see cref="IEntityMapping"/> instance from this builder instance.
         /// </summary>
         /// <returns>A <see cref="IEntityMapping"/> instance.</returns>
-        IEntityMapping Build();
+        //IEntityMapping Build();
     }
 }

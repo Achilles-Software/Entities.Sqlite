@@ -11,9 +11,9 @@
 #region Namespaces
 
 using Achilles.Entities.Configuration;
+using Achilles.Entities.Modelling;
 using Achilles.Entities.Properties;
 using Achilles.Entities.Relational.Commands;
-using Achilles.Entities.Relational.Modelling;
 using Achilles.Entities.Relational.SqlStatements;
 using Achilles.Entities.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +38,7 @@ namespace Achilles.Entities
         private ServiceCollection _services;
         private IServiceProvider _serviceProvider = null;
         private IRelationalDatabase _database = null;
-        private IRelationalModel _model = null;
+        private IEntityModel _model = null;
         private IDataContextService _contextService = null;
         private IRelationalCommandBuilder _commandBuilder = null;
 
@@ -134,7 +134,7 @@ namespace Achilles.Entities
         /// <summary>
         /// Gets the relational database model.
         /// </summary>
-        public IRelationalModel Model
+        public IEntityModel Model
         {
             get
             {
@@ -151,7 +151,7 @@ namespace Achilles.Entities
                 try
                 {
                     _isModelBuilding = true;
-                    var modelBuilder = ServiceProvider.GetService<IRelationalModelBuilder>();
+                    var modelBuilder = ServiceProvider.GetService<IEntityModelBuilder>();
 
                     _model = modelBuilder.Build( this );
 
@@ -187,9 +187,9 @@ namespace Achilles.Entities
         /// <returns>1 if the entity was added succssfully; 0 otherwise.</returns>
         public int Add<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
+            var entityMapping = Model.GetOrAddEntityMapping( typeof( TEntity ) );
 
-            var insertCommand = CommandBuilder.Build( SqlStatementKind.Insert, entity, entityMapping );
+            var insertCommand = CommandBuilder.Build( SqlStatementKind.Insert, Model, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( insertCommand.Sql, insertCommand.Parameters.ToDictionary() );
 
@@ -200,7 +200,7 @@ namespace Achilles.Entities
                // TJT: Sqlite specific
                 var rowId = Database.Connection.LastInsertRowId();
 
-                entityMapping.SetPropertyValue( entity, key.MemberName, rowId );
+                entityMapping.SetPropertyValue( entity, key.PropertyName, rowId );
             }
 
             return result;
@@ -228,9 +228,9 @@ namespace Achilles.Entities
         /// <returns>1 if the entity was updated succssfully; 0 otherwise.</returns>
         public int Update<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
+            var entityMapping = Model.GetEntityMapping( typeof( TEntity ) );
 
-            var updateCommand = CommandBuilder.Build( SqlStatementKind.Update, entity, entityMapping );
+            var updateCommand = CommandBuilder.Build( SqlStatementKind.Update, Model, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( updateCommand.Sql, updateCommand.Parameters.ToDictionary() );
 
@@ -259,9 +259,9 @@ namespace Achilles.Entities
         /// <returns>1 if the entity was deleted succssfully; 0 otherwise.</returns>
         public int Delete<TEntity>( TEntity entity ) where TEntity : class
         {
-            var entityMapping = Model.EntityMappings.GetOrAddMapping( typeof( TEntity ) );
+            var entityMapping = Model.GetOrAddEntityMapping( typeof( TEntity ) );
 
-            var deleteCommand = CommandBuilder.Build( SqlStatementKind.Delete, entity, entityMapping );
+            var deleteCommand = CommandBuilder.Build( SqlStatementKind.Delete, Model, entity, entityMapping );
 
             var result = Database.Connection.ExecuteNonQuery( deleteCommand.Sql, deleteCommand.Parameters.ToDictionary() );
 
@@ -297,8 +297,8 @@ namespace Achilles.Entities
         /// <summary>
         /// Override to configure and build an entities database model.
         /// </summary>
-        /// <param name="modelBuilder">A <see cref="RelationalModelBuilder"/> instance.</param>
-        protected internal virtual void OnModelBuilding( RelationalModelBuilder modelBuilder )
+        /// <param name="modelBuilder">A <see cref="EntityModelBuilder"/> instance.</param>
+        protected internal virtual void OnModelBuilding( EntityModelBuilder modelBuilder )
         {
         }
 

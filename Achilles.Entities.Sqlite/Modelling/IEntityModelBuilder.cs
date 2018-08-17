@@ -16,17 +16,17 @@ using System;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Modelling
+namespace Achilles.Entities.Modelling
 {
     /// <summary>
     /// An interface for building a database model.
     /// </summary>
-    public interface IRelationalModelBuilder
+    public interface IEntityModelBuilder
     {
         /// <summary>
         /// Gets a collection of entity mappings.
         /// </summary>
-        EntityMappingCollection EntityMappings { get; }
+        //EntityMappingCollection EntityMappings { get; }
 
         /// <summary>
         /// Configures the mapping for <typeparamref name="TEntity"/>.
@@ -36,10 +36,10 @@ namespace Achilles.Entities.Relational.Modelling
         void Entity<TEntity>( Action<IEntityMappingBuilder<TEntity>> action ) where TEntity : class;
 
         /// <summary>
-        /// Builds a database model.
+        /// Builds an <see cref="EntityModel"/> for the <see cref="DataContext"/> parameter.
         /// </summary>
         /// <param name="context">The data context.</param>
-        /// <returns>A relation model</returns>
-        IRelationalModel Build( DataContext context );
+        /// <returns>An <see cref="IEntityModel"/> instance.</returns>
+        IEntityModel Build( DataContext context );
     }
 }

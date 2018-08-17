@@ -20,22 +20,30 @@ namespace Achilles.Entities.Modelling.Mapping
     {
         #region  Constructor(s)
 
-        public ForeignKeyMapping( PropertyInfo propertyInfo )
+        public ForeignKeyMapping( MemberInfo foreignKeyProperty )
         {
-            PropertyInfo = propertyInfo;
+            ForeignKeyProperty = foreignKeyProperty;
         }
 
         #endregion
 
         #region Public Properties
 
-        public PropertyInfo PropertyInfo { get; }
+        public MemberInfo ForeignKeyProperty{ get; }
 
-        public string PropertyName => PropertyInfo.Name;
+        public string PropertyName => ForeignKeyProperty.Name;
+
+        public MemberInfo ReferenceKeyProperty { get; set; }
 
         public string Name { get; set; }
+                
+        //public string ForeignKeyColumn { get; set; }
 
-        public bool IsRequired { get; set; }
+        //public string ReferenceTable { get; set; }
+
+        //public string ReferenceColumn { get; set; }
+
+        public bool CascadeDelete { get; set; }
 
         #endregion
     }

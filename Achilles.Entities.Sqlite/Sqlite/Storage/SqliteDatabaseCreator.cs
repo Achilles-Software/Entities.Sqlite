@@ -78,7 +78,7 @@ namespace Achilles.Entities.Sqlite.Storage
 
         private string GetCreateDatabaseCommands()
         {
-            var databaseBuilder = new CreateDatabaseStatementBuilder( _dbContext.Instance.Model.EntityMappings );
+            var databaseBuilder = new CreateDatabaseStatementBuilder( _dbContext.Instance.Model );
 
             return databaseBuilder.BuildStatement().GetText();
         }

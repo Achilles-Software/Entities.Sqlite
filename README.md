@@ -8,20 +8,22 @@ Entities.Sqlite is currently in alpha stage development. We have published this 
 
 If you are willing to contribute to this repo by beta testing, please add a comment to the [Beta Testing Issue](https://github.com/achilles-software/entities.sqlite/issues/4)
 
+Currently, the only published branch is dev. Commits to this branch will always contain code that builds and runs all tests.
+
 # Features
 * Code First fluent API for database modelling
 * Database creation from entity model
 * Linq provider for entity queries
 
 ## Entities.Sqlite Wiki
-Documention and additional project details can be found on the Entities.Sqlite [wiki](https://github.com/achilles-software/entities.sqlite/wiki).
+Documention and additional project details can be found on the [Entities.Sqlite Wiki](https://github.com/achilles-software/entities.sqlite/wiki).
 
 ## Getting Started
 Please review the [Getting Started](https://github.com/achilles-software/entities.sqlite/wiki/getting-started) Wiki topic or jump in and
 view the [TodoApp Sample](https://github.com/Achilles-Software/Entities.Sqlite/tree/dev/TodoApp) source to help you get started with developing your mobile app with Entities.Sqlite.
 
 ## Nuget Package
-Entiites.Sqlite is availabe as a NuGet package. The package details can be viewed at [Achilles.Entities.Sqlite](https://www.nuget.org/packages/Achilles.Entities.Sqlite)
+Entites.Sqlite is availabe as a NuGet package. The package details can be viewed at [Achilles.Entities.Sqlite](https://www.nuget.org/packages/Achilles.Entities.Sqlite)
 
 ## Dependencies
 Entities.Sqlite is dependent on a few amazing open source NuGet packages:

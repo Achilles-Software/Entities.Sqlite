@@ -31,5 +31,10 @@ namespace Entities.Sqlite.Tests.Data
         /// Gets or sets the supplier entity. 1-1 relationship.
         /// </summary>
         public virtual Supplier Supplier { get; set; }
+
+        /// <summary>
+        /// Gets or sets the set of product parts. 1-many relationship.
+        /// </summary>
+        public virtual HashSet<Part> Parts { get; set; }
     }
 }

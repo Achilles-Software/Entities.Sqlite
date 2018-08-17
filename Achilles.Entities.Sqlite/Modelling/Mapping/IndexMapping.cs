@@ -16,27 +16,50 @@ using System.Reflection;
 
 namespace Achilles.Entities.Modelling.Mapping
 {
+    /// <summary>
+    /// Implements the <see cref="IIndexMapping"/> interface.
+    /// </summary>
     public class IndexMapping : IIndexMapping
     {
         #region  Constructor(s)
 
-        public IndexMapping( PropertyInfo propertyInfo )
+        /// <summary>
+        /// Constructs a IndexMapping instance from the provided propertyInfo parameter.
+        /// </summary>
+        /// <param name="indexInfo"></param>
+        public IndexMapping( MemberInfo indexInfo )
         {
-            PropertyInfo = propertyInfo;
+            IndexInfo = indexInfo;
         }
 
         #endregion
 
         #region Public Properties
 
-        public PropertyInfo PropertyInfo { get; }
+        /// <inheritdoc />
+        internal MemberInfo IndexInfo { get; }
 
-        public string PropertyName => PropertyInfo.Name;
+        /// <inheritdoc />
+        public string PropertyName => IndexInfo.Name;
 
+        /// <inheritdoc />
+        //public string ColumnName
+        //{
+        //    get
+        //    {
+        //        // Since a property can be renamed through configuration, this property must be resolved after model building
+
+        //        return IndexInfo.Name;
+        //    }
+        //}
+
+        /// <inheritdoc />
         public string Name { get; set; }
 
+        /// <inheritdoc />
         public bool IsUnique { get; set; }
 
+        /// <inheritdoc />
         public int Order { get; set; }
 
         #endregion

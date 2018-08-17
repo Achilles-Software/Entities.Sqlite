@@ -1,4 +1,14 @@
-﻿namespace Achilles.Entities.Sqlite.SqlStatements.Table
+﻿#region Copyright Notice
+
+// Copyright (c) by Achilles Software, All rights reserved.
+//
+// Licensed under the MIT License. See License.txt in the project root for license information.
+//
+// Send questions regarding this copyright notice to: mailto:todd.thomson@achilles-software.com
+
+#endregion
+
+namespace Achilles.Entities.Sqlite.SqlStatements.Table
 {
     /// <summary>
     /// The collation function to use for a database column.

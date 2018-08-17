@@ -21,12 +21,21 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
     public interface IHasOneMappingBuilder<TEntity>
     {
         /// <summary>
-        /// Gets the <see cref="PropertyInfo"/> instance associated with this builder.
+        /// Gets the 1-1 relationship <see cref="PropertyInfo"/> instance associated with this builder.
         /// </summary>
-        PropertyInfo Property { get; }
+        //PropertyInfo RelationshipProperty { get; }
 
-        IForeignKeyBuilder WithForeignKey( Expression<Func<TEntity, object>> mapping );
+        /// <summary>
+        /// Sets the foreign key.
+        /// </summary>
+        /// <param name="foreignKey">The foreign key column property from the TEntity being mapped.</param>
+        /// <returns></returns>
+        IForeignKeyMappingBuilder WithForeignKey( Expression<Func<TEntity, object>> foreignKey );
 
-        IForeignKeyMapping Build();
+        /// <summary>
+        /// Builds a <see cref="IForeignKeyMapping"/>.
+        /// </summary>
+        /// <returns>A <see cref="IForeignKeyMapping"/> instance.</returns>
+        //IForeignKeyMapping Build( IEntityMapping  entityMapping );
     }
 }

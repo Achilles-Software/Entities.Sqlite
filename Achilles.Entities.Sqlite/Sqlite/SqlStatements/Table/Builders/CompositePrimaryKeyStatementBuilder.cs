@@ -30,7 +30,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Table
 
         public CompositePrimaryKeyStatement BuildStatement()
         {
-            return new CompositePrimaryKeyStatement( keyMembers.Select( km => km.MemberName ) );
+            return new CompositePrimaryKeyStatement( keyMembers.Select( km => km.PropertyName ) );
         }
     }
 }

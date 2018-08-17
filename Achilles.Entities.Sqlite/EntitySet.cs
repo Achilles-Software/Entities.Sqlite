@@ -39,6 +39,10 @@ namespace Achilles.Entities
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Creates a new EntitySet instance and adds it to the <see cref="DataContext"/>.
+        /// </summary>
+        /// <param name="context">The <see cref="DataContext"/> that this EntitySet is added to.</param>
         public EntitySet( DataContext context )
         {
             _context = context ?? throw new ArgumentNullException( nameof( context ) );
@@ -50,11 +54,19 @@ namespace Achilles.Entities
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets the <see cref="DataContext"/> that this EntitySet belongs to.
+        /// </summary>
         public DataContext DataContext => _context;
+
+        /// <inheritdoc/>
+        public Type EntityType => typeof( TEntity );
 
         #endregion
 
         #region Public CRUD Methods
+
+        // TODO: Add documented user interface
 
         public int Add( TEntity entity ) 
             => _context.Add( entity );
@@ -102,7 +114,5 @@ namespace Achilles.Entities
         IEnumerator IEnumerable.GetEnumerator() => EntityQueryable.GetEnumerator();
 
         #endregion
-
-
     }
 }

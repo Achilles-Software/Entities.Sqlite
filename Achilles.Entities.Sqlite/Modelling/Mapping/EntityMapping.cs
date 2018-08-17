@@ -21,6 +21,10 @@ using System.Reflection;
 
 namespace Achilles.Entities.Modelling.Mapping
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public class EntityMapping<TEntity> : IEntityMapping where  TEntity : class
     {
         #region Fields
@@ -70,7 +74,7 @@ namespace Achilles.Entities.Modelling.Mapping
         
         public void Compile()
         {
-            _columnMapping = ColumnMappings.ToDictionary( m => m.ColumnName, m => m.MemberInfo, IsCaseSensitive? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase );
+            _columnMapping = ColumnMappings.ToDictionary( m => m.ColumnName, m => m.ColumnInfo, IsCaseSensitive? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase );
 
             CreateGetters();
             CreateSetters();
@@ -84,17 +88,30 @@ namespace Achilles.Entities.Modelling.Mapping
         {
             foreach ( var columnMapping in ColumnMappings )
             {
-                PropertyInfo propertyInfo = columnMapping.MemberInfo as PropertyInfo;
+                if ( columnMapping.ColumnInfo is PropertyInfo propertyInfo )
+                {
+                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
 
-                ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
+                    var body = Expression.Call( instance, propertyInfo.GetGetMethod() );
+                    var parameters = new ParameterExpression[] { instance };
+                    Expression conversion = Expression.Convert( body, typeof( object ) );
 
-                var body = Expression.Call( instance, propertyInfo.GetGetMethod() );
-                var parameters = new ParameterExpression[] { instance };
-                Expression conversion = Expression.Convert( body, typeof( object ) );
+                    var getter = Expression.Lambda<Func<TEntity, object>>( conversion, parameters ).Compile();
 
-                var getter = Expression.Lambda<Func<TEntity, object>>( conversion, parameters ).Compile();
-                
-                Getters.Add( propertyInfo.Name, getter );
+                    Getters.Add( propertyInfo.Name, getter );
+                }
+                else if ( columnMapping.ColumnInfo is FieldInfo field )
+                {
+                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
+
+                    MemberExpression fieldExpression = Expression.Field( instance, field );
+                    var parameters = new ParameterExpression[] { instance };
+                    Expression conversion = Expression.Convert( fieldExpression, typeof( object ) );
+
+                    var getter = Expression.Lambda<Func<TEntity, object>>( conversion, parameters ).Compile();
+
+                    Getters.Add( field.Name, getter );
+                }
             }
         }
 
@@ -102,57 +119,97 @@ namespace Achilles.Entities.Modelling.Mapping
         {
             foreach ( var columnMapping in ColumnMappings )
             {
-                PropertyInfo propertyInfo = columnMapping.MemberInfo as PropertyInfo;
-                var setMethod = propertyInfo.GetSetMethod();
-                var setMethodParameterType = setMethod.GetParameters().First().ParameterType;
+                if ( columnMapping.ColumnInfo is PropertyInfo propertyInfo )
+                {
+                    var setMethod = propertyInfo.GetSetMethod();
+                    var setMethodParameterType = setMethod.GetParameters().First().ParameterType;
 
-                ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
-                var parameterExpression = Expression.Parameter( typeof( object ), "value" );
-                Expression conversion = Expression.Convert( parameterExpression, setMethodParameterType );
+                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
+                    var parameterExpression = Expression.Parameter( typeof( object ), "value" );
+                    Expression conversion = Expression.Convert( parameterExpression, setMethodParameterType );
 
-                var body = Expression.Call( instance, setMethod, conversion );
-                var parameters = new ParameterExpression[] { instance, parameterExpression };
+                    var body = Expression.Call( instance, setMethod, conversion );
+                    var parameters = new ParameterExpression[] { instance, parameterExpression };
 
-                var setter = Expression.Lambda<Action<TEntity,object>>( body, parameters ).Compile();
+                    var setter = Expression.Lambda<Action<TEntity, object>>( body, parameters ).Compile();
 
-                Setters.Add( propertyInfo.Name, setter );
+                    Setters.Add( propertyInfo.Name, setter );
+                }
+                else if ( columnMapping.ColumnInfo is FieldInfo field )
+                {
+                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
+                    ParameterExpression valueExpression = Expression.Parameter( typeof( object ), "value" );
+                    Expression conversion = Expression.Convert( valueExpression, field.FieldType );
+
+                    MemberExpression fieldExpression = Expression.Field( instance, field );
+                    BinaryExpression assignExp = Expression.Assign( fieldExpression, conversion );
+
+                    var setter = Expression.Lambda<Action<TEntity, object>>
+                        ( assignExp, instance, valueExpression ).Compile();
+
+                    Setters.Add( field.Name, setter );
+                }
             }
         }
 
+        /// <summary>
+        /// Create column mappings for entity properties and fields.
+        /// </summary>
         private void InitializePropertyAndFieldMappings()
         {
-            // TODO: GetFields()...
-
-            TableName = (typeof( TEntity ).Name);
-
+            TableName = typeof( TEntity ).Name;
             bool hasKey = false;
 
-            var entityProperties = EntityType.GetProperties().Where(
-                p => p.CanRead && p.CanWrite &&
-                     (p.GetMethod != null) && (p.SetMethod != null) &&
-                     (p.GetMethod.IsPublic && p.SetMethod.IsPublic) &&
-                     (!p.GetMethod.IsStatic) && (!p.SetMethod.IsStatic) ).ToList();
+            var entityMembers = EntityType.GetMembers()
+                .Where( m => m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property ).ToList();
 
-            foreach ( var propertyInfo in entityProperties )
+            foreach ( var member in entityMembers )
             {
-                if ( !propertyInfo.PropertyType.IsScalarType() )
+                ColumnMapping columnMapping;
+
+                if ( ColumnMappings.Any( p => p.PropertyName.Equals( member.Name, StringComparison.InvariantCultureIgnoreCase ) ) )
                 {
-                    // Non scalar types must be mapped in OnModelBuilding()
+                    // Already mapped.
                     continue;
                 }
 
-                if ( ColumnMappings.Any( p => p.MemberName.Equals( propertyInfo.Name, StringComparison.InvariantCultureIgnoreCase ) ) )
+                if ( member is PropertyInfo property && property.CanRead && property.CanWrite &&
+                    (property.GetMethod != null) && (property.SetMethod != null) &&
+                    (property.GetMethod.IsPublic && property.SetMethod.IsPublic) &&
+                    (!property.GetMethod.IsStatic) && (!property.SetMethod.IsStatic) )
                 {
+                    if ( !property.PropertyType.IsScalarType() )
+                    {
+                        // Non-scalar types ( relational types: TEntity or IEnumerable<TEntity> ) currently must be mapped in OnModelBuilding()
+                        // TODO: Add 1-1 mapping convention and 1-many mapping convention.
+                        continue;
+                    }
+
+                    columnMapping = new ColumnMapping( property );
+                }
+                else if ( member is FieldInfo field && field.IsPublic && !field.IsStatic )
+                {
+                    if ( !field.FieldType.IsScalarType() )
+                    {
+                        // Non-scalar types ( relational types: TEntity or IEnumerable<TEntity> ) currently must be mapped in OnModelBuilding()
+                        // TODO: Add 1-1 mapping convention and 1-many mapping convention.
+                        continue;
+                    }
+
+                    columnMapping = new ColumnMapping( field );
+                }
+                else
+                {
+                    // Not an acceptable field or property.
+                    // TJT: Throw here?
                     continue;
                 }
-
-                ColumnMapping columnMapping = new ColumnMapping( propertyInfo, isProperty: true );
 
                 // Auto generate IsKey property for the entity
                 if ( !hasKey )
                 {
-                    if ( string.Equals( propertyInfo.Name, "id", StringComparison.InvariantCultureIgnoreCase ) ||
-                        string.Equals( propertyInfo.Name, TableName + "id", StringComparison.InvariantCultureIgnoreCase ) )
+                    if ( string.Equals( member.Name, "id", StringComparison.InvariantCultureIgnoreCase ) ||
+                        string.Equals( member.Name, TableName + "id", StringComparison.InvariantCultureIgnoreCase ) )
                     {
                         columnMapping.IsKey = true;
 
