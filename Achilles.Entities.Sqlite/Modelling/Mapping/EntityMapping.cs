@@ -39,7 +39,7 @@ namespace Achilles.Entities.Modelling.Mapping
         #region Constructor(s)
 
         /// <summary>
-        /// Constructs a new instance of <see cref="EntityMapping"/>.
+        /// Constructs a new instance of <see cref="EntityMapping{TEntity}"/>.
         /// </summary>
         public EntityMapping()
         {

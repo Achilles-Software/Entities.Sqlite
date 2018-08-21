@@ -34,16 +34,22 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Constructs a HasOneMappingBuilder with the provided property to build the 1-1 relationship on.
         /// </summary>
-        /// <param name="relationship">The </param>
+        /// <param name="relationship">The relationship property or field <see cref="MemberInfo"/>.</param>
+        /// /// <exception cref="ArgumentNullException">
+        /// Thrown when the HasOne relationship property or field is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the HasOne relationship property or field is not an <see cref="EntityReference{TEntity}"/>.
+        /// </exception>
         public HasOneMappingBuilder( MemberInfo relationship )
         {
             Relationship = relationship ?? throw new ArgumentNullException( nameof( relationship ) );
 
-            if ( Relationship.GetPropertyType().GetInterface( nameof(IEnumerable)) != null )
+            if ( Relationship.GetPropertyType().GetInterface( nameof( IEntityReference ) ) == null )
             {
                 throw new ArgumentException( nameof( relationship ) );
             }
-            
+
             ForeignKeyMapping = CreateForeignKeyMapping( relationship );
         }
 

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace Achilles.Entities
 {
     /// <summary>
-    /// Represents the set of queryable entities of a specific type stored in a database table.
+    /// Represents the set of queryable entities of a specific entity type stored in a database table.
     /// </summary>
     /// <typeparam name="TEntity">The type of entities stored in the database table.</typeparam>
     public class EntitySet<TEntity> : IQueryable<TEntity>, IEntitySet

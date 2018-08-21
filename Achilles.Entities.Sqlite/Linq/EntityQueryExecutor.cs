@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System;
 using Achilles.Entities.Mapping;
+using Achilles.Entities.Querying;
 
 #endregion
 
@@ -20,6 +21,7 @@ namespace Achilles.Entities.Linq
         private readonly DataContext _context;
         private readonly IRelationalConnection _connection;
         private readonly IDbTransaction _transaction;
+        private readonly EntityMaterializer _materializer;
 
         #endregion
 
@@ -30,6 +32,7 @@ namespace Achilles.Entities.Linq
             _context = context;
             _connection = context.Database.Connection;
             //_transaction = transaction;
+            _materializer = new EntityMaterializer( context.Model );
         }
 
         #endregion
@@ -58,11 +61,10 @@ namespace Achilles.Entities.Linq
         {
             SqliteQueryModelVisitor visitor = new SqliteQueryModelVisitor( _context );
             visitor.VisitQueryModel( queryModel );
-            string sql = visitor.GetSql();
 
-            var queryResult = _connection.ExecuteReader( sql, visitor.Parameters, _transaction );
+            var queryResult = _connection.ExecuteReader( visitor.GetSql(), visitor.Parameters, _transaction );
 
-            return AutoMapper.MapDynamic<T>( queryResult );
+            return _materializer.Materialize<T>( queryResult );
         }
 
         #endregion

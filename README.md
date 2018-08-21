@@ -11,7 +11,7 @@ If you are willing to contribute to this repo by beta testing, please add a comm
 Currently, the only published branch is dev. Commits to this branch will always contain code that builds and runs all tests.
 
 # Features
-* Code First fluent API for database modelling
+* Code First fluent API for database modelling 
 * Database creation from entity model
 * Linq provider for entity queries
 
@@ -31,7 +31,7 @@ Entities.Sqlite is dependent on a few amazing open source NuGet packages:
 * [Remotion.Linq](https://www.nuget.org/packages/Remotion.Linq)
 * [Microsoft.Data.Sqlite](https://www.nuget.org/packages/Microsoft.Data.Sqlite)
 * [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection)
-* [System.Interactivve.Async](https://www.nuget.org/packages/System.Interactive.Async)
+* [System.Interactive.Async](https://www.nuget.org/packages/System.Interactive.Async)
 
 ## Open Source Projects
 Entities.Sqlite would not be possible without ideas, contributions and source code from the open source community. Entities.Sqlite contains modified source code 

@@ -30,7 +30,6 @@ namespace Entities.Sqlite.Tests
                 // Id = 1, Auto generated key
                 Name = "Banana",
                 Price = 4.75,
-                Salutation = "Hello Mr. Bananas",
                 SupplierId = supplier.Id
             };
 
@@ -48,8 +47,8 @@ namespace Entities.Sqlite.Tests
             };
 
             var productsList = new List<Product>() {
-                    new Product(){ Name = "Banana", Price = 4.75, Salutation = "Hello Mr. Bananas" },
-                    new Product(){ Name = "Plum", Price = 3.25, Salutation = "Hello Mr. Plum" },
+                    new Product(){ Name = "Banana", Price = 4.75 },
+                    new Product(){ Name = "Plum", Price = 3.25 },
                 };
 
             foreach ( Supplier s in suppliersList )
@@ -88,7 +87,6 @@ namespace Entities.Sqlite.Tests
                     // Id = 1, Auto generated key
                     Name = "Banana",
                     Price = 4.75,
-                    Salutation = "Hello Mr. Bananas",
                     SupplierId = supplier.Id
                 };
 
@@ -123,7 +121,6 @@ namespace Entities.Sqlite.Tests
                     // Id = 1, Auto generated key
                     Name = "Banana",
                     Price = 4.75,
-                    Salutation = "Hello Mr. Bananas",
                     SupplierId = supplier.Id
                 };
 
@@ -263,7 +260,6 @@ namespace Entities.Sqlite.Tests
                     // Id = 1, Auto generated key
                     Name = "Banana",
                     Price = 4.75,
-                    Salutation = "Hello Mr. Bananas",
                     SupplierId = supplier.Id
                     
                 };
@@ -302,7 +298,6 @@ namespace Entities.Sqlite.Tests
                     // Id = 1, Auto generated key
                     Name = "Banana",
                     Price = 4.75,
-                    Salutation = "Hello Mr. Bananas",
                     SupplierId = supplier.Id
                 };
 

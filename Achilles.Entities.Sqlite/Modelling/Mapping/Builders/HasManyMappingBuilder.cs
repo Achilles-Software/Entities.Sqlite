@@ -37,11 +37,23 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Constructs a HasManyMappingBuilder from the propertyInfo paarameter.
         /// </summary>
-        /// <param name="relationshipInfo"></param>
-        public HasManyMappingBuilder( MemberInfo relationshipInfo )
+        /// <param name="relationship">The HasMany relationship property or field.</param>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown when the relationship property or field is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown when the relationship property or field is not an <see cref="EntityCollection{TEntity}"/>.
+        /// </exception>
+        public HasManyMappingBuilder( MemberInfo relationship )
         {
-            Relationship = relationshipInfo;
-            ForeignKeyMapping = CreateForeignKeyMapping( relationshipInfo );
+            Relationship = relationship ?? throw new ArgumentNullException( nameof( relationship ) );
+
+            if ( Relationship.GetPropertyType().GetInterface( nameof( IEntityCollection ) ) == null )
+            {
+                throw new ArgumentException( nameof( relationship ) );
+            }
+
+            ForeignKeyMapping = CreateForeignKeyMapping( relationship );
         }
 
         #endregion

@@ -82,7 +82,8 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Table
 
         private static void AddNullConstraintIfNecessary( IColumnMapping property, ColumnStatement columnStatement)
         {
-            if ( property.IsRequired ) // TJT: Review this --> && ( property.StoreGeneratedPattern != StoreGeneratedPattern.Identity ) )
+            // TJT: Review this
+            if ( property.IsRequired ) 
             {
                 // Only mark it as NotNull if it should not be generated.
                 columnStatement.ColumnConstraints.Add( new NotNullConstraint() );

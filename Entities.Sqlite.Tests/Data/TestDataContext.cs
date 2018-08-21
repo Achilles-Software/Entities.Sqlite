@@ -15,11 +15,13 @@ namespace Entities.Sqlite.Tests.Data
 
         public EntitySet<Product> Products { get; set; }
         public EntitySet<Supplier> Suppliers { get; set; }
+        public EntitySet<Part> Parts { get; set; }
 
         public TestDataContext( DataContextOptions options ) : base( options )
         {
             Products = new EntitySet<Product>( this );
             Suppliers = new EntitySet<Supplier>( this );
+            Parts = new EntitySet<Part>( this );
         }
 
         public static TestDataContext Create( string connectionString )
@@ -96,12 +98,6 @@ namespace Entities.Sqlite.Tests.Data
 
                 entity.Column( p => p.Price )
                     .IsRequired();
-
-                entity.Column( p => p.Salutation )
-                    .Ignore();
-
-                //entity.Column( p => p.Name )
-                //    .ToColumn( "Gerb" );
 
                 entity.HasIndex( p => p.Name )
                     .Name( "IX_Products_Name" )

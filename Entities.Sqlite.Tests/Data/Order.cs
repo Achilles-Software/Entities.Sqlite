@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Achilles.Entities;
+using System.Collections.Generic;
 
 namespace Entities.Sqlite.Tests.Data
 {
@@ -6,7 +7,8 @@ namespace Entities.Sqlite.Tests.Data
     {
         public Order()
         {
-            Products = new HashSet<Product>();
+            Customer = new EntityReference<Customer>();
+            Products = new EntityCollection<Product>();
         }
 
         /// <summary>
@@ -15,18 +17,18 @@ namespace Entities.Sqlite.Tests.Data
         public int Id;
 
         /// <summary>
-        /// The customer foreign key.Required making this a 1 to 1 relationship.
+        /// The customer foreign key. Required making this a 1 to 1 relationship.
         /// </summary>
         public int CustomerId;
 
         /// <summary>
         /// Gets or sets the customer entity for this order.
         /// </summary>
-        public virtual Customer Customer { get; set; }
+        public EntityReference<Customer> Customer { get; set; }
 
         /// <summary>
         /// Gets or sets the list of products for this order. HasMany relationahip.
         /// </summary>
-        public virtual HashSet<Product> Products { get; set; }
+        public EntityCollection<Product> Products { get; set; }
     }
 }

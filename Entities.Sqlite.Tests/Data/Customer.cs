@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Achilles.Entities;
+using System.Collections.Generic;
 
 namespace Entities.Sqlite.Tests.Data
 {
@@ -6,7 +7,7 @@ namespace Entities.Sqlite.Tests.Data
     {
         public Customer()
         {
-            Orders = new HashSet<Order>();
+            Orders = new EntityCollection<Order>();
         }
 
         /// <summary>
@@ -30,8 +31,6 @@ namespace Entities.Sqlite.Tests.Data
         /// <remarks>
         /// This is a one to many relationship. One customer may have many orders.
         /// </remarks>
-        public virtual HashSet<Order> Orders { get; set; }
-
-        public void AMethod() { }
+        public EntityCollection<Order> Orders { get; set; }
     }
 }

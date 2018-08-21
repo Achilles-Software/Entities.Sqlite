@@ -54,8 +54,6 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 
         #endregion
 
-        //private IEntityMapping CreateEntityMapping() => new EntityMapping<TEntity>();
-
         /// <inheritdoc/>
         public IEntityMapping EntityMapping { get; }
 
@@ -180,8 +178,6 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
                     EntityMapping.ForeignKeyMappings.Add( foreignKeyMapping );
                 }
             }
-
-            
 
             var hasOneFKMappings = _hasOneMappingBuilders.Select( b => b.Build( EntityMapping) ).ToList();
             EntityMapping.ForeignKeyMappings.AddRange( hasOneFKMappings );
