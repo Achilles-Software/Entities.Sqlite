@@ -23,6 +23,8 @@ namespace Achilles.Entities.Modelling.Mapping
 
         List<IIndexMapping> IndexMappings { get; }
 
+        List<IRelationshipMapping> RelationshipMappings { get; }
+
         List<IForeignKeyMapping> ForeignKeyMappings { get; }
 
         Type EntityType { get; }

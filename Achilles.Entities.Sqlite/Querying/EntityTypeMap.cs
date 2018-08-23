@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 #endregion
 
@@ -25,7 +26,7 @@ namespace Achilles.Entities.Querying
         /// <param name="type">Entity Type to materialize.</param>
         /// <param name="identifiers">The <paramref name="type"/>s identifiers.</param>
         /// <param name="propertiesAndFields">The <paramref name="type"/>s properties and fields.</param>
-        public EntityTypeMap( Type type, IEnumerable<string> identifiers, Dictionary<string, object> propertiesAndFields )
+        public EntityTypeMap( Type type, IEnumerable<string> identifiers, Dictionary<string, MemberInfo> propertiesAndFields )
         {
             Type = type;
             Identifiers = identifiers;
@@ -45,6 +46,7 @@ namespace Achilles.Entities.Querying
         /// <summary>
         /// Property/field names and their corresponding PropertyInfo/FieldInfo objects
         /// </summary>
-        public Dictionary<string, object> PropertiesAndFieldsInfo;
+        //public Dictionary<string, object> PropertiesAndFieldsInfo;
+        public Dictionary<string, MemberInfo> PropertiesAndFieldsInfo;
     }
 }

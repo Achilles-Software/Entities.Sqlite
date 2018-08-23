@@ -12,30 +12,22 @@
 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 #endregion
 
 namespace Achilles.Entities.Modelling.Mapping.Builders
 {
+    /// <summary>
+    /// The public API methods used to fluently build a 1-One or HasOne relationship.
+    /// </summary>
+    /// <typeparam name="TEntity">The Entity type.</typeparam>
     public interface IHasOneMappingBuilder<TEntity>
     {
-        /// <summary>
-        /// Gets the 1-1 relationship <see cref="PropertyInfo"/> instance associated with this builder.
-        /// </summary>
-        //PropertyInfo RelationshipProperty { get; }
-
         /// <summary>
         /// Sets the foreign key.
         /// </summary>
         /// <param name="foreignKey">The foreign key column property from the TEntity being mapped.</param>
         /// <returns></returns>
         IForeignKeyMappingBuilder WithForeignKey( Expression<Func<TEntity, object>> foreignKey );
-
-        /// <summary>
-        /// Builds a <see cref="IForeignKeyMapping"/>.
-        /// </summary>
-        /// <returns>A <see cref="IForeignKeyMapping"/> instance.</returns>
-        //IForeignKeyMapping Build( IEntityMapping  entityMapping );
     }
 }

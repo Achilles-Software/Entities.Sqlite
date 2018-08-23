@@ -53,6 +53,11 @@ namespace Achilles.Entities
             }
         }
 
+        public void AttachSource( IEnumerable<TEntity> source )
+        {
+            _source = source;
+        }
+
         #endregion
 
         #region Private Methods

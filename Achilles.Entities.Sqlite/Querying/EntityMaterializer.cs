@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Achilles.Entities.Extensions;
 using Achilles.Entities.Modelling;
 using Achilles.Entities.Querying.TypeConverters;
 using System;
@@ -34,15 +35,17 @@ namespace Achilles.Entities.Querying
 
         private static readonly List<ITypeConverter> TypeConverters = new List<ITypeConverter>();
 
-        private readonly IEntityModel _model;
+        private DataContext _context;
+
+        private IEntityModel _model => _context.Model;
 
         #endregion
 
         #region Constructor(s)
 
-        internal EntityMaterializer( IEntityModel model )
+        internal EntityMaterializer( DataContext context )
         {
-            _model = model;
+            _context = context;
 
             Initialize();
         }
@@ -131,12 +134,12 @@ namespace Achilles.Entities.Querying
         /// nested child properties in the property name.
         /// </summary>
         /// <param name="dictionary">Dictionary of property names and values</param>
-        /// <param name="instance">Instance to populate</param>
+        /// <param name="entity">Instance to populate</param>
         /// <param name="parentInstance">Optional parent instance of the instance being populated</param>
         /// <returns>Populated instance</returns>
-        internal object Materialize( IDictionary<string, object> dictionary, object instance, object parentInstance = null )
+        internal object Materialize( IDictionary<string, object> dictionary, object entity, object parentInstance = null )
         {
-            if ( instance.GetType().IsPrimitive || instance is string )
+            if ( entity.GetType().IsPrimitive || entity is string )
             {
                 object value;
                 if ( !dictionary.TryGetValue( "$", out value ) )
@@ -144,28 +147,76 @@ namespace Achilles.Entities.Querying
                     throw new InvalidCastException( "For lists of primitive types, include $ as the name of the property" );
                 }
 
-                instance = value;
-                return instance;
+                entity = value;
+
+                return entity;
             }
 
-            var fieldsAndProperties = GetFieldsAndProperties( instance.GetType() );
+            // Once we have the instance we can attach an entity set source to the instance relationship properties
+            var entityMapping = _model.GetEntityMapping( entity.GetType() );
+
+            var relationshipMappings = entityMapping.RelationshipMappings;
+
+            var fieldsAndProperties = GetFieldsAndProperties( entity.GetType() );
 
             foreach ( var fieldOrProperty in fieldsAndProperties )
             {
                 var memberName = fieldOrProperty.Key.ToLower();
+                var memberInfo = fieldOrProperty.Value;
 
-                var member = fieldOrProperty.Value;
+                var relationshipMapping = relationshipMappings.Where( r => r.RelationshipProperty == memberInfo ).FirstOrDefault();
+
+                if ( relationshipMapping != null )
+                {
+                    if ( relationshipMapping.IsMany )
+                    {
+                        IEntityCollection entityCollection = memberInfo as IEntityCollection;
+                    }
+                    else
+                    {
+                        // First Get the type entity we are materializing
+                        Type entityType = entity.GetType();
+
+                        object entityReferenceProperty;
+
+                        if ( memberInfo.MemberType == MemberTypes.Property )
+                        {
+                            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
+
+                            entityReferenceProperty = propertyInfo.GetValue( entity );
+                        }
+                        else
+                        {
+                            FieldInfo fieldInfo = memberInfo as FieldInfo;
+
+                            entityReferenceProperty = fieldInfo.GetValue( entity );
+                        }
+
+                        Type entityReferencePropertyType = entityReferenceProperty.GetType();
+                        MethodInfo methodOfMainProperty = entityReferencePropertyType.GetMethod( "AttachSource" );
+
+                        // Get the EntitySet<TEntity>
+                        var entityReference = entityReferencePropertyType.GetGenericArguments().First();
+                        // Get the EntitySet from the foreign key type
+                        var entitySet = _context.EntitySets[ entityReference ];
+
+                        methodOfMainProperty.Invoke( entityReferenceProperty, new object[] { entitySet } );
+
+                    }
+
+                    continue;
+                }
 
                 object value;
 
                 // Handle populating simple members on the current type
                 if ( dictionary.TryGetValue( memberName, out value ) )
                 {
-                    SetMemberValue( member, instance, value );
+                    SetMemberValue( memberInfo, entity, value );
                 }
                 else
                 {
-                    Type memberType = GetMemberType( member );
+                    Type memberType = GetMemberType( memberInfo );
 
                     // Handle populating complex members on the current type
                     if ( memberType.IsClass || memberType.IsInterface )
@@ -183,7 +234,7 @@ namespace Achilles.Entities.Querying
                                 if ( parentInstance.GetType() == memberType )
                                 {
                                     // Then this must be a 'parent' to the current type
-                                    SetMemberValue( member, instance, parentInstance );
+                                    SetMemberValue( memberInfo, entity, parentInstance );
                                 }
                             }
 
@@ -195,7 +246,7 @@ namespace Achilles.Entities.Querying
 
                         // Try to get the value of the complex member. If the member
                         // hasn't been initialized, then this will return null.
-                        object nestedInstance = GetMemberValue( member, instance );
+                        object nestedInstance = GetMemberValue( memberInfo, entity );
 
                         var genericCollectionType = typeof( IEnumerable<> );
                         var isEnumerableType = memberType.IsGenericType && genericCollectionType.IsAssignableFrom( memberType.GetGenericTypeDefinition() )
@@ -219,7 +270,7 @@ namespace Achilles.Entities.Querying
                         if ( isEnumerableType )
                         {
                             var innerType = memberType.GetGenericArguments().FirstOrDefault() ?? memberType.GetElementType();
-                            nestedInstance = MaterializeCollection( innerType, newDictionary, nestedInstance, instance );
+                            nestedInstance = MaterializeCollection( innerType, newDictionary, nestedInstance, entity );
                         }
                         else
                         {
@@ -229,16 +280,16 @@ namespace Achilles.Entities.Querying
                             }
                             else
                             {
-                                nestedInstance = Materialize( newDictionary, nestedInstance, instance );
+                                nestedInstance = Materialize( newDictionary, nestedInstance, entity );
                             }
                         }
 
-                        SetMemberValue( member, instance, nestedInstance );
+                        SetMemberValue( memberInfo, entity, nestedInstance );
                     }
                 }
             }
 
-            return instance;
+            return entity;
         }
 
         /// <summary>
@@ -335,20 +386,9 @@ namespace Achilles.Entities.Querying
                 return string.Empty;
             }
 
-            // TJT: Not needed. To be removed...
-
-            //if ( TypeActivators.Count > 0 )
-            //{
-            //    foreach ( var typeActivator in TypeActivators.OrderBy( ta => ta.Order ) )
-            //    {
-            //        if ( typeActivator.CanCreate( type ) )
-            //        {
-            //            return typeActivator.Create( type );
-            //        }
-            //    }
-            //}
-
             var instance = Activator.CreateInstance( type );
+
+            
 
             return instance;
         }
@@ -484,9 +524,9 @@ namespace Achilles.Entities.Querying
         /// </summary>
         /// <param name="type">Type</param>
         /// <returns>Dictionary of member names and member info objects</returns>
-        private Dictionary<string, object> CreateFieldAndPropertyInfoDictionary( Type type )
+        private Dictionary<string, MemberInfo> CreateFieldAndPropertyInfoDictionary( Type type )
         {
-            var dictionary = new Dictionary<string, object>();
+            var dictionary = new Dictionary<string, MemberInfo>();
 
             var properties = type.GetProperties();
 
@@ -612,7 +652,7 @@ namespace Achilles.Entities.Querying
         /// </summary>
         /// <param name="type">Type</param>
         /// <returns>Dictionary of a type's property names and their corresponding PropertyInfo</returns>
-        public Dictionary<string, object> GetFieldsAndProperties( Type type )
+        public Dictionary<string, MemberInfo> GetFieldsAndProperties( Type type )
         {
             var typeMap = TypeMapCache.GetOrAdd( type, CreateTypeMap( type ) );
 

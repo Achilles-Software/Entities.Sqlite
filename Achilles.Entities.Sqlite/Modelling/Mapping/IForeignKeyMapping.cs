@@ -40,21 +40,6 @@ namespace Achilles.Entities.Modelling.Mapping
         string Name { get; set; }
 
         /// <summary>
-        /// Gets the foreign key column name.
-        /// </summary>
-        //string ForeignKeyColumn { get; }
-
-        /// <summary>
-        /// Gets the table that a foreign key constraint refers to.
-        /// </summary>
-        //string ReferenceTable { get; }
-
-        /// <summary>
-        /// Gets the key which is the column or set of columns in the reference table that the foreign key constraint refers to.
-        /// </summary>
-        //string ReferenceColumn { get; set; }
-        
-        /// <summary>
         /// Gets the flag that indictes whether ...
         /// </summary>
         bool CascadeDelete { get; set; }

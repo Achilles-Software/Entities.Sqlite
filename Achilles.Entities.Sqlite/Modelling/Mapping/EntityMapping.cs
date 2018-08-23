@@ -60,6 +60,8 @@ namespace Achilles.Entities.Modelling.Mapping
 
         public List<IForeignKeyMapping> ForeignKeyMappings { get; set; } = new List<IForeignKeyMapping>();
 
+        public List<IRelationshipMapping> RelationshipMappings { get; set; } = new List<IRelationshipMapping>();
+
         public Type EntityType => typeof( TEntity );
 
         public string SchemaName { get; set; } = string.Empty;

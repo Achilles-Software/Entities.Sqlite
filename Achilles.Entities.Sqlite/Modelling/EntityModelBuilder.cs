@@ -61,9 +61,9 @@ namespace Achilles.Entities.Modelling
             // What should happen if an entity is referenced during model building that is
             // not in the context?
 
-            foreach ( var entitySet in context.EntitySets )
+            foreach ( var entitySetType in context.EntitySets.Keys )
             {
-                EntityMappings.GetOrAddEntityMapping( entitySet.EntityType );
+                EntityMappings.GetOrAddEntityMapping( entitySetType );
             }
 
             context.OnModelBuilding( this );

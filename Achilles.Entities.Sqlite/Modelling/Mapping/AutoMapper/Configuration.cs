@@ -30,286 +30,289 @@ using System.Collections.Generic;
 
 namespace Achilles.Entities.Mapping
 {
-    public static partial class AutoMapper
-    {
-        #region Configuration
+    // TJT: Customized Automapper is now in /Querying/EntityMaterializer.cs
+    // Remove after beta.
 
-        /// <summary>
-        /// Contains the methods and members responsible for this libraries configuration concerns.
-        /// </summary>
-        public static class Configuration
-        {
-            static Configuration()
-            {
-                IdentifierAttributeType = typeof( Id );
+    //public static partial class AutoMapper
+    //{
+    //    #region Configuration
 
-                ApplyDefaultIdentifierConventions();
-                ApplyDefaultTypeConverters();
-            }
+    //    /// <summary>
+    //    /// Contains the methods and members responsible for this libraries configuration concerns.
+    //    /// </summary>
+    //    public static class Configuration
+    //    {
+    //        static Configuration()
+    //        {
+    //            IdentifierAttributeType = typeof( Id );
 
-            /// <summary>
-            /// Current version of Slapper.AutoMapper.
-            /// </summary>
-            public static readonly Version Version = new Version( "1.0.0.6" );
+    //            ApplyDefaultIdentifierConventions();
+    //            ApplyDefaultTypeConverters();
+    //        }
 
-            /// <summary>
-            /// The attribute Type specifying that a field or property is an identifier.
-            /// </summary>
-            public static Type IdentifierAttributeType;
+    //        /// <summary>
+    //        /// Current version of Slapper.AutoMapper.
+    //        /// </summary>
+    //        public static readonly Version Version = new Version( "1.0.0.6" );
 
-            /// <summary>
-            /// Convention for finding an identifier.
-            /// </summary>
-            /// <param name="type"></param>
-            /// <returns></returns>
-            public delegate string ApplyIdentifierConvention( Type type );
+    //        /// <summary>
+    //        /// The attribute Type specifying that a field or property is an identifier.
+    //        /// </summary>
+    //        public static Type IdentifierAttributeType;
 
-            /// <summary>
-            /// Conventions for finding an identifier.
-            /// </summary>
-            public static readonly List<ApplyIdentifierConvention> IdentifierConventions = new List<ApplyIdentifierConvention>();
+    //        /// <summary>
+    //        /// Convention for finding an identifier.
+    //        /// </summary>
+    //        /// <param name="type"></param>
+    //        /// <returns></returns>
+    //        public delegate string ApplyIdentifierConvention( Type type );
 
-            /// <summary>
-            /// Type converters used to convert values from one type to another.
-            /// </summary>
-            public static readonly List<ITypeConverter> TypeConverters = new List<ITypeConverter>();
+    //        /// <summary>
+    //        /// Conventions for finding an identifier.
+    //        /// </summary>
+    //        public static readonly List<ApplyIdentifierConvention> IdentifierConventions = new List<ApplyIdentifierConvention>();
 
-            /// <summary>
-            /// Activators to instantiate types.
-            /// </summary>
-            public static readonly List<ITypeActivator> TypeActivators = new List<ITypeActivator>();
+    //        /// <summary>
+    //        /// Type converters used to convert values from one type to another.
+    //        /// </summary>
+    //        public static readonly List<ITypeConverter> TypeConverters = new List<ITypeConverter>();
 
-            /// <summary>
-            /// Applies default conventions for finding identifiers.
-            /// </summary>
-            public static void ApplyDefaultIdentifierConventions()
-            {
-                IdentifierConventions.Add( type => "Id" );
-                IdentifierConventions.Add( type => type.Name + "Id" );
-                IdentifierConventions.Add( type => type.Name + "Nbr" );
-            }
+    //        /// <summary>
+    //        /// Activators to instantiate types.
+    //        /// </summary>
+    //        public static readonly List<ITypeActivator> TypeActivators = new List<ITypeActivator>();
 
-            /// <summary>
-            /// Applies the default ITypeConverters for converting values to different types.
-            /// </summary>
-            public static void ApplyDefaultTypeConverters()
-            {
-                TypeConverters.Add( new GuidConverter() );
-                TypeConverters.Add( new EnumConverter() );
-                TypeConverters.Add( new ValueTypeConverter() );
-            }
+    //        /// <summary>
+    //        /// Applies default conventions for finding identifiers.
+    //        /// </summary>
+    //        public static void ApplyDefaultIdentifierConventions()
+    //        {
+    //            IdentifierConventions.Add( type => "Id" );
+    //            IdentifierConventions.Add( type => type.Name + "Id" );
+    //            IdentifierConventions.Add( type => type.Name + "Nbr" );
+    //        }
 
-            /// <summary>
-            /// Adds an identifier for the specified type.
-            /// Replaces any identifiers previously specified.
-            /// </summary>
-            /// <param name="type">Type</param>
-            /// <param name="identifier">Identifier</param>
-            public static void AddIdentifier( Type type, string identifier )
-            {
-                AddIdentifiers( type, new List<string> { identifier } );
-            }
+    //        /// <summary>
+    //        /// Applies the default ITypeConverters for converting values to different types.
+    //        /// </summary>
+    //        public static void ApplyDefaultTypeConverters()
+    //        {
+    //            TypeConverters.Add( new GuidConverter() );
+    //            TypeConverters.Add( new EnumConverter() );
+    //            TypeConverters.Add( new ValueTypeConverter() );
+    //        }
 
-            /// <summary>
-            /// Adds identifiers for the specified type.
-            /// Replaces any identifiers previously specified.
-            /// </summary>
-            /// <param name="type">Type</param>
-            /// <param name="identifiers">Identifiers</param>
-            public static void AddIdentifiers( Type type, IEnumerable<string> identifiers )
-            {
-                var typeMap = Cache.TypeMapCache.GetOrAdd( type, InternalHelpers.CreateTypeMap( type ) );
+    //        /// <summary>
+    //        /// Adds an identifier for the specified type.
+    //        /// Replaces any identifiers previously specified.
+    //        /// </summary>
+    //        /// <param name="type">Type</param>
+    //        /// <param name="identifier">Identifier</param>
+    //        public static void AddIdentifier( Type type, string identifier )
+    //        {
+    //            AddIdentifiers( type, new List<string> { identifier } );
+    //        }
 
-                typeMap.Identifiers = identifiers;
-            }
+    //        /// <summary>
+    //        /// Adds identifiers for the specified type.
+    //        /// Replaces any identifiers previously specified.
+    //        /// </summary>
+    //        /// <param name="type">Type</param>
+    //        /// <param name="identifiers">Identifiers</param>
+    //        public static void AddIdentifiers( Type type, IEnumerable<string> identifiers )
+    //        {
+    //            var typeMap = Cache.TypeMapCache.GetOrAdd( type, InternalHelpers.CreateTypeMap( type ) );
 
-            /// <summary>
-            /// Defines methods that can convert values from one type to another. 
-            /// </summary>
-            public interface ITypeConverter
-            {
-                /// <summary>
-                /// Converts the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value is to be converted to.</param>
-                /// <returns>Converted value.</returns>
-                object Convert( object value, Type type );
+    //            typeMap.Identifiers = identifiers;
+    //        }
 
-                /// <summary>
-                /// Indicates whether it can convert the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value needs to be converted to.</param>
-                /// <returns>Boolean response.</returns>
-                bool CanConvert( object value, Type type );
+    //        /// <summary>
+    //        /// Defines methods that can convert values from one type to another. 
+    //        /// </summary>
+    //        public interface ITypeConverter
+    //        {
+    //            /// <summary>
+    //            /// Converts the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value is to be converted to.</param>
+    //            /// <returns>Converted value.</returns>
+    //            object Convert( object value, Type type );
 
-                /// <summary>
-                /// Order to execute an <see cref="ITypeConverter"/> in.
-                /// </summary>
-                int Order { get; }
-            }
+    //            /// <summary>
+    //            /// Indicates whether it can convert the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value needs to be converted to.</param>
+    //            /// <returns>Boolean response.</returns>
+    //            bool CanConvert( object value, Type type );
 
-            /// <summary>
-            /// Converts values to Guids.
-            /// </summary>
-            public class GuidConverter : ITypeConverter
-            {
-                #region Implementation of ITypeConverter
+    //            /// <summary>
+    //            /// Order to execute an <see cref="ITypeConverter"/> in.
+    //            /// </summary>
+    //            int Order { get; }
+    //        }
 
-                /// <summary>
-                /// Converts the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value is to be converted to.</param>
-                /// <returns>Converted value.</returns>
-                public object Convert( object value, Type type )
-                {
-                    object convertedValue = null;
+    //        /// <summary>
+    //        /// Converts values to Guids.
+    //        /// </summary>
+    //        public class GuidConverter : ITypeConverter
+    //        {
+    //            #region Implementation of ITypeConverter
 
-                    if ( value is string )
-                    {
-                        convertedValue = new Guid( value as string );
-                    }
-                    if ( value is byte[] )
-                    {
-                        convertedValue = new Guid( value as byte[] );
-                    }
+    //            /// <summary>
+    //            /// Converts the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value is to be converted to.</param>
+    //            /// <returns>Converted value.</returns>
+    //            public object Convert( object value, Type type )
+    //            {
+    //                object convertedValue = null;
 
-                    return convertedValue;
-                }
+    //                if ( value is string )
+    //                {
+    //                    convertedValue = new Guid( value as string );
+    //                }
+    //                if ( value is byte[] )
+    //                {
+    //                    convertedValue = new Guid( value as byte[] );
+    //                }
 
-                /// <summary>
-                /// Indicates whether it can convert the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value needs to be converted to.</param>
-                /// <returns>Boolean response.</returns>
-                public bool CanConvert( object value, Type type )
-                {
-                    var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
-                    return conversionType == typeof( Guid );
-                }
+    //                return convertedValue;
+    //            }
 
-                /// <summary>
-                /// Order to execute an <see cref="ITypeConverter"/> in.
-                /// </summary>
-                public int Order { get { return 100; } }
+    //            /// <summary>
+    //            /// Indicates whether it can convert the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value needs to be converted to.</param>
+    //            /// <returns>Boolean response.</returns>
+    //            public bool CanConvert( object value, Type type )
+    //            {
+    //                var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
+    //                return conversionType == typeof( Guid );
+    //            }
 
-                #endregion
-            }
+    //            /// <summary>
+    //            /// Order to execute an <see cref="ITypeConverter"/> in.
+    //            /// </summary>
+    //            public int Order { get { return 100; } }
 
-            /// <summary>
-            /// Converts values to Enums.
-            /// </summary>
-            public class EnumConverter : ITypeConverter
-            {
-                #region Implementation of ITypeConverter
+    //            #endregion
+    //        }
 
-                /// <summary>
-                /// Converts the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value is to be converted to.</param>
-                /// <returns>Converted value.</returns>
-                public object Convert( object value, Type type )
-                {
-                    // Handle Nullable types
-                    var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
+    //        /// <summary>
+    //        /// Converts values to Enums.
+    //        /// </summary>
+    //        public class EnumConverter : ITypeConverter
+    //        {
+    //            #region Implementation of ITypeConverter
 
-                    object convertedValue = Enum.Parse( conversionType, value.ToString() );
+    //            /// <summary>
+    //            /// Converts the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value is to be converted to.</param>
+    //            /// <returns>Converted value.</returns>
+    //            public object Convert( object value, Type type )
+    //            {
+    //                // Handle Nullable types
+    //                var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
 
-                    return convertedValue;
-                }
+    //                object convertedValue = Enum.Parse( conversionType, value.ToString() );
 
-                /// <summary>
-                /// Indicates whether it can convert the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value needs to be converted to.</param>
-                /// <returns>Boolean response.</returns>
-                public bool CanConvert( object value, Type type )
-                {
-                    var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
-                    return conversionType.IsEnum;
-                }
+    //                return convertedValue;
+    //            }
 
-                /// <summary>
-                /// Order to execute an <see cref="ITypeConverter"/> in.
-                /// </summary>
-                public int Order { get { return 100; } }
+    //            /// <summary>
+    //            /// Indicates whether it can convert the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value needs to be converted to.</param>
+    //            /// <returns>Boolean response.</returns>
+    //            public bool CanConvert( object value, Type type )
+    //            {
+    //                var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
+    //                return conversionType.IsEnum;
+    //            }
 
-                #endregion
-            }
+    //            /// <summary>
+    //            /// Order to execute an <see cref="ITypeConverter"/> in.
+    //            /// </summary>
+    //            public int Order { get { return 100; } }
 
-            /// <summary>
-            /// Converts values types.
-            /// </summary>
-            public class ValueTypeConverter : ITypeConverter
-            {
-                #region Implementation of ITypeConverter
+    //            #endregion
+    //        }
 
-                /// <summary>
-                /// Converts the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value is to be converted to.</param>
-                /// <returns>Converted value.</returns>
-                public object Convert( object value, Type type )
-                {
-                    // Handle Nullable types
-                    var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
+    //        /// <summary>
+    //        /// Converts values types.
+    //        /// </summary>
+    //        public class ValueTypeConverter : ITypeConverter
+    //        {
+    //            #region Implementation of ITypeConverter
 
-                    var convertedValue = System.Convert.ChangeType( value, conversionType );
+    //            /// <summary>
+    //            /// Converts the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value is to be converted to.</param>
+    //            /// <returns>Converted value.</returns>
+    //            public object Convert( object value, Type type )
+    //            {
+    //                // Handle Nullable types
+    //                var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
 
-                    return convertedValue;
-                }
+    //                var convertedValue = System.Convert.ChangeType( value, conversionType );
 
-                /// <summary>
-                /// Indicates whether it can convert the given value to the requested type.
-                /// </summary>
-                /// <param name="value">Value to convert.</param>
-                /// <param name="type">Type the value needs to be converted to.</param>
-                /// <returns>Boolean response.</returns>
-                public bool CanConvert( object value, Type type )
-                {
-                    return type.IsValueType && !type.IsEnum && type != typeof( Guid );
-                }
+    //                return convertedValue;
+    //            }
 
-                /// <summary>
-                /// Order to execute an <see cref="ITypeConverter"/> in.
-                /// </summary>
-                public int Order { get { return 1000; } }
+    //            /// <summary>
+    //            /// Indicates whether it can convert the given value to the requested type.
+    //            /// </summary>
+    //            /// <param name="value">Value to convert.</param>
+    //            /// <param name="type">Type the value needs to be converted to.</param>
+    //            /// <returns>Boolean response.</returns>
+    //            public bool CanConvert( object value, Type type )
+    //            {
+    //                return type.IsValueType && !type.IsEnum && type != typeof( Guid );
+    //            }
 
-                #endregion
-            }
+    //            /// <summary>
+    //            /// Order to execute an <see cref="ITypeConverter"/> in.
+    //            /// </summary>
+    //            public int Order { get { return 1000; } }
 
-            /// <summary>
-            /// Defines an interface for an activator for a specific type.
-            /// </summary>
-            public interface ITypeActivator
-            {
-                /// <summary>
-                /// Creates the type.
-                /// </summary>
-                /// <param name="type">The type to create.</param>
-                /// <returns>The created type.</returns>
-                object Create( Type type );
+    //            #endregion
+    //        }
 
-                /// <summary>
-                /// Indicates whether it can create the type.
-                /// </summary>
-                /// <param name="type">The type to create.</param>
-                /// <returns>Boolean response.</returns>
-                bool CanCreate( Type type );
+    //        /// <summary>
+    //        /// Defines an interface for an activator for a specific type.
+    //        /// </summary>
+    //        public interface ITypeActivator
+    //        {
+    //            /// <summary>
+    //            /// Creates the type.
+    //            /// </summary>
+    //            /// <param name="type">The type to create.</param>
+    //            /// <returns>The created type.</returns>
+    //            object Create( Type type );
 
-                /// <summary>
-                /// The order to try the activator in.
-                /// </summary>
-                int Order { get; }
-            }
-        }
+    //            /// <summary>
+    //            /// Indicates whether it can create the type.
+    //            /// </summary>
+    //            /// <param name="type">The type to create.</param>
+    //            /// <returns>Boolean response.</returns>
+    //            bool CanCreate( Type type );
 
-        #endregion Configuration
-    }
+    //            /// <summary>
+    //            /// The order to try the activator in.
+    //            /// </summary>
+    //            int Order { get; }
+    //        }
+    //    }
+
+    //    #endregion Configuration
+    //}
 }

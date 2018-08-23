@@ -66,7 +66,7 @@ namespace Achilles.Entities
 
         #region Public CRUD Methods
 
-        // TODO: Add documented user interface
+        // TODO: Add documented user interface on IRepository
 
         public int Add( TEntity entity ) 
             => _context.Add( entity );
@@ -112,6 +112,11 @@ namespace Achilles.Entities
         public IEnumerator<TEntity> GetEnumerator() => EntityQueryable.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => EntityQueryable.GetEnumerator();
+
+        public IEnumerable<TSource> GetSource<TSource>( TSource t ) where TSource : class
+        {
+            return (IEnumerable<TSource>)EntityQueryable.Cast<TSource>();
+        }
 
         #endregion
     }

@@ -19,7 +19,7 @@ using System.ComponentModel;
 
 namespace Achilles.Entities
 {
-    public sealed class EntityCollection<TEntity> : ICollection<TEntity>, IListSource, IEntityCollection
+    public sealed class EntityCollection<TEntity> : IEntityCollection<TEntity>, IEntityCollection, ICollection<TEntity>, IListSource
         where TEntity : class
     {
         #region Private Fields
@@ -38,6 +38,15 @@ namespace Achilles.Entities
             var test = 6;
         }
 
+        #endregion
+
+        #region IEntityCollection Implementation
+
+        void IEntityCollection<TEntity>.AttachSource( IEnumerable<TEntity> source )
+        {
+            _source = source;
+        }
+        
         #endregion
 
         #region ICollection<TEntity> Implementation
@@ -91,6 +100,8 @@ namespace Achilles.Entities
         {
             throw new NotImplementedException();
         }
+
+        
 
         #endregion
     }

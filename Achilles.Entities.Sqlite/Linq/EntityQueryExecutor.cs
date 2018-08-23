@@ -32,7 +32,7 @@ namespace Achilles.Entities.Linq
             _context = context;
             _connection = context.Database.Connection;
             //_transaction = transaction;
-            _materializer = new EntityMaterializer( context.Model );
+            _materializer = new EntityMaterializer( context );
         }
 
         #endregion

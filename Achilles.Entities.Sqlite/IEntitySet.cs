@@ -11,6 +11,7 @@
 #region Namespaces
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -20,12 +21,14 @@ namespace Achilles.Entities
     /// Internal API for <see cref="EntitySet{TEntity}"/>
     /// </summary>
     /// <remarks>An internal interface for now.</remarks>
-    internal interface IEntitySet
+    public interface IEntitySet
     {
         /// <summary>
         /// Returns the entity set generic type.
         /// </summary>
         /// <returns></returns>
         Type EntityType { get; }
+
+        IEnumerable<TSource> GetSource<TSource>( TSource source ) where TSource : class;
     }
 }

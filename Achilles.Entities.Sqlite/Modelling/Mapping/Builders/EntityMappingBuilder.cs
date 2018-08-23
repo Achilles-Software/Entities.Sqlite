@@ -33,8 +33,6 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 
         private readonly List<ColumnMappingBuilder> _columnMappingBuilders = new List<ColumnMappingBuilder>();
         private readonly List<IndexMappingBuilder> _indexMappingBuilders = new List<IndexMappingBuilder>();
-
-        // TODO: Make single RelationshipMappingBuilder
         private readonly List<HasManyMappingBuilder> _hasManyMappingBuilders = new List<HasManyMappingBuilder>();
         private readonly List<HasOneMappingBuilder<TEntity>> _hasOneMappingBuilders = new List<HasOneMappingBuilder<TEntity>>();
 
@@ -100,8 +98,8 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         {
             var relationship = ReflectionHelper.GetMemberInfo( relationshipPropertyLambda );
 
-            if (  _hasManyMappingBuilders.Any( builder => builder.Relationship == relationship )  ||
-                _hasOneMappingBuilders.Any( builder => builder.Relationship == relationship )  )
+            if (  _hasManyMappingBuilders.Any( builder => builder.RelationshipProperty == relationship )  ||
+                _hasOneMappingBuilders.Any( builder => builder.RelationshipProperty == relationship )  )
             {
                 throw new Exception( $"Duplicate mapping detected. Relationship property '{relationship.Name}' is already mapped." );
             }
@@ -117,8 +115,8 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         {
             var relationship = ReflectionHelper.GetMemberInfo( relationshipPropertyLambda );
 
-            if ( _hasManyMappingBuilders.Any( builder => builder.Relationship == relationship ) ||
-                _hasOneMappingBuilders.Any( builder => builder.Relationship == relationship ) )
+            if ( _hasManyMappingBuilders.Any( builder => builder.RelationshipProperty == relationship ) ||
+                _hasOneMappingBuilders.Any( builder => builder.RelationshipProperty == relationship ) )
             {
                 throw new Exception( $"Duplicate mapping detected. Relationship property '{relationship.Name}' is already mapped." );
             }
@@ -162,25 +160,32 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
             // Add foreign key mappings...
 
             // HasMany mappings may have the foreign key constaint on another Entity ( unless self referencing )
-            var hasManyFKMappings = _hasManyMappingBuilders.Select( b => b.Build( EntityMapping ) ).ToList();
+            var hasManyMappings = _hasManyMappingBuilders.Select( b => b.Build( EntityMapping ) ).ToList();
 
-            foreach ( var foreignKeyMapping in hasManyFKMappings )
+            foreach ( var hasManyMapping in hasManyMappings )
             {
-                var t = foreignKeyMapping.ForeignKeyProperty.DeclaringType;
+                var t = hasManyMapping.ForeignKeyMapping.ForeignKeyProperty.DeclaringType;
 
                 if ( t != EntityType )
                 {
                     var foreignKeyConstraintMapping = _entityMappings.GetOrAddEntityMapping( t );
-                    foreignKeyConstraintMapping.ForeignKeyMappings.Add( foreignKeyMapping );
+                    foreignKeyConstraintMapping.ForeignKeyMappings.Add( hasManyMapping.ForeignKeyMapping );
                 }
                 else
                 {
-                    EntityMapping.ForeignKeyMappings.Add( foreignKeyMapping );
+                    EntityMapping.ForeignKeyMappings.Add( hasManyMapping.ForeignKeyMapping );
                 }
+
+                EntityMapping.RelationshipMappings.Add( hasManyMapping );
             }
 
-            var hasOneFKMappings = _hasOneMappingBuilders.Select( b => b.Build( EntityMapping) ).ToList();
-            EntityMapping.ForeignKeyMappings.AddRange( hasOneFKMappings );
+            var hasOneMappings = _hasOneMappingBuilders.Select( b => b.Build( EntityMapping ) ).ToList();
+
+            foreach ( var hasOneMapping in hasOneMappings )
+            {
+                EntityMapping.RelationshipMappings.Add( hasOneMapping );
+                EntityMapping.ForeignKeyMappings.Add( hasOneMapping.ForeignKeyMapping );
+            }
 
             return EntityMapping;
         }

@@ -42,7 +42,7 @@ namespace Achilles.Entities
         private IDataContextService _contextService = null;
         private IRelationalCommandBuilder _commandBuilder = null;
 
-        private List<IEntitySet> _entitySets = new List<IEntitySet>();
+        private Dictionary<Type, IEntitySet> _entitySets = new Dictionary<Type, IEntitySet>();
         
         private bool _isConfiguring = false;
         private bool _isModelBuilding = false;
@@ -325,12 +325,12 @@ namespace Achilles.Entities
 
         #region Internal Methods
 
-        internal void AddEntitySet( IEntitySet entitySet )
+        internal void AddEntitySet<TEntity>( EntitySet<TEntity> entitySet ) where TEntity : class
         {
-            _entitySets.Add( entitySet );
+            _entitySets.Add( typeof(TEntity), entitySet );
         }
 
-        internal List<IEntitySet> EntitySets => _entitySets;
+        internal Dictionary<Type, IEntitySet> EntitySets => _entitySets;
 
         #endregion
 

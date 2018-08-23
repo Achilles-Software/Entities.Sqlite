@@ -10,7 +10,10 @@
 
 namespace Achilles.Entities
 {
-    public interface IEntityCollection
+    /// <summary>
+    /// Marker interface
+    /// </summary>
+    internal interface IEntityCollection
     {
     }
 }

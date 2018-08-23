@@ -21,7 +21,7 @@ using System.Reflection;
 namespace Achilles.Entities.Modelling.Mapping.Builders
 {
     /// <summary>
-    /// Implements the <see cref="IHasManyMappingBuilder"/> interface to fluently configure
+    /// Implements the <see cref="IHasManyMappingBuilder"/> interface to fluently build
     /// a 1-many foreign key relationship.
     /// </summary>
     public class HasManyMappingBuilder : IHasManyMappingBuilder
@@ -37,41 +37,28 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Constructs a HasManyMappingBuilder from the propertyInfo paarameter.
         /// </summary>
-        /// <param name="relationship">The HasMany relationship property or field.</param>
+        /// <param name="relationshipProperty">The HasMany relationship property or field.</param>
         /// <exception cref="ArgumentNullException">
         /// Thrown when the relationship property or field is null.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// Thrown when the relationship property or field is not an <see cref="EntityCollection{TEntity}"/>.
+        /// Thrown when the relationship property or field type is not an <see cref="EntityCollection{TEntity}"/>.
         /// </exception>
-        public HasManyMappingBuilder( MemberInfo relationship )
+        public HasManyMappingBuilder( MemberInfo relationshipProperty )
         {
-            Relationship = relationship ?? throw new ArgumentNullException( nameof( relationship ) );
+            RelationshipProperty = relationshipProperty ?? throw new ArgumentNullException( nameof( relationshipProperty ) );
 
-            if ( Relationship.GetPropertyType().GetInterface( nameof( IEntityCollection ) ) == null )
+            if ( RelationshipProperty.GetPropertyType().GetInterface( nameof( IEntityCollection ) ) == null )
             {
-                throw new ArgumentException( nameof( relationship ) );
+                throw new ArgumentException( nameof( relationshipProperty ) );
             }
-
-            ForeignKeyMapping = CreateForeignKeyMapping( relationship );
         }
 
         #endregion
 
-        private IForeignKeyMapping ForeignKeyMapping { get; }
+        #region Public API
 
-        #region Public Properties
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal MemberInfo Relationship { get; }
-
-        #endregion
-
-        public Type PropertyType => Relationship.GetPropertyType();
-
-        /// <inheritsdoc/>
+        // <inheritsdoc/>
         public IForeignKeyMappingBuilder WithForeignKey<TEntity>( Expression<Func<TEntity, object>> foreignKeyLambda )
         {
             var foreignKey = ReflectionHelper.GetMemberInfo( foreignKeyLambda );
@@ -81,9 +68,29 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
             return _foreignKeyMappingBuilder;
         }
 
-        internal IForeignKeyMapping Build( IEntityMapping entityMapping ) => _foreignKeyMappingBuilder.Build();
+        #endregion
 
-        protected virtual IForeignKeyMapping CreateForeignKeyMapping( MemberInfo relationshipInfo ) 
-            => new ForeignKeyMapping( relationshipInfo );
+        #region Private/Internal Properties and Methods
+
+        /// <summary>
+        /// Gets the 1-1 relationship property<see cref="MemberInfo"/> instance associated with this builder.
+        /// </summary>
+        internal MemberInfo RelationshipProperty { get; }
+
+        /// <summary>
+        /// Builds a <see cref="IRelationshipMapping"/>.
+        /// </summary>
+        /// <returns>A <see cref="IRelationshipMapping"/> instance.</returns>
+        internal RelationshipMapping Build( IEntityMapping entityMapping )
+        {
+            return new RelationshipMapping()
+            {
+                RelationshipProperty = RelationshipProperty,
+                ForeignKeyMapping = _foreignKeyMappingBuilder.Build(),
+                IsMany = true,
+            };
+        }
+
+        #endregion
     }
 }

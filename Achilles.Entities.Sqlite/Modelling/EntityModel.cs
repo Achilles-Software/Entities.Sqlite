@@ -39,22 +39,22 @@ namespace Achilles.Entities.Modelling
 
         public IReadOnlyCollection<IEntityMapping> EntityMappings => _entityMappings.Values as IReadOnlyCollection<IEntityMapping>;
 
-        public IEntityMapping GetOrAddEntityMapping( Type entityType )
-        {
-            IEntityMapping mapping;
+        //public IEntityMapping GetOrAddEntityMapping( Type entityType )
+        //{
+        //    IEntityMapping mapping;
 
-            if ( !_entityMappings.TryGetValue( entityType, out mapping ) )
-            {
-                var EntityMappingType = typeof( EntityMapping<> );
-                var mapType = EntityMappingType.MakeGenericType( entityType );
+        //    if ( !_entityMappings.TryGetValue( entityType, out mapping ) )
+        //    {
+        //        var EntityMappingType = typeof( EntityMapping<> );
+        //        var mapType = EntityMappingType.MakeGenericType( entityType );
 
-                mapping = Activator.CreateInstance( mapType ) as IEntityMapping;
+        //        mapping = Activator.CreateInstance( mapType ) as IEntityMapping;
 
-                _entityMappings[ entityType ] = mapping;
-            }
+        //        _entityMappings[ entityType ] = mapping;
+        //    }
 
-            return mapping;
-        }
+        //    return mapping;
+        //}
 
         public IEntityMapping GetEntityMapping<TEntity>() where TEntity : class
         {

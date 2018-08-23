@@ -25,7 +25,7 @@ namespace Achilles.Entities.Storage
         /// <summary>
         /// Opens the connection to the database.
         /// </summary>
-        /// <returns>True if the connection not previously opened.</returns>
+        /// <returns>True if the connection was not previously opened.</returns>
         bool Open();
 
         Task<bool> OpenAsync( CancellationToken cancellationToken );
