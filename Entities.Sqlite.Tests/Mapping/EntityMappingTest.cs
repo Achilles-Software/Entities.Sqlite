@@ -69,11 +69,11 @@ namespace Entities.Sqlite.Tests
                     Country = "Canada"
                 };
 
-                var country = addressEntityMapping.GetPropertyValue( testAddress, "Country" );
+                var country = addressEntityMapping.GetColumn( testAddress, "Country" );
                 Assert.Equal( "Canada", country );
 
-                addressEntityMapping.SetPropertyValue( testAddress, "Country", "USA" );
-                var newCountry = addressEntityMapping.GetPropertyValue( testAddress, "Country" );
+                addressEntityMapping.SetColumn( testAddress, "Country", "USA" );
+                var newCountry = addressEntityMapping.GetColumn( testAddress, "Country" );
 
                 Assert.Equal( "USA", newCountry );
             }

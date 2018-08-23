@@ -28,7 +28,7 @@ namespace Achilles.Entities.Sqlite.SqlStatements.Delete
             var keyMembers = _entityMapping.ColumnMappings.Where( p => p.IsKey ).ToList();
 
             var pk = keyMembers.First();
-            var pkValue = _entityMapping.GetPropertyValue( _entity, pk.PropertyName );
+            var pkValue = _entityMapping.GetColumn( _entity, pk.PropertyName );
 
             var pkParameter = _parameters.Add( pkValue );
 

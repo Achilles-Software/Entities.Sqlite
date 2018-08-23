@@ -1,4 +1,5 @@
 ﻿using Achilles.Entities;
+using Achilles.Entities.Linq;
 using System.Collections.Generic;
 
 namespace Entities.Sqlite.Tests.Data

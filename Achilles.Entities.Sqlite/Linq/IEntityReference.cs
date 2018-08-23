@@ -10,7 +10,7 @@
 
 using System.Collections.Generic;
 
-namespace Achilles.Entities
+namespace Achilles.Entities.Linq
 {
     /// <summary>
     /// Marker interface

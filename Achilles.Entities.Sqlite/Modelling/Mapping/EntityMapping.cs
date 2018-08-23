@@ -29,10 +29,14 @@ namespace Achilles.Entities.Modelling.Mapping
     {
         #region Fields
 
-        private Dictionary<string, MemberInfo> _columnMapping;
+        private Dictionary<string, MemberInfo> _columnProperties;
+        private Dictionary<string, MemberInfo> _foreignKeyProperties;
+        private Dictionary<string, MemberInfo> _relationshipProperties;
 
-        private Dictionary<string, Func<TEntity, object>> Getters = new Dictionary<string, Func<TEntity, object>>();
-        private Dictionary<string, Action<TEntity,object>> Setters = new Dictionary<string, Action<TEntity,object>>();
+        //private Dictionary<string, Func<TEntity, object>> ColumnGetters = new Dictionary<string, Func<TEntity, object>>();
+        //private Dictionary<string, Action<TEntity,object>> ColumnSetters = new Dictionary<string, Action<TEntity,object>>();
+
+        private Dictionary<string, MemberAccessor> ColumnAccessors = new Dictionary<string, MemberAccessor>();
 
         #endregion
 
@@ -50,9 +54,9 @@ namespace Achilles.Entities.Modelling.Mapping
 
         #region Public Properties
 
-        public object GetPropertyValue<T>( T entity, string propertyName ) where T : class => Getters[ propertyName ].Invoke( entity as TEntity );
+        public object GetColumn<T>( T entity, string propertyName ) where T : class => ColumnAccessors[ propertyName ].GetValue( entity as TEntity );
 
-        public void SetPropertyValue<T>( T entity, string propertyName, object value ) where T: class => Setters[ propertyName ].Invoke( entity as TEntity, value );
+        public void SetColumn<T>( T entity, string propertyName, object value ) where T: class => ColumnAccessors[ propertyName ].SetValue( entity as TEntity, value );
 
         public List<IColumnMapping> ColumnMappings { get; set; } = new List<IColumnMapping>();
 
@@ -76,82 +80,27 @@ namespace Achilles.Entities.Modelling.Mapping
         
         public void Compile()
         {
-            _columnMapping = ColumnMappings.ToDictionary( m => m.ColumnName, m => m.ColumnInfo, IsCaseSensitive? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase );
+            _columnProperties = ColumnMappings.ToDictionary( m => m.ColumnName, m => m.ColumnInfo, IsCaseSensitive? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase );
 
-            CreateGetters();
-            CreateSetters();
+            CreateAccessors();
         }
 
         #endregion
 
         #region Private Methods
 
-        private void CreateGetters()
+        private void CreateAccessors()
         {
+            // Columns...
             foreach ( var columnMapping in ColumnMappings )
             {
-                if ( columnMapping.ColumnInfo is PropertyInfo propertyInfo )
-                {
-                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
-
-                    var body = Expression.Call( instance, propertyInfo.GetGetMethod() );
-                    var parameters = new ParameterExpression[] { instance };
-                    Expression conversion = Expression.Convert( body, typeof( object ) );
-
-                    var getter = Expression.Lambda<Func<TEntity, object>>( conversion, parameters ).Compile();
-
-                    Getters.Add( propertyInfo.Name, getter );
-                }
-                else if ( columnMapping.ColumnInfo is FieldInfo field )
-                {
-                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
-
-                    MemberExpression fieldExpression = Expression.Field( instance, field );
-                    var parameters = new ParameterExpression[] { instance };
-                    Expression conversion = Expression.Convert( fieldExpression, typeof( object ) );
-
-                    var getter = Expression.Lambda<Func<TEntity, object>>( conversion, parameters ).Compile();
-
-                    Getters.Add( field.Name, getter );
-                }
+                ColumnAccessors.Add( columnMapping.PropertyName, new ColumnAccessor<TEntity>( columnMapping.ColumnInfo ) );
             }
         }
 
-        private void CreateSetters()
+
+        private void CreateRelationshipSetters()
         {
-            foreach ( var columnMapping in ColumnMappings )
-            {
-                if ( columnMapping.ColumnInfo is PropertyInfo propertyInfo )
-                {
-                    var setMethod = propertyInfo.GetSetMethod();
-                    var setMethodParameterType = setMethod.GetParameters().First().ParameterType;
-
-                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
-                    var parameterExpression = Expression.Parameter( typeof( object ), "value" );
-                    Expression conversion = Expression.Convert( parameterExpression, setMethodParameterType );
-
-                    var body = Expression.Call( instance, setMethod, conversion );
-                    var parameters = new ParameterExpression[] { instance, parameterExpression };
-
-                    var setter = Expression.Lambda<Action<TEntity, object>>( body, parameters ).Compile();
-
-                    Setters.Add( propertyInfo.Name, setter );
-                }
-                else if ( columnMapping.ColumnInfo is FieldInfo field )
-                {
-                    ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
-                    ParameterExpression valueExpression = Expression.Parameter( typeof( object ), "value" );
-                    Expression conversion = Expression.Convert( valueExpression, field.FieldType );
-
-                    MemberExpression fieldExpression = Expression.Field( instance, field );
-                    BinaryExpression assignExp = Expression.Assign( fieldExpression, conversion );
-
-                    var setter = Expression.Lambda<Action<TEntity, object>>
-                        ( assignExp, instance, valueExpression ).Compile();
-
-                    Setters.Add( field.Name, setter );
-                }
-            }
         }
 
         /// <summary>

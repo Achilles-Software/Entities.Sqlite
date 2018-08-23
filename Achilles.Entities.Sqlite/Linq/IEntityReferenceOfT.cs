@@ -8,16 +8,13 @@
 
 #endregion
 
-#region Namespaces
-
-using System.Collections.Generic;
-
-#endregion
-
-namespace Achilles.Entities
+namespace Achilles.Entities.Linq
 {
-    internal interface IEntityCollection<TEntity>
+    public interface IEntityReference<TEntity>
     {
-        void AttachSource( IEnumerable<TEntity> source );
+        /// <summary>
+        /// Gets the wrapped entity.
+        /// </summary>
+        TEntity Entity { get; }
     }
 }

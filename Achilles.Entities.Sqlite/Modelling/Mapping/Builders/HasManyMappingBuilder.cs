@@ -11,6 +11,7 @@
 #region Namespaces
 
 using Achilles.Entities.Extensions;
+using Achilles.Entities.Linq;
 using Achilles.Entities.Reflection;
 using System;
 using System.Linq.Expressions;

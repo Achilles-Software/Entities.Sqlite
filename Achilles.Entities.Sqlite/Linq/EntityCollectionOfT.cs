@@ -17,7 +17,7 @@ using System.ComponentModel;
 
 #endregion
 
-namespace Achilles.Entities
+namespace Achilles.Entities.Linq
 {
     public sealed class EntityCollection<TEntity> : IEntityCollection<TEntity>, IEntityCollection, ICollection<TEntity>, IListSource
         where TEntity : class

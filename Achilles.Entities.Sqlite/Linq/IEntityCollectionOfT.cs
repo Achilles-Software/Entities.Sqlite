@@ -8,12 +8,16 @@
 
 #endregion
 
-namespace Achilles.Entities
+#region Namespaces
+
+using System.Collections.Generic;
+
+#endregion
+
+namespace Achilles.Entities.Linq
 {
-    /// <summary>
-    /// Marker interface
-    /// </summary>
-    internal interface IEntityCollection
+    internal interface IEntityCollection<TEntity>
     {
+        void AttachSource( IEnumerable<TEntity> source );
     }
 }

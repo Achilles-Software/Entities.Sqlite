@@ -11,10 +11,11 @@
 #region Namespaces
 
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 
-namespace Achilles.Entities
+namespace Achilles.Entities.Linq
 {
     public sealed class EntityReference<TEntity> : IEntityReference<TEntity>, IEntityReference
         where TEntity : class
@@ -53,6 +54,7 @@ namespace Achilles.Entities
             }
         }
 
+        // TJT: Make a direct internal property (Source) reference through a compiled lambda expression
         public void AttachSource( IEnumerable<TEntity> source )
         {
             _source = source;
@@ -64,7 +66,11 @@ namespace Achilles.Entities
 
         private void Load()
         {
-
+            if ( !_isLoaded && _source != null )
+            {
+                _entity = Enumerable.SingleOrDefault( _source );
+                _isLoaded = true;
+            }
         }
         
         #endregion

@@ -200,7 +200,7 @@ namespace Achilles.Entities
                // TJT: Sqlite specific
                 var rowId = Database.Connection.LastInsertRowId();
 
-                entityMapping.SetPropertyValue( entity, key.PropertyName, rowId );
+                entityMapping.SetColumn( entity, key.PropertyName, rowId );
             }
 
             return result;

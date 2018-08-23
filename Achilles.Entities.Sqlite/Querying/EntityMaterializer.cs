@@ -10,7 +10,6 @@
 
 #region Namespaces
 
-using Achilles.Entities.Extensions;
 using Achilles.Entities.Modelling;
 using Achilles.Entities.Querying.TypeConverters;
 using System;
@@ -170,7 +169,7 @@ namespace Achilles.Entities.Querying
                 {
                     if ( relationshipMapping.IsMany )
                     {
-                        IEntityCollection entityCollection = memberInfo as IEntityCollection;
+                        //IEntityCollection entityCollection = memberInfo as IEntityCollection;
                     }
                     else
                     {
@@ -183,6 +182,7 @@ namespace Achilles.Entities.Querying
                         {
                             PropertyInfo propertyInfo = memberInfo as PropertyInfo;
 
+                            // Gets the property EntityReference<TEntity> class instance 
                             entityReferenceProperty = propertyInfo.GetValue( entity );
                         }
                         else
@@ -193,15 +193,14 @@ namespace Achilles.Entities.Querying
                         }
 
                         Type entityReferencePropertyType = entityReferenceProperty.GetType();
-                        MethodInfo methodOfMainProperty = entityReferencePropertyType.GetMethod( "AttachSource" );
+
+                        MethodInfo attachSourceMethod = entityReferencePropertyType.GetMethod( "AttachSource" );
 
                         // Get the EntitySet<TEntity>
                         var entityReference = entityReferencePropertyType.GetGenericArguments().First();
-                        // Get the EntitySet from the foreign key type
                         var entitySet = _context.EntitySets[ entityReference ];
 
-                        methodOfMainProperty.Invoke( entityReferenceProperty, new object[] { entitySet } );
-
+                        attachSourceMethod.Invoke( entityReferenceProperty, new object[] { entitySet } );
                     }
 
                     continue;

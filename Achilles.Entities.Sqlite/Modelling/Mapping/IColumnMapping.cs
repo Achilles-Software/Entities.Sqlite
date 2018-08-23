@@ -18,7 +18,7 @@ using System.Reflection;
 namespace Achilles.Entities.Modelling.Mapping
 {
     /// <summary>
-    /// Represents an entity column mapping.
+    /// Represents an entity property or field <see cref="MemberInfo"/> to database column mapping.
     /// </summary>
     public interface IColumnMapping
     {

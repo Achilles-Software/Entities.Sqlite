@@ -8,13 +8,12 @@
 
 #endregion
 
-namespace Achilles.Entities
+namespace Achilles.Entities.Linq
 {
-    public interface IEntityReference<TEntity>
+    /// <summary>
+    /// Marker interface
+    /// </summary>
+    internal interface IEntityCollection
     {
-        /// <summary>
-        /// Gets the wrapped entity.
-        /// </summary>
-        TEntity Entity { get; }
     }
 }

@@ -38,9 +38,9 @@ namespace Achilles.Entities.Modelling.Mapping
         /// </summary>
         bool IsCaseSensitive { get; set; }
 
-        object GetPropertyValue<T>( T entity, string propertyName ) where T : class ;
+        object GetColumn<T>( T entity, string propertyName ) where T : class ;
 
-        void SetPropertyValue<T>( T entity, string propertyName, object value ) where T : class;
+        void SetColumn<T>( T entity, string propertyName, object value ) where T : class;
 
         void Compile();
     }
