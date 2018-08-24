@@ -17,7 +17,7 @@ using System.Linq;
 
 namespace Achilles.Entities.Linq
 {
-    public sealed class EntityReference<TEntity> : IEntityReference<TEntity>, IEntityReference
+    public sealed class EntityReference<TEntity> : IEntityReference<TEntity>, IEntityReference, IEntityReferenceSource
         where TEntity : class
     {
         #region Private Fields
@@ -40,6 +40,8 @@ namespace Achilles.Entities.Linq
 
         #region Public API
 
+        public bool IsLoaded => _isLoaded;
+
         public TEntity Entity
         {
             get
@@ -54,10 +56,11 @@ namespace Achilles.Entities.Linq
             }
         }
 
-        // TJT: Make a direct internal property (Source) reference through a compiled lambda expression
-        public void AttachSource( IEnumerable<TEntity> source )
+        public bool HasSource => (_source != null);
+
+        public void SetSource<TSource>( IEnumerable<TSource> source  ) where TSource : class
         {
-            _source = source;
+            _source = source as IEnumerable<TEntity>;
         }
 
         #endregion

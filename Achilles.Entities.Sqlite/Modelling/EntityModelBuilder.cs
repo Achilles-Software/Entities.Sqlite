@@ -19,10 +19,12 @@ using System;
 namespace Achilles.Entities.Modelling
 {
     /// <summary>
-    /// <see cref="IEntityModelBuilder"/> implementation of the fluent builder inteface for relational database modelling.
+    /// <see cref="IEntityModelBuilder"/> implementation of the fluent builder inteface for entity data modelling.
     /// </summary>
     public class EntityModelBuilder : IEntityModelBuilder
     {
+        private DataContext _context;
+
         #region Constructor(s)
 
         /// <summary>
@@ -30,15 +32,15 @@ namespace Achilles.Entities.Modelling
         /// </summary>
         public EntityModelBuilder()
         {
-            EntityMappings = new EntityMappingCollection();
         }
 
         #endregion
 
-        #region Public Properties
+        #region Private Properties
 
-        /// <inheritdoc/>
-        private EntityMappingCollection EntityMappings { get; }
+        private EntityModel Model { get; set; }
+
+        //private EntityMappingCollection EntityMappings => Model.EntityMappings;
 
         #endregion
 
@@ -47,7 +49,7 @@ namespace Achilles.Entities.Modelling
         /// <inheritdoc/>
         public void Entity<TEntity>( Action<IEntityMappingBuilder<TEntity>> action ) where TEntity : class
         {
-            var builder = new EntityMappingBuilder<TEntity>( EntityMappings );
+            var builder = new EntityMappingBuilder<TEntity>( Model );
 
             action( builder );
 
@@ -57,25 +59,26 @@ namespace Achilles.Entities.Modelling
         /// <inheritdoc />
         public IEntityModel Build( DataContext context )
         {
+            _context = context;
+
+            Model = new EntityModel( context );
+
             // TJT: Should all entities be added in the user's data context constructor?
             // What should happen if an entity is referenced during model building that is
             // not in the context?
 
             foreach ( var entitySetType in context.EntitySets.Keys )
             {
-                EntityMappings.GetOrAddEntityMapping( entitySetType );
+                Model.GetOrAddEntityMapping( entitySetType );
             }
 
             context.OnModelBuilding( this );
 
-            // TODO: Model Validation...
-
             // The model entity mappings have now been configured.
             // Resolve Entity references and validate the model. 
-
             ResolveMappingsAndValidateModel();
 
-            return new EntityModel( EntityMappings );
+            return Model;
         }
 
         #endregion
@@ -86,12 +89,18 @@ namespace Achilles.Entities.Modelling
         {
             var EntityMapping = entityMappingBuilder.Build();
 
-            EntityMappings.TryAddEntityMapping( typeof( TEntity ), EntityMapping );
+            Model.TryAddEntityMapping( typeof( TEntity ), EntityMapping );
         }
 
         private void ResolveMappingsAndValidateModel()
         {
+            foreach ( var entityMapping in Model.EntityMappings )
+            {
+                // TJT: Better name?
+                entityMapping.Compile();
+            }
 
+            // TODO: Model Validation...
         }
 
         #endregion

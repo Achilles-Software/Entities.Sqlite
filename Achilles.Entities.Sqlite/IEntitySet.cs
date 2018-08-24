@@ -29,6 +29,6 @@ namespace Achilles.Entities
         /// <returns></returns>
         Type EntityType { get; }
 
-        IEnumerable<TSource> GetSource<TSource>( TSource source ) where TSource : class;
+        //IEnumerable<TSource> GetSource<TSource>( TSource source ) where TSource : class;
     }
 }

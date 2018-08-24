@@ -22,46 +22,46 @@ namespace Achilles.Entities.Modelling
     {
         #region Private Fields
 
-        private readonly EntityMappingCollection _entityMappings;
+        private DataContext _context;
+        private EntityMappingCollection _entityMappings;
 
         #endregion
 
         #region Constructor(s)
 
-        public EntityModel( EntityMappingCollection entityMappings )
+        public EntityModel( DataContext context )
         {
-            _entityMappings = entityMappings ?? throw new ArgumentNullException( nameof( entityMappings ) );
+            _context = context;
+            _entityMappings = new EntityMappingCollection( this );
         }
 
         #endregion
 
         #region Public API
 
+        /// <inheritdoc/>
         public IReadOnlyCollection<IEntityMapping> EntityMappings => _entityMappings.Values as IReadOnlyCollection<IEntityMapping>;
 
-        //public IEntityMapping GetOrAddEntityMapping( Type entityType )
-        //{
-        //    IEntityMapping mapping;
-
-        //    if ( !_entityMappings.TryGetValue( entityType, out mapping ) )
-        //    {
-        //        var EntityMappingType = typeof( EntityMapping<> );
-        //        var mapType = EntityMappingType.MakeGenericType( entityType );
-
-        //        mapping = Activator.CreateInstance( mapType ) as IEntityMapping;
-
-        //        _entityMappings[ entityType ] = mapping;
-        //    }
-
-        //    return mapping;
-        //}
-
+        /// <inheritdoc/>
         public IEntityMapping GetEntityMapping<TEntity>() where TEntity : class
         {
             return GetEntityMapping( typeof( TEntity ) );
         }
 
+        /// <inheritdoc/>
         public IEntityMapping GetEntityMapping( Type entityType ) => _entityMappings.GetEntityMapping( entityType );
+
+        #endregion
+
+        #region Internal
+
+        internal IEntityMapping GetOrAddEntityMapping( Type entityType ) 
+            => _entityMappings.GetOrAddEntityMapping( entityType );
+
+        internal void TryAddEntityMapping( Type entityType, IEntityMapping entityMapping ) 
+            => _entityMappings.TryAddEntityMapping( entityType, entityMapping );
+
+        internal DataContext DataContext => _context;
 
         #endregion
     }

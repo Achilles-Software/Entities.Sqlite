@@ -29,7 +29,7 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
     {
         #region Private Fields
 
-        private EntityMappingCollection _entityMappings;
+        private EntityModel _model;
 
         private readonly List<ColumnMappingBuilder> _columnMappingBuilders = new List<ColumnMappingBuilder>();
         private readonly List<IndexMappingBuilder> _indexMappingBuilders = new List<IndexMappingBuilder>();
@@ -43,11 +43,11 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
         /// <summary>
         /// Constructs a new EntityMappingBuilder instance. 
         /// </summary>
-        public EntityMappingBuilder( EntityMappingCollection entityMappings )
+        public EntityMappingBuilder( EntityModel model )
         {
-            _entityMappings = entityMappings;
+            _model = model;
             
-            EntityMapping = entityMappings.GetOrAddEntityMapping( EntityType );
+            EntityMapping = model.GetOrAddEntityMapping( EntityType );
         }
 
         #endregion
@@ -168,7 +168,7 @@ namespace Achilles.Entities.Modelling.Mapping.Builders
 
                 if ( t != EntityType )
                 {
-                    var foreignKeyConstraintMapping = _entityMappings.GetOrAddEntityMapping( t );
+                    var foreignKeyConstraintMapping = _model.GetOrAddEntityMapping( t );
                     foreignKeyConstraintMapping.ForeignKeyMappings.Add( hasManyMapping.ForeignKeyMapping );
                 }
                 else

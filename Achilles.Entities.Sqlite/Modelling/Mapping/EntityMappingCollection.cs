@@ -22,16 +22,26 @@ namespace Achilles.Entities.Modelling.Mapping
     /// <summary>
     /// Collection class for entity mappings. 
     /// </summary>
-    public class EntityMappingCollection //: IDictionary<Type,IEntityMapping>
+    internal class EntityMappingCollection
     {
         #region Fields
 
+        private EntityModel _model;
         private ConcurrentDictionary<Type, IEntityMapping> _entityMappings = new ConcurrentDictionary<Type, IEntityMapping>();
 
         #endregion
 
+        #region Constructor(s)
+
+        public EntityMappingCollection( EntityModel model )
+        {
+            _model = model;
+        }
+
+        #endregion
+
         /// <summary>
-        /// TODO:
+        /// Gets an entity type if it is already in the collection or creates and adds the entity to the collection.
         /// </summary>
         /// <param name="entityType"></param>
         /// <returns></returns>
@@ -39,15 +49,12 @@ namespace Achilles.Entities.Modelling.Mapping
         {
             if ( !_entityMappings.TryGetValue( entityType, out IEntityMapping mapping ) )
             {
-                var EntityMappingType = typeof( EntityMapping<> );
-                var mappingType = EntityMappingType.MakeGenericType( entityType );
+                var entityMappingType = typeof( EntityMapping<> );
+                var genericEntityMappingType = entityMappingType.MakeGenericType( entityType );
 
-                mapping = Activator.CreateInstance( mappingType ) as IEntityMapping;
+                mapping = Activator.CreateInstance( genericEntityMappingType, _model ) as IEntityMapping;
 
                 _entityMappings[ entityType ] = mapping;
-
-                // TJT: Review. Perhaps this is better done elsewhere
-                mapping.Compile();
             }
 
             return mapping;
@@ -55,10 +62,12 @@ namespace Achilles.Entities.Modelling.Mapping
 
         public void TryAddEntityMapping( Type entityType, IEntityMapping entityMapping )
         {
+            // TJT: Review this method.
+
             if ( _entityMappings.TryAdd( entityType, entityMapping ) )
             {
                 // Compile the defined mapping into a column <-> member info lookup dictionary.
-                entityMapping.Compile();
+                //entityMapping.Compile();
             }
         }
 
@@ -72,68 +81,9 @@ namespace Achilles.Entities.Modelling.Mapping
             throw new ArgumentException( nameof( entityType ) );
         }
 
-        //#region IDictionary Implementation through _EntityMappingpings
-
-        //public IEntityMapping this[ Type key ] { get => ((IDictionary<Type, IEntityMapping>)_entityMappings)[ key ]; set => ((IDictionary<Type, IEntityMapping>)_entityMappings)[ key ] = value; }
-
         public ICollection<Type> Keys => ((IDictionary<Type, IEntityMapping>)_entityMappings).Keys;
 
         public ICollection<IEntityMapping> Values => ((IDictionary<Type, IEntityMapping>)_entityMappings).Values;
 
-        //public int Count => ((IDictionary<Type, IEntityMapping>)_entityMappings).Count;
-
-        //public bool IsReadOnly => ((IDictionary<Type, IEntityMapping>)_entityMappings).IsReadOnly;
-
-        //public void Add( KeyValuePair<Type, IEntityMapping> item )
-        //{
-        //    ((IDictionary<Type, IEntityMapping>)_entityMappings).Add( item );
-        //}
-
-        //public void Clear()
-        //{
-        //    ((IDictionary<Type, IEntityMapping>)_entityMappings).Clear();
-        //}
-
-        //public bool Contains( KeyValuePair<Type, IEntityMapping> item )
-        //{
-        //    return ((IDictionary<Type, IEntityMapping>)_entityMappings).Contains( item );
-        //}
-
-        //public bool ContainsKey( Type key )
-        //{
-        //    return ((IDictionary<Type, IEntityMapping>)_entityMappings).ContainsKey( key );
-        //}
-
-        //public void CopyTo( KeyValuePair<Type, IEntityMapping>[] array, int arrayIndex )
-        //{
-        //    ((IDictionary<Type, IEntityMapping>)_entityMappings).CopyTo( array, arrayIndex );
-        //}
-
-        //public IEnumerator<KeyValuePair<Type, IEntityMapping>> GetEnumerator()
-        //{
-        //    return ((IDictionary<Type, IEntityMapping>)_entityMappings).GetEnumerator();
-        //}
-
-        //public bool Remove( Type key )
-        //{
-        //    return ((IDictionary<Type, IEntityMapping>)_entityMappings).Remove( key );
-        //}
-
-        //public bool Remove( KeyValuePair<Type, IEntityMapping> item )
-        //{
-        //    return ((IDictionary<Type, IEntityMapping>)_entityMappings).Remove( item );
-        //}
-
-        //public bool TryGetValue( Type key, out IEntityMapping value )
-        //{
-        //    return ((IDictionary<Type, IEntityMapping>)_entityMappings).TryGetValue( key, out value );
-        //}
-
-        ////IEnumerator IEnumerable.GetEnumerator()
-        ////{
-        ////    return ((IDictionary<Type, IEntityMapping>)_entityMappings).GetEnumerator();
-        ////}
-
-        //#endregion
     }
 }

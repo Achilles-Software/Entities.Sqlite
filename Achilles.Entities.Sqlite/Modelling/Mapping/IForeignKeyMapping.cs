@@ -30,7 +30,7 @@ namespace Achilles.Entities.Modelling.Mapping
         string PropertyName { get; }
 
         /// <summary>
-        /// Gets teh Reference key <see cref="MemberInfo"/>.
+        /// Gets the reference key <see cref="MemberInfo"/> property or field.
         /// </summary>
         MemberInfo ReferenceKeyProperty { get; set; }
 

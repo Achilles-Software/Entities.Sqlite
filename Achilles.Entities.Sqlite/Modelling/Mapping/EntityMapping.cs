@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Achilles.Entities.Modelling.Mapping.Accessors;
 using Achilles.Entities.Relational.Modelling.Mapping;
 using System;
 using System.Collections.Generic;
@@ -29,15 +30,24 @@ namespace Achilles.Entities.Modelling.Mapping
     {
         #region Fields
 
+        private EntityModel _model;
+
         private Dictionary<string, MemberInfo> _columnProperties;
         private Dictionary<string, MemberInfo> _foreignKeyProperties;
         private Dictionary<string, MemberInfo> _relationshipProperties;
 
-        //private Dictionary<string, Func<TEntity, object>> ColumnGetters = new Dictionary<string, Func<TEntity, object>>();
-        //private Dictionary<string, Action<TEntity,object>> ColumnSetters = new Dictionary<string, Action<TEntity,object>>();
+        private Dictionary<string, MemberAccessor<TEntity,object>> ColumnAccessors 
+            = new Dictionary<string, MemberAccessor<TEntity,object>>();
 
-        private Dictionary<string, MemberAccessor> ColumnAccessors = new Dictionary<string, MemberAccessor>();
+        private Dictionary<string, MemberAccessor<TEntity,object>> ForeignKeyAccessors 
+            = new Dictionary<string, MemberAccessor<TEntity, object>>();
 
+        private Dictionary<string, MemberAccessor<TEntity, IEnumerable<TEntity>>> EntityReferenceAccessors 
+            = new Dictionary<string, MemberAccessor<TEntity, IEnumerable<TEntity>>>();
+
+        private Dictionary<string, MemberAccessor<TEntity, IEnumerable<TEntity>>> EntityCollectionAccessors 
+            = new Dictionary<string, MemberAccessor<TEntity, IEnumerable<TEntity>>>();
+        
         #endregion
 
         #region Constructor(s)
@@ -45,8 +55,10 @@ namespace Achilles.Entities.Modelling.Mapping
         /// <summary>
         /// Constructs a new instance of <see cref="EntityMapping{TEntity}"/>.
         /// </summary>
-        public EntityMapping()
+        public EntityMapping( EntityModel model )
         {
+            _model = model;
+
             InitializePropertyAndFieldMappings();
         }
 
@@ -54,9 +66,14 @@ namespace Achilles.Entities.Modelling.Mapping
 
         #region Public Properties
 
-        public object GetColumn<T>( T entity, string propertyName ) where T : class => ColumnAccessors[ propertyName ].GetValue( entity as TEntity );
+        public object GetColumn<T>( T entity, string propertyName ) where T : class 
+            => ColumnAccessors[ propertyName ].GetValue( entity as TEntity );
 
-        public void SetColumn<T>( T entity, string propertyName, object value ) where T: class => ColumnAccessors[ propertyName ].SetValue( entity as TEntity, value );
+        public void SetColumn<T>( T entity, string propertyName, object value ) where T: class 
+            => ColumnAccessors[ propertyName ].SetValue( entity as TEntity, value );
+
+        public void SetEntityReference<T>( T Entity, string propertyName, object source ) where T : class
+            => EntityReferenceAccessors[ propertyName ].SetValue( Entity as TEntity, source );     
 
         public List<IColumnMapping> ColumnMappings { get; set; } = new List<IColumnMapping>();
 
@@ -76,8 +93,14 @@ namespace Achilles.Entities.Modelling.Mapping
 
         #endregion
 
+        #region Internal Properties
+
+        internal EntitySet<TEntity> EntitySet => (EntitySet< TEntity>)_model.DataContext.EntitySets[ EntityType ];
+
+        #endregion
+
         #region Public Methods
-        
+
         public void Compile()
         {
             _columnProperties = ColumnMappings.ToDictionary( m => m.ColumnName, m => m.ColumnInfo, IsCaseSensitive? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase );
@@ -87,6 +110,8 @@ namespace Achilles.Entities.Modelling.Mapping
 
         #endregion
 
+
+
         #region Private Methods
 
         private void CreateAccessors()
@@ -94,13 +119,32 @@ namespace Achilles.Entities.Modelling.Mapping
             // Columns...
             foreach ( var columnMapping in ColumnMappings )
             {
-                ColumnAccessors.Add( columnMapping.PropertyName, new ColumnAccessor<TEntity>( columnMapping.ColumnInfo ) );
+                ColumnAccessors.Add( columnMapping.PropertyName, new ColumnAccessor<TEntity,object>( columnMapping.ColumnInfo ) );
             }
-        }
 
+            // Foreign Keys...
+            foreach ( var foreignKeyMapping in ForeignKeyMappings )
+            {
+                ForeignKeyAccessors.Add( foreignKeyMapping.PropertyName, new ForeignKeyAccessor<TEntity, object>( foreignKeyMapping.ForeignKeyProperty ) );
+            }
 
-        private void CreateRelationshipSetters()
-        {
+            // Relationship Mappings...
+            foreach ( var relationshipMapping in RelationshipMappings )
+            {
+                if ( relationshipMapping.IsMany )
+                {
+                    EntityCollectionAccessors.Add(
+                        relationshipMapping.RelationshipProperty.Name,
+                        new EntityCollectionAccessor<TEntity, IEnumerable<TEntity>>( relationshipMapping.RelationshipProperty ) );
+                }
+                else
+                {
+                    EntityReferenceAccessors.Add(
+                        relationshipMapping.RelationshipProperty.Name,
+                        new EntityReferenceAccessor<TEntity, IEnumerable<TEntity>>( relationshipMapping.RelationshipProperty ) );
+
+                }
+            }
         }
 
         /// <summary>

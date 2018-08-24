@@ -11,38 +11,35 @@
 #region Namespaces
 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Modelling.Mapping
+namespace Achilles.Entities.Modelling.Mapping.Accessors
 {
-    internal class ColumnAccessor<TEntity> : MemberAccessor
-        where TEntity : class
+    public abstract class MemberAccessor<TEntity, TValue>
     {
-        private readonly MemberInfo _columnInfo;
+        protected Func<TEntity, object> _getter;
+        protected Action<TEntity, object> _setter;
 
-        private Func<TEntity, object> _getter;
-        private Action<TEntity, object> _setter;
-
-        public ColumnAccessor( MemberInfo columnInfo )
-            : base( columnInfo )
+        public MemberAccessor( MemberInfo memberInfo )
         {
-            _columnInfo = columnInfo;
+            MemberInfo = memberInfo ?? throw new System.ArgumentNullException( nameof( memberInfo ) );
 
             CreateGetter();
             CreateSetter();
         }
 
-        public override object GetValue<TMember>( TMember entity ) => _getter( entity as TEntity );
+        protected MemberInfo MemberInfo { get; }
 
-        public override void SetValue<TMember>( TMember entity, object value ) => _setter( entity as TEntity, value );
+        public virtual object GetValue( TEntity entity ) => _getter( entity );
+
+        public virtual void SetValue( TEntity entity, object value ) => _setter( entity, value );
 
         private void CreateGetter()
         {
-            if ( _columnInfo is PropertyInfo propertyInfo )
+            if ( MemberInfo is PropertyInfo propertyInfo )
             {
                 ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
 
@@ -52,7 +49,7 @@ namespace Achilles.Entities.Modelling.Mapping
 
                 _getter = Expression.Lambda<Func<TEntity, object>>( conversion, parameters ).Compile();
             }
-            else if ( _columnInfo is FieldInfo field )
+            else if ( MemberInfo is FieldInfo field )
             {
                 ParameterExpression instance = Expression.Parameter( typeof( TEntity ), "instance" );
 
@@ -66,10 +63,10 @@ namespace Achilles.Entities.Modelling.Mapping
 
         private void CreateSetter()
         {
-            if ( _columnInfo is PropertyInfo propertyInfo )
+            if ( MemberInfo is PropertyInfo propertyInfo )
             {
                 var columnPropertySetMethod = propertyInfo.GetSetMethod();
-                var setMethodParameterType = columnPropertySetMethod.GetParameters().First().ParameterType;
+                var setMethodParameterType = columnPropertySetMethod.GetParameters()[0].ParameterType;
 
                 var entityInstanceParameter = Expression.Parameter( typeof( TEntity ), "instance" );
                 var valueParameter = Expression.Parameter( typeof( object ), "value" );
@@ -81,7 +78,7 @@ namespace Achilles.Entities.Modelling.Mapping
                 _setter = Expression.Lambda<Action<TEntity, object>>(
                     body, parameters ).Compile();
             }
-            else if ( _columnInfo is FieldInfo field )
+            else if ( MemberInfo is FieldInfo field )
             {
                 var instanceParameter = Expression.Parameter( typeof( TEntity ), "instance" );
                 var valueParameter = Expression.Parameter( typeof( object ), "value" );

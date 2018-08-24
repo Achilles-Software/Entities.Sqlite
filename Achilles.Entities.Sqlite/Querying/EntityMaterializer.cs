@@ -141,6 +141,7 @@ namespace Achilles.Entities.Querying
             if ( entity.GetType().IsPrimitive || entity is string )
             {
                 object value;
+
                 if ( !dictionary.TryGetValue( "$", out value ) )
                 {
                     throw new InvalidCastException( "For lists of primitive types, include $ as the name of the property" );
@@ -151,60 +152,12 @@ namespace Achilles.Entities.Querying
                 return entity;
             }
 
-            // Once we have the instance we can attach an entity set source to the instance relationship properties
-            var entityMapping = _model.GetEntityMapping( entity.GetType() );
-
-            var relationshipMappings = entityMapping.RelationshipMappings;
-
             var fieldsAndProperties = GetFieldsAndProperties( entity.GetType() );
 
             foreach ( var fieldOrProperty in fieldsAndProperties )
             {
                 var memberName = fieldOrProperty.Key.ToLower();
                 var memberInfo = fieldOrProperty.Value;
-
-                var relationshipMapping = relationshipMappings.Where( r => r.RelationshipProperty == memberInfo ).FirstOrDefault();
-
-                if ( relationshipMapping != null )
-                {
-                    if ( relationshipMapping.IsMany )
-                    {
-                        //IEntityCollection entityCollection = memberInfo as IEntityCollection;
-                    }
-                    else
-                    {
-                        // First Get the type entity we are materializing
-                        Type entityType = entity.GetType();
-
-                        object entityReferenceProperty;
-
-                        if ( memberInfo.MemberType == MemberTypes.Property )
-                        {
-                            PropertyInfo propertyInfo = memberInfo as PropertyInfo;
-
-                            // Gets the property EntityReference<TEntity> class instance 
-                            entityReferenceProperty = propertyInfo.GetValue( entity );
-                        }
-                        else
-                        {
-                            FieldInfo fieldInfo = memberInfo as FieldInfo;
-
-                            entityReferenceProperty = fieldInfo.GetValue( entity );
-                        }
-
-                        Type entityReferencePropertyType = entityReferenceProperty.GetType();
-
-                        MethodInfo attachSourceMethod = entityReferencePropertyType.GetMethod( "AttachSource" );
-
-                        // Get the EntitySet<TEntity>
-                        var entityReference = entityReferencePropertyType.GetGenericArguments().First();
-                        var entitySet = _context.EntitySets[ entityReference ];
-
-                        attachSourceMethod.Invoke( entityReferenceProperty, new object[] { entitySet } );
-                    }
-
-                    continue;
-                }
 
                 object value;
 
@@ -288,7 +241,40 @@ namespace Achilles.Entities.Querying
                 }
             }
 
+            SetDeferredLoading( entity );
+
             return entity;
+        }
+
+        private void SetDeferredLoading ( object entity )
+        {
+            // Once we have the entity instance we can attach an entity set source to the instance relationship properties
+            var entityMapping = _model.GetEntityMapping( entity.GetType() );
+
+            var relationshipMappings = entityMapping.RelationshipMappings;
+
+            foreach (  var relationshipMapping in relationshipMappings )
+            {
+                var foreignKey = relationshipMapping.ForeignKeyMapping;
+
+                if ( relationshipMapping.IsMany )
+                {
+                    //entityMapping.SetEntityCollection(
+                    //    entity,
+                    //    relationshipMapping.RelationshipProperty.Name,
+                    //    relationshipMapping.ForeignKeyMapping );
+                }
+                else
+                {
+                    entityMapping.SetEntityReference( 
+                        entity, 
+                        relationshipMapping.RelationshipProperty.Name,
+                        relationshipMapping.ForeignKeyMapping );
+                }
+
+                continue;
+            }
+
         }
 
         /// <summary>

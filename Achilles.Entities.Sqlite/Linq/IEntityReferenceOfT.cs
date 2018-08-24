@@ -10,7 +10,7 @@
 
 namespace Achilles.Entities.Linq
 {
-    public interface IEntityReference<TEntity>
+    public interface IEntityReference<TEntity> where TEntity : class
     {
         /// <summary>
         /// Gets the wrapped entity.

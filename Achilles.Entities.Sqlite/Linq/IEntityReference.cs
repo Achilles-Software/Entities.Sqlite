@@ -8,8 +8,6 @@
 
 #endregion
 
-using System.Collections.Generic;
-
 namespace Achilles.Entities.Linq
 {
     /// <summary>
@@ -17,6 +15,6 @@ namespace Achilles.Entities.Linq
     /// </summary>
     internal interface IEntityReference
     {
-        //void AttachSource<TEntityRef>( IEnumerable<TEntityRef> source ) where TEntityRef: class;
+        // No API
     }
 }
