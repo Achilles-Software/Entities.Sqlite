@@ -16,8 +16,8 @@ using System.Collections.Generic;
 
 namespace Achilles.Entities.Linq
 {
-    internal interface IEntityCollection<TEntity>
+    public  interface IEntityCollection<TEntity>
     {
-        void AttachSource( IEnumerable<TEntity> source );
+        bool IsLoaded { get; }
     }
 }

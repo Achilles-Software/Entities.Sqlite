@@ -45,7 +45,7 @@ namespace Achilles.Entities.Modelling.Mapping.Accessors
         public override void SetValue( TEntity entity, object value )
         {
             // The base.GetValue gets the entityReference<TEntity> class
-            var entityReference = base.GetValue( entity ) as IEntityReferenceSource;
+            var entityReference = base.GetValue( entity ) as IEntitySource;
 
             // The The foreign key mapping comes from the value passed to this method
             IForeignKeyMapping foreignKeyMapping = (IForeignKeyMapping)value;

@@ -78,6 +78,9 @@ namespace Achilles.Entities.Modelling.Mapping
         public void SetEntityReference<T>( T Entity, string propertyName, object source ) where T : class
             => EntityReferenceAccessors[ propertyName ].SetValue( Entity as TEntity, source );
 
+        public void SetEntityCollection<T>( T Entity, string propertyName, object source ) where T : class
+            => EntityCollectionAccessors[ propertyName ].SetValue( Entity as TEntity, source );
+
         public List<IColumnMapping> ColumnMappings { get; set; } = new List<IColumnMapping>();
 
         public List<IIndexMapping> IndexMappings { get; set; } = new List<IIndexMapping>();

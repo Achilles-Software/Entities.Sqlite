@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 
 namespace Achilles.Entities.Linq
 {
-    public sealed class EntityReference<TEntity> : IEntityReference<TEntity>, IEntityReference, IEntityReferenceSource
+    public sealed class EntityReference<TEntity> : IEntityReference<TEntity>, IEntityReference, IEntitySource
         where TEntity : class
     {
         #region Private Fields
@@ -66,9 +66,9 @@ namespace Achilles.Entities.Linq
 
         #region Internal IEntityReferenceSource API
 
-        bool IEntityReferenceSource.HasSource => (_source != null);
+        bool IEntitySource.HasSource => (_source != null);
 
-        void IEntityReferenceSource.SetSource( IEntitySet source, string referenceKey, object foreignKeyValue )
+        void IEntitySource.SetSource( IEntitySet source, string referenceKey, object foreignKeyValue )
         {
             _source = source as EntitySet<TEntity>;
             _referenceKey = referenceKey;

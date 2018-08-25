@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace Achilles.Entities.Linq
 {
-    internal interface IEntityReferenceSource
+    internal interface IEntitySource
     {
         bool HasSource { get; }
 

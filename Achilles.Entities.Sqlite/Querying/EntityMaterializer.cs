@@ -259,10 +259,10 @@ namespace Achilles.Entities.Querying
 
                 if ( relationshipMapping.IsMany )
                 {
-                    //entityMapping.SetEntityCollection(
-                    //    entity,
-                    //    relationshipMapping.RelationshipProperty.Name,
-                    //    relationshipMapping.ForeignKeyMapping );
+                    entityMapping.SetEntityCollection(
+                        entity,
+                        relationshipMapping.RelationshipProperty.Name,
+                        relationshipMapping.ForeignKeyMapping );
                 }
                 else
                 {
