@@ -10,10 +10,12 @@
 
 #region Namespaces
 
+using Achilles.Entities.Extensions;
 using Achilles.Entities.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 #endregion
@@ -24,11 +26,12 @@ namespace Achilles.Entities.Modelling.Mapping.Accessors
         where TEntity : class
     {
         MemberInfo _entityReferenceInfo;
-        EntityReference<TEntity> _entityReference;
+        EntityMapping<TEntity> _entityMapping;
 
-        public EntityReferenceAccessor( MemberInfo entityReferenceInfo )
+        public EntityReferenceAccessor( EntityMapping<TEntity> entityMapping, MemberInfo entityReferenceInfo )
             : base( entityReferenceInfo )
         {
+            _entityMapping = entityMapping;
             _entityReferenceInfo = entityReferenceInfo;
         }
 
@@ -41,22 +44,27 @@ namespace Achilles.Entities.Modelling.Mapping.Accessors
 
         public override void SetValue( TEntity entity, object value )
         {
-            // The base.GetValue gets the entityReference<> class
+            // The base.GetValue gets the entityReference<TEntity> class
             var entityReference = base.GetValue( entity ) as IEntityReferenceSource;
 
-            //Type entityReferencePropertyType = entityReferenceProperty.GetType();
+            // The The foreign key mapping comes from the value passed to this method
+            IForeignKeyMapping foreignKeyMapping = (IForeignKeyMapping)value;
 
-            //// Get the EntitySet<TEntity>
-            //var entityReference = entityReferencePropertyType.GetGenericArguments().First();
-            //var entitySet = _context.EntitySets[ entityReference ];
+            var entityReferenceType = foreignKeyMapping.ReferenceKeyProperty.DeclaringType;
 
+            // TJT: Clean the EntitySet access up!
+            var entitySetSource = _entityMapping.Model.DataContext.EntitySets[ entityReferenceType ];
+            var referenceKeyName = foreignKeyMapping.ReferenceKeyProperty.Name;
+            var foreignKeyValue = _entityMapping.GetForeignKey( entity, foreignKeyMapping.PropertyName );
 
             if ( !entityReference.HasSource )
             {
-                entityReference.SetSource( value as IEnumerable<TEntity> );
+                entityReference.SetSource( entitySetSource, referenceKeyName, foreignKeyValue );
             }
-
-            //base.SetValue( entity, value );
+            else
+            {
+                throw new InvalidOperationException( "Entity reference source already set." );
+            }
         }
     }
 }

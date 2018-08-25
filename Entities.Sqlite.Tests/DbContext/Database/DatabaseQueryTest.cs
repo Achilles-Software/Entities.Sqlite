@@ -86,15 +86,9 @@ namespace Entities.Sqlite.Tests
 
                 var products = query.ToList<Product>();
 
-                // Lazy load the product supplier
-                foreach ( var p in products )
-                {
-                    var supplier = p.Supplier.Entity;
-                }
-                
-                //Assert.Single( products);
-                //Assert.Equal( "Banana", products[ 0 ].Name );
-                //Assert.Equal( "Plum", products[ 1 ].Name );
+                Assert.False( products[ 0 ].Supplier.IsLoaded );
+                Assert.Equal( "Bananas-R-US", products[ 0 ].Supplier.Value.Name );
+                Assert.True( products[ 0 ].Supplier.IsLoaded );
             }
         }
 

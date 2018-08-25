@@ -10,8 +10,10 @@
 
 #region Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 #endregion
 
@@ -22,18 +24,23 @@ namespace Achilles.Entities.Linq
     {
         #region Private Fields
 
-        private IEnumerable<TEntity> _source;
+        private EntitySet<TEntity> _source;
         private TEntity _entity;
+        private object _foreignKeyValue;
+        private string _referenceKey;
+
+        // TJT: Not yet sure where the expression predicate should live. 
+        // Determine during beta optimization tasks
+        //private Func<TEntity, bool> _filterByFkPredicate;
 
         private bool _isLoaded = false;
-
+        
         #endregion
 
         #region Constructor(s)
 
         public EntityReference()
         {
-            var d = 6;
         }
 
         #endregion
@@ -42,40 +49,55 @@ namespace Achilles.Entities.Linq
 
         public bool IsLoaded => _isLoaded;
 
-        public TEntity Entity
+        public TEntity Value
         {
             get
             {
-                if ( _isLoaded )
-                    return _entity;
-                else
+                if ( !_isLoaded )
                 {
                     Load();
-                    return _entity;
                 }
+
+                return _entity;
             }
-        }
-
-        public bool HasSource => (_source != null);
-
-        public void SetSource<TSource>( IEnumerable<TSource> source  ) where TSource : class
-        {
-            _source = source as IEnumerable<TEntity>;
         }
 
         #endregion
 
-        #region Private Methods
+        #region Internal IEntityReferenceSource API
+
+        bool IEntityReferenceSource.HasSource => (_source != null);
+
+        void IEntityReferenceSource.SetSource( IEntitySet source, string referenceKey, object foreignKeyValue )
+        {
+            _source = source as EntitySet<TEntity>;
+            _referenceKey = referenceKey;
+            _foreignKeyValue = foreignKeyValue;
+        }
+
+        #endregion
+
+        #region Private Implementation
 
         private void Load()
         {
             if ( !_isLoaded && _source != null )
             {
-                _entity = Enumerable.SingleOrDefault( _source );
+                _entity = _source.SingleOrDefault( FilterByForeignKeyPredicate( _foreignKeyValue ) );
                 _isLoaded = true;
             }
         }
-        
+
+        private Expression<Func<TEntity,bool>> FilterByForeignKeyPredicate( object foreignKey )
+        { 
+            var entity = Expression.Parameter( typeof(TEntity), "e" );
+            var referenceKey = Expression.Property( entity, _referenceKey );
+            var value = Expression.Constant( foreignKey, referenceKey.Type );
+            var body = Expression.Equal( referenceKey, value );
+
+            return Expression.Lambda<Func<TEntity, bool>>( body, entity );
+        }
+
         #endregion
     }
 }

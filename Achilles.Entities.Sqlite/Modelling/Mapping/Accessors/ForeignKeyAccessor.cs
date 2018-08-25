@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace Achilles.Entities.Modelling.Mapping.Accessors
 {
-    public class ForeignKeyAccessor<TEntity,TValue> : MemberAccessor<TEntity,TValue>
+    internal class ForeignKeyAccessor<TEntity,TValue> : MemberAccessor<TEntity,TValue>
         where TEntity : class
     {
         private readonly MemberInfo _foreignKeyInfo;

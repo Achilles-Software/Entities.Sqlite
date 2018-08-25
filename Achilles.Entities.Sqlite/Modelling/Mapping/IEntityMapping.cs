@@ -44,6 +44,8 @@ namespace Achilles.Entities.Modelling.Mapping
 
         void SetEntityReference<T>( T entity, string propertyName, object value ) where T : class;
 
+        object GetForeignKey<T>( T entity, string propertyName ) where T : class;
+
         void Compile();
     }
 }

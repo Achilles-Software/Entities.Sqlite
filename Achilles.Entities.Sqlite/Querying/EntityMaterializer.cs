@@ -255,7 +255,7 @@ namespace Achilles.Entities.Querying
 
             foreach (  var relationshipMapping in relationshipMappings )
             {
-                var foreignKey = relationshipMapping.ForeignKeyMapping;
+                //var foreignKey = relationshipMapping.ForeignKeyMapping;
 
                 if ( relationshipMapping.IsMany )
                 {

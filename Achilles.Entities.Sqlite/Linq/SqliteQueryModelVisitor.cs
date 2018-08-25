@@ -124,7 +124,7 @@ namespace Achilles.Entities.Linq
             else if ( resultOperator is SingleResultOperator )
             {
                 // if we get more then one we throw exception
-                _selectPart = string.Format( "TOP(2) {0}", _selectPart );
+                _limitPart = "2";
             }
             else if ( resultOperator is LastResultOperator )
             {

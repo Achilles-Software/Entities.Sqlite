@@ -13,8 +13,8 @@ namespace Achilles.Entities.Linq
     public interface IEntityReference<TEntity> where TEntity : class
     {
         /// <summary>
-        /// Gets the wrapped entity.
+        /// Gets the entity reference by lazy loading.
         /// </summary>
-        TEntity Entity { get; }
+        TEntity Value { get; }
     }
 }

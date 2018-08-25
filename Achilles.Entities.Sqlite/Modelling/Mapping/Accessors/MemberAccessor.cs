@@ -18,7 +18,7 @@ using System.Reflection;
 
 namespace Achilles.Entities.Modelling.Mapping.Accessors
 {
-    public abstract class MemberAccessor<TEntity, TValue>
+    internal abstract class MemberAccessor<TEntity, TValue>
     {
         protected Func<TEntity, object> _getter;
         protected Action<TEntity, object> _setter;

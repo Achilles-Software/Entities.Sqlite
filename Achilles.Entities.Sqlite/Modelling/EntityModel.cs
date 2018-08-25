@@ -18,6 +18,9 @@ using System.Collections.Generic;
 
 namespace Achilles.Entities.Modelling
 {
+    /// <summary>
+    /// Represents the entity data model for a given data context.
+    /// </summary>
     public class EntityModel : IEntityModel
     {
         #region Private Fields
@@ -29,6 +32,10 @@ namespace Achilles.Entities.Modelling
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Constructs a <see cref="EntityModel"/> instance for a data context.
+        /// </summary>
+        /// <param name="context">The data context.</param>
         public EntityModel( DataContext context )
         {
             _context = context;

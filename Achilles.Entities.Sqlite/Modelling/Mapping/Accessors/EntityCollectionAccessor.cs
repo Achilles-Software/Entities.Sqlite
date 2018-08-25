@@ -18,10 +18,12 @@ namespace Achilles.Entities.Modelling.Mapping.Accessors
     internal class EntityCollectionAccessor<TEntity, TValue> : MemberAccessor<TEntity,TValue>
     {
         MemberInfo _entityCollectionInfo;
+        IEntityMapping _entityMapping;
 
-        public EntityCollectionAccessor( MemberInfo entityReferenceInfo )
+        public EntityCollectionAccessor( IEntityMapping entityMapping, MemberInfo entityReferenceInfo )
             : base( entityReferenceInfo )
         {
+            _entityMapping = entityMapping;
             _entityCollectionInfo = entityReferenceInfo;
         }
     }

@@ -66,14 +66,17 @@ namespace Achilles.Entities.Modelling.Mapping
 
         #region Public Properties
 
-        public object GetColumn<T>( T entity, string propertyName ) where T : class 
+        public object GetColumn<T>( T entity, string propertyName ) where T : class
             => ColumnAccessors[ propertyName ].GetValue( entity as TEntity );
 
         public void SetColumn<T>( T entity, string propertyName, object value ) where T: class 
             => ColumnAccessors[ propertyName ].SetValue( entity as TEntity, value );
 
+        public object GetForeignKey<T>( T entity, string propertyName ) where T : class
+            => ForeignKeyAccessors[ propertyName ].GetValue( entity as TEntity );
+
         public void SetEntityReference<T>( T Entity, string propertyName, object source ) where T : class
-            => EntityReferenceAccessors[ propertyName ].SetValue( Entity as TEntity, source );     
+            => EntityReferenceAccessors[ propertyName ].SetValue( Entity as TEntity, source );
 
         public List<IColumnMapping> ColumnMappings { get; set; } = new List<IColumnMapping>();
 
@@ -95,7 +98,9 @@ namespace Achilles.Entities.Modelling.Mapping
 
         #region Internal Properties
 
-        internal EntitySet<TEntity> EntitySet => (EntitySet< TEntity>)_model.DataContext.EntitySets[ EntityType ];
+        internal EntitySet<TEntity> EntitySet => (EntitySet<TEntity>)_model.DataContext.EntitySets[ EntityType ];
+
+        internal EntityModel Model => _model;
 
         #endregion
 
@@ -109,8 +114,6 @@ namespace Achilles.Entities.Modelling.Mapping
         }
 
         #endregion
-
-
 
         #region Private Methods
 
@@ -135,14 +138,13 @@ namespace Achilles.Entities.Modelling.Mapping
                 {
                     EntityCollectionAccessors.Add(
                         relationshipMapping.RelationshipProperty.Name,
-                        new EntityCollectionAccessor<TEntity, IEnumerable<TEntity>>( relationshipMapping.RelationshipProperty ) );
+                        new EntityCollectionAccessor<TEntity, IEnumerable<TEntity>>( this, relationshipMapping.RelationshipProperty ) );
                 }
                 else
                 {
                     EntityReferenceAccessors.Add(
                         relationshipMapping.RelationshipProperty.Name,
-                        new EntityReferenceAccessor<TEntity, IEnumerable<TEntity>>( relationshipMapping.RelationshipProperty ) );
-
+                        new EntityReferenceAccessor<TEntity, IEnumerable<TEntity>>( this, relationshipMapping.RelationshipProperty ) );
                 }
             }
         }
