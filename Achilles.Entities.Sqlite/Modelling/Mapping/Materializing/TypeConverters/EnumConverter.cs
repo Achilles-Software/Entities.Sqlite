@@ -14,12 +14,12 @@ using System;
 
 #endregion
 
-namespace Achilles.Entities.Querying.TypeConverters
+namespace Achilles.Entities.Modelling.Mapping.Materializing.TypeConverters
 {
     /// <summary>
-    /// Converts values types.
+    /// Converts values to Enums.
     /// </summary>
-    public class ValueTypeConverter : ITypeConverter
+    public class EnumConverter : ITypeConverter
     {
         #region Implementation of ITypeConverter
 
@@ -34,7 +34,7 @@ namespace Achilles.Entities.Querying.TypeConverters
             // Handle Nullable types
             var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
 
-            var convertedValue = System.Convert.ChangeType( value, conversionType );
+            object convertedValue = Enum.Parse( conversionType, value.ToString() );
 
             return convertedValue;
         }
@@ -47,13 +47,14 @@ namespace Achilles.Entities.Querying.TypeConverters
         /// <returns>Boolean response.</returns>
         public bool CanConvert( object value, Type type )
         {
-            return type.IsValueType && !type.IsEnum && type != typeof( Guid );
+            var conversionType = Nullable.GetUnderlyingType( type ) ?? type;
+            return conversionType.IsEnum;
         }
 
         /// <summary>
         /// Order to execute an <see cref="ITypeConverter"/> in.
         /// </summary>
-        public int Order { get { return 1000; } }
+        public int Order { get { return 100; } }
 
         #endregion
     }

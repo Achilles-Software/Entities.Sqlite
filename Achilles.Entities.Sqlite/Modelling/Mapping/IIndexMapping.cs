@@ -10,8 +10,6 @@
 
 #region Namespaces
 
-using Achilles.Entities.Relational.Modelling;
-using System.Reflection;
 
 #endregion
 

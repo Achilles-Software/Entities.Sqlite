@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Achilles.Entities.Querying
+namespace Achilles.Entities.Modelling.Mapping.Materializing
 {
     public interface ITypeConverter
     {

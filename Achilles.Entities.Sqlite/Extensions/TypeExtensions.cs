@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Achilles.Entities.Relational.Modelling.Mapping
+namespace Achilles.Entities.Extensions
 {
     /// <summary>
     /// Type extensions.

@@ -98,7 +98,7 @@ namespace Achilles.Entities.Linq
             }
             else if ( resultOperator is CountResultOperator )
             {
-                // FIXME
+                // TJT: FIXME
                 _selectPart = "COUNT(*)";
             }
             else if ( resultOperator is AnyResultOperator )

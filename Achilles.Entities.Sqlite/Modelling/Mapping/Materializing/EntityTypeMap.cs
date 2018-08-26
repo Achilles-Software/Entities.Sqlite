@@ -16,7 +16,7 @@ using System.Reflection;
 
 #endregion
 
-namespace Achilles.Entities.Querying
+namespace Achilles.Entities.Modelling.Mapping.Materializing
 {
     internal class EntityTypeMap
     {

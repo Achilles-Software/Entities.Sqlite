@@ -11,9 +11,9 @@ using Xunit;
 
 #endregion
 
-namespace Entities.Sqlite.Tests
+namespace Entities.Sqlite.Tests.Context
 {
-    public class DatabaseCrudTest
+    public class PersistenceTest
     {
         private void AddProduct( TestDataContext context )
         {
@@ -34,34 +34,6 @@ namespace Entities.Sqlite.Tests
             };
 
             context.Products.Add( product );
-        }
-
-        private void InitializeContext( TestDataContext context )
-        {
-            var createResult = context.Database.Creator.CreateIfNotExists();
-
-            var suppliersList = new List<Supplier>
-            {
-                    new Supplier(){ Name = "Bananas-R-US" },
-                    new Supplier(){ Name = "Plums-R-Us" }
-            };
-
-            var productsList = new List<Product>() {
-                    new Product(){ Name = "Banana", Price = 4.75 },
-                    new Product(){ Name = "Plum", Price = 3.25 },
-                };
-
-            foreach ( Supplier s in suppliersList )
-            {
-                context.Suppliers.Add( s );
-            }
-
-            var count = 0;
-            foreach ( Product p in productsList )
-            {
-                p.SupplierId = suppliersList[ count++ ].Id; 
-                context.Products.Add( p );
-            }
         }
 
         [Fact]
@@ -138,7 +110,7 @@ namespace Entities.Sqlite.Tests
             
             using ( var context = new TestDataContext( options ) )
             {
-                InitializeContext( context );
+                context.Initialize();
 
                 var product = context.Products.First( p => p.Id == 1 );
                 var product2 = context.Products.First( p => p.Id == 2 );
@@ -156,7 +128,7 @@ namespace Entities.Sqlite.Tests
 
             using ( var context = new TestDataContext( options ) )
             {
-                InitializeContext( context );
+                context.Initialize();
 
                 Assert.Equal( 2, context.Products.Count() );
                 var products = context.Products.ToList();
@@ -175,7 +147,7 @@ namespace Entities.Sqlite.Tests
 
             using ( var context = new TestDataContext( options ) )
             {
-                InitializeContext( context );
+                context.Initialize();
 
                 var products = await context.Products.ToListAsync();
 

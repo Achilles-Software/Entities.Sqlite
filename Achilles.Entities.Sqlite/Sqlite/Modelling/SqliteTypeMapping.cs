@@ -10,7 +10,6 @@
 
 #region Namespaces
 
-using Achilles.Entities.Relational.Modelling.Mapping;
 using System;
 using System.Collections.Generic;
 

@@ -4,6 +4,7 @@ using Achilles.Entities;
 using Achilles.Entities.Configuration;
 using Achilles.Entities.Modelling;
 using Achilles.Entities.Sqlite.Configuration;
+using System.Collections.Generic;
 
 #endregion
 
@@ -113,6 +114,53 @@ namespace Entities.Sqlite.Tests.Data
             } );
 
             base.OnModelBuilding( modelBuilder );
+        }
+
+        public void Initialize()
+        {
+            var createResult = Database.Creator.CreateIfNotExists();
+
+            var suppliersList = new List<Supplier>
+            {
+                    new Supplier(){ Name = "Bananas-R-US" },
+                    new Supplier(){ Name = "Plums-R-Us" }
+            };
+
+            var productsList = new List<Product>() {
+                    new Product(){ Name = "Banana", Price = 4.75 },
+                    new Product(){ Name = "Plum", Price = 3.25 },
+                };
+
+            foreach ( Supplier s in suppliersList )
+            {
+                Suppliers.Add( s );
+            }
+
+            var count = 0;
+            foreach ( Product p in productsList )
+            {
+                p.SupplierId = suppliersList[ count++ ].Id;
+                Products.Add( p );
+            }
+
+            var productOneId = productsList[ 0 ].Id;
+            var productTwoId = productsList[ 1 ].Id;
+
+            var partList = new List<Part>()
+            {
+                new Part() { Name = "Bolt", Cost = 1.95, ProductKey = productOneId },
+                new Part() { Name = "Wrench", Cost = 5.95, ProductKey = productOneId },
+                new Part() { Name = "Hammer", Cost = 9.99, ProductKey = productOneId },
+
+                new Part() { Name = "Screw", Cost = 0.95, ProductKey = productTwoId },
+                new Part() { Name = "Drill", Cost = 23.55, ProductKey = productTwoId },
+                new Part() { Name = "Air Compressor", Cost = 99.95, ProductKey = productTwoId }
+            };
+
+            foreach ( var part in partList )
+            {
+                Parts.Add( part );
+            }
         }
     }
 }

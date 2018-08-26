@@ -10,8 +10,7 @@
 
 #region Namespaces
 
-using Achilles.Entities.Modelling;
-using Achilles.Entities.Querying.TypeConverters;
+using Achilles.Entities.Modelling.Mapping.Materializing.TypeConverters;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -22,7 +21,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace Achilles.Entities.Querying
+namespace Achilles.Entities.Modelling.Mapping.Materializing
 {
     internal class EntityMaterializer
     {

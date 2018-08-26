@@ -14,7 +14,7 @@ using System;
 
 #endregion
 
-namespace Achilles.Entities.Querying.TypeConverters
+namespace Achilles.Entities.Modelling.Mapping.Materializing.TypeConverters
 {
     /// <summary>
     /// Converts values to Guids.

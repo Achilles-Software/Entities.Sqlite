@@ -10,7 +10,7 @@ using Xunit;
 
 #endregion
 
-namespace Entities.Sqlite.Tests
+namespace Entities.Sqlite.Tests.Configuration
 {
     public class DbContextOptionsTest
     {

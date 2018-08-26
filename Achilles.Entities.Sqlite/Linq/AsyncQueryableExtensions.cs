@@ -29,22 +29,18 @@ namespace Achilles.Entities.Linq
 {
     public static class AsyncQueryableExtensions
     {
-        public static Task<TSource> FirstAsync<TSource>(
-            this IQueryable<TSource> source,
-            Expression<Func<TSource, bool>> predicate,
+        public static IJoinQueryable<TEntity, TProperty> SelectRelated<TEntity, TProperty>(
+            this IQueryable<TEntity> source,
+            Expression<Func<TEntity, bool>> predicate,
             CancellationToken cancellationToken = default )
+            where TEntity : class
         {
-            if ( source == null )
+            if ( source.Provider is IAsyncQueryProvider provider )
             {
-                throw new ArgumentNullException( nameof( source ) );
+                throw new NotImplementedException();
             }
 
-            if ( predicate == null )
-            {
-                throw new ArgumentNullException( nameof( predicate ) );
-            }
-
-            return ExecuteAsync<TSource, TSource>( _firstPredicate, source, predicate, cancellationToken );
+            throw new InvalidOperationException( "Provider is not async" );
         }
 
         public static Task<List<TSource>> ToListAsync<TSource>(
@@ -62,72 +58,123 @@ namespace Achilles.Entities.Linq
                             method: toListMethodInfo,
                             arguments: source.Expression ),
                         cancellationToken );
-
-                //return provider.ToListAsync<TSource>( source, cancellationToken );
             }
 
             throw new InvalidOperationException( "Provider is not async" );
+        }
+
+        /// <summary>
+        /// Async version of Queryable.Any with predicate arg.
+        /// </summary>
+        public static Task<bool> AnyAsync<TSource>(
+            this IQueryable<TSource> source, 
+            Expression<Func<TSource, bool>> predicate,
+            CancellationToken cancellationToken = default )
+        {
+            if ( source == null )
+            {
+                throw new ArgumentNullException( "source" );
+            }
+            if ( predicate == null )
+            {
+                throw new ArgumentNullException( "predicate" );
+            }
+
+            if ( source.Provider is IAsyncQueryProvider provider )
+            {
+                return provider.ExecuteAsync<bool>(
+                    Expression.Call( 
+                        GetMethod( nameof( Queryable.Any ), parameterCount: 1 ).MakeGenericMethod( typeof( TSource ) ),
+                        source.Expression, 
+                        predicate ),
+                    cancellationToken );
+            }
+
+            throw new InvalidOperationException( "Query provider does not support async." );
+        }
+
+        /// <summary>
+        /// Async version of Queryable.Count.
+        /// </summary>
+        public static Task<int> CountAsync<TSource>(
+            this IQueryable<TSource> source,
+            CancellationToken cancellationToken = default )
+        {
+            if ( source == null )
+            {
+                throw new ArgumentNullException( "source" );
+            }
+
+            if ( source.Provider is IAsyncQueryProvider provider )
+            {
+                return provider.ExecuteAsync<int>(
+                    Expression.Call(
+                        GetMethod( nameof( Queryable.Count ) ).MakeGenericMethod( typeof( TSource ) ),
+                        source.Expression ),
+                    cancellationToken );
+            }
+
+            throw new InvalidOperationException( "Query provider does not support async." );
+        }
+
+        public static Task<TSource> FirstAsync<TSource>(
+            this IQueryable<TSource> source,
+            Expression<Func<TSource, bool>> predicate,
+            CancellationToken cancellationToken = default )
+        {
+            if ( source == null )
+            {
+                throw new ArgumentNullException( nameof( source ) );
+            }
+            if ( predicate == null )
+            {
+                throw new ArgumentNullException( nameof( predicate ) );
+            }
+
+            if ( source.Provider is IAsyncQueryProvider provider )
+            {
+                return provider.ExecuteAsync<TSource>(
+                    Expression.Call(
+                        GetMethod( nameof( Queryable.First ), parameterCount: 1 ).MakeGenericMethod( typeof( TSource ) ),
+                        source.Expression,
+                        predicate ),
+                    cancellationToken );
+            }
+
+            throw new InvalidOperationException( "Query provider does not support async." );
+        }
+
+        /// <summary>
+        /// Async version of Queryable.Sum.
+        /// </summary>
+        public static Task<decimal> SumAsync<TSource>(
+            this IQueryable<TSource> source,
+            Expression<Func<TSource, decimal>> predicate,
+            CancellationToken cancellationToken = default )
+        {
+            if ( source == null )
+            {
+                throw new ArgumentNullException( "source" );
+            }
+            if ( predicate == null )
+            {
+                throw new ArgumentNullException( nameof( predicate ) );
+            }
+
+            if ( source.Provider is IAsyncQueryProvider provider )
+            {
+                return provider.ExecuteAsync<decimal>(
+                    Expression.Call(
+                        GetMethod( nameof( Queryable.Sum ), parameterCount: 1 ).MakeGenericMethod( typeof( TSource ) ),
+                        source.Expression,
+                        predicate ),
+                    cancellationToken );
+            }
+
+            throw new InvalidOperationException( "Query provider does not support async." );
         }
 
         #region Private
-
-        private static readonly MethodInfo _first = GetMethod( nameof( Queryable.First ) );
-        private static readonly MethodInfo _firstPredicate = GetMethod( nameof( Queryable.First ), parameterCount: 1 );
-
-        private static Task<TResult> ExecuteAsync<TSource, TResult>(
-            MethodInfo operatorMethodInfo,
-            IQueryable<TSource> source,
-            CancellationToken cancellationToken = default )
-        {
-            if ( source.Provider is IAsyncQueryProvider provider )
-            {
-                if ( operatorMethodInfo.IsGenericMethod )
-                {
-                    operatorMethodInfo = operatorMethodInfo.MakeGenericMethod( typeof( TSource ) );
-                }
-
-                return provider.ExecuteAsync<TResult>(
-                    Expression.Call(
-                        instance: null,
-                        method: operatorMethodInfo,
-                        arguments: source.Expression ),
-                    cancellationToken );
-            }
-
-            throw new InvalidOperationException( "Provider is not async" );
-        }
-
-        private static Task<TResult> ExecuteAsync<TSource, TResult>(
-            MethodInfo operatorMethodInfo,
-            IQueryable<TSource> source,
-            LambdaExpression expression,
-            CancellationToken cancellationToken = default )
-            => ExecuteAsync<TSource, TResult>(
-                operatorMethodInfo, source, Expression.Quote( expression ), cancellationToken );
-
-        private static Task<TResult> ExecuteAsync<TSource, TResult>(
-            MethodInfo operatorMethodInfo,
-            IQueryable<TSource> source,
-            Expression expression,
-            CancellationToken cancellationToken = default )
-        {
-            if ( source.Provider is IAsyncQueryProvider provider )
-            {
-                operatorMethodInfo
-                    = operatorMethodInfo.GetGenericArguments().Length == 2
-                        ? operatorMethodInfo.MakeGenericMethod( typeof( TSource ), typeof( TResult ) )
-                        : operatorMethodInfo.MakeGenericMethod( typeof( TSource ) );
-
-                return provider.ExecuteAsync<TResult>(
-                    Expression.Call(
-                        instance: null,
-                        method: operatorMethodInfo,
-                        arguments: new[] { source.Expression, expression } ),
-                    cancellationToken );
-            }
-
-            throw new InvalidOperationException( "Provider is not async" );
-        }
 
         private static MethodInfo GetMethod<TResult>(
             string name, int parameterCount = 0, Func<MethodInfo, bool> predicate = null )

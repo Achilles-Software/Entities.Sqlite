@@ -7,7 +7,7 @@ using Xunit;
 
 #endregion
 
-namespace Entities.Sqlite.Tests
+namespace Entities.Sqlite.Tests.Database
 {
     public class DatabaseCreatorTest
     {

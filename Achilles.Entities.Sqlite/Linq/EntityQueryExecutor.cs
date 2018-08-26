@@ -1,14 +1,12 @@
 ﻿#region Namespaces
 
-using Achilles.Entities.Modelling.Mapping;
+using Achilles.Entities.Modelling.Mapping.Materializing;
 using Achilles.Entities.Storage;
 using Remotion.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System;
-using Achilles.Entities.Mapping;
-using Achilles.Entities.Querying;
 
 #endregion
 
