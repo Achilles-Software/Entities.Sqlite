@@ -60,7 +60,10 @@ namespace Achilles.Entities.Linq
             SqliteQueryModelVisitor visitor = new SqliteQueryModelVisitor( _context );
             visitor.VisitQueryModel( queryModel );
 
-            var queryResult = _connection.ExecuteReader( visitor.GetSql(), visitor.Parameters, _transaction );
+            // TJT: remove after testing
+            var sql = visitor.GetSql();
+
+            var queryResult = _connection.ExecuteReader( sql, visitor.Parameters, _transaction );
 
             return _materializer.Materialize<T>( queryResult );
         }

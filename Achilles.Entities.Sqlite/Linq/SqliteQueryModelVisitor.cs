@@ -160,6 +160,17 @@ namespace Achilles.Entities.Linq
 
         public override void VisitJoinClause( JoinClause joinClause, QueryModel queryModel, int index )
         {
+            string joinClauseTableName = joinClause.ItemType.Name;
+
+            var EntityMapping = _context.Model.GetEntityMapping( joinClause.ItemType );
+            
+            // TODO: This should fail if null?
+
+            if ( !string.IsNullOrEmpty( EntityMapping.TableName ) )
+            {
+                joinClauseTableName = EntityMapping.TableName;
+            }
+
             SqlExpressionVisitor sqlExpressionVisitor = new SqlExpressionVisitor( _context, _parameters );
             sqlExpressionVisitor.Visit( joinClause.InnerKeySelector );
             string innerKey = sqlExpressionVisitor.GetStatement();
@@ -168,8 +179,8 @@ namespace Achilles.Entities.Linq
             sqlExpressionVisitor.Visit( joinClause.OuterKeySelector );
             string outerKey = sqlExpressionVisitor.GetStatement();
 
-            _joinParts.Add( string.Format( " JOIN {0} AS {1} ON {2} = {3}", joinClause.ItemType.Name, joinClause.ItemName, outerKey,
-                innerKey ) );
+            _joinParts.Add( string.Format( " JOIN {0} AS {1} ON {2} = {3}",
+                joinClauseTableName, joinClause.ItemName, outerKey, innerKey ) );
 
             base.VisitJoinClause( joinClause, queryModel, index );
         }
