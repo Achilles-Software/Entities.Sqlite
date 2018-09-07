@@ -58,6 +58,10 @@ namespace Achilles.Entities.Modelling
         /// <inheritdoc/>
         public IEntityMapping GetEntityMapping( Type entityType ) => _entityMappings.GetEntityMapping( entityType );
 
+        /// <inheritdoc/>
+        public bool TryGetEntityMapping( Type entityType, out IEntityMapping entityMapping )
+            => _entityMappings.TryGetEntityMapping( entityType, out entityMapping );
+        
         #endregion
 
         #region Internal

@@ -16,7 +16,7 @@ namespace Entities.Sqlite.Tests.Querying
     public class EagerLoadingTest
     {
         [Fact]
-        public void EntityReference_EagerLoading_CanLoadEntity()
+        public void Querying_EagerLoading_CanLoadEntityReference()
         {
             const string connectionString = "Data Source=:memory:";
             var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
@@ -25,22 +25,19 @@ namespace Entities.Sqlite.Tests.Querying
             {
                 context.Initialize();
 
-                var query = from p in context.Products
-                            join s in context.Suppliers on p.SupplierId equals s.Id into psgroup
-                            from s in psgroup.DefaultIfEmpty()
-                            select new { Product = p, Supplier = s };
+                var query = from p in context.Products.FetchOne( p => p.Supplier )
+                            select p;
 
-                var result = query.ToList();
+                var products = query.ToList<Product>();
 
-                //var result = query.ToList()
-                //        .GroupBy( key => key.Email, element => element.Name )
-                //        .Select( g => new EmailDto { Subject = g.Key.Subject, Tags = g.Select( t => new TagDto { Name = t } ).ToList() }
+                Assert.True( products[ 0 ].Supplier.IsLoaded );
+                Assert.Equal( "Bananas-R-Us", products[ 0 ].Supplier.Value.Name );
             }
         }
 
 
         [Fact]
-        public void EntityCollection_EagerLoading_CanLoadEntityCollection()
+        public void Querying_EagerLoading_CanLoadEntityCollection()
         {
             const string connectionString = "Data Source=:memory:";
             var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
@@ -49,41 +46,22 @@ namespace Entities.Sqlite.Tests.Querying
             {
                 context.Initialize();
 
-                var query = from p in context.Products
-                            join s in context.Suppliers on p.SupplierId equals s.Id into ps
-                            from s in ps.DefaultIfEmpty()
-                            select new { Product = p, ProductName = p == null ? "(No products)" : p.Name };
+                var query = from p in context.Products.FetchMany( p => p.Parts )
+                            select p;
 
-                var products = query.ToList();
+                var products = query.ToList<Product>();
+
+                Assert.True( products[ 0 ].Parts.IsLoaded );
+
+                var parts = products[ 0 ].Parts.ToList();
+
+                Assert.Equal( "Bolt", parts[ 0 ].Name );
+                Assert.Equal( "Wrench", parts[ 1 ].Name );
+                Assert.Equal( "Hammer", parts[ 2 ].Name );
             }
+
+
         }
-
-        public class JoinedPost
-        {
-            public Product Product { get; set; }
-            public Supplier Supplier { get; set; }
-        }
-
-        [Fact]
-        public void EntityReference_EagerLoading_CanProjectToJoinEntity()
-        {
-            const string connectionString = "Data Source=:memory:";
-            var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
-
-            using ( var context = new TestDataContext( options ) )
-            {
-                context.Initialize();
-
-                var q = from p in context.Products
-                        join s in context.Suppliers on p.Id equals s.Id
-                        select new { Prod = p, Supp = s };
-
-                var result = q.ToList();
-
-                //var result = query.ToList()
-                //        .GroupBy( key => key.Email, element => element.Name )
-                //        .Select( g => new EmailDto { Subject = g.Key.Subject, Tags = g.Select( t => new TagDto { Name = t } ).ToList() }
-            }
-        }
+       
     }
 }

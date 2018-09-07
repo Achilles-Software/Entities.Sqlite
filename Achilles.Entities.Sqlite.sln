@@ -8,6 +8,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1F41A4A4-7A97-4704-BCCA-FA13DCC6BD3C}"
 	ProjectSection(SolutionItems) = preProject
 		achilles-icon.png = achilles-icon.png
+		Conduct.md = Conduct.md
+		Contribute.md = Contribute.md
 		LICENSE.txt = LICENSE.txt
 		NuGet.config = NuGet.config
 		README.md = README.md

@@ -247,33 +247,34 @@ namespace Achilles.Entities.Modelling.Mapping.Materializing
 
         private void SetDeferredLoading ( object entity )
         {
-            // Once we have the entity instance we can attach an entity set source to the instance relationship properties
-            var entityMapping = _model.GetEntityMapping( entity.GetType() );
-
-            var relationshipMappings = entityMapping.RelationshipMappings;
-
-            foreach (  var relationshipMapping in relationshipMappings )
+            // Projections to DTOs are not in the entity data model.
+            if ( _model.TryGetEntityMapping( entity.GetType(), out var entityMapping ) )
             {
-                //var foreignKey = relationshipMapping.ForeignKeyMapping;
+                // Once we have the entity instance we can attach an entity set source to the instance relationship properties.
+                var relationshipMappings = entityMapping.RelationshipMappings;
 
-                if ( relationshipMapping.IsMany )
+                foreach ( var relationshipMapping in relationshipMappings )
                 {
-                    entityMapping.SetEntityCollection(
-                        entity,
-                        relationshipMapping.RelationshipProperty.Name,
-                        relationshipMapping.ForeignKeyMapping );
-                }
-                else
-                {
-                    entityMapping.SetEntityReference( 
-                        entity, 
-                        relationshipMapping.RelationshipProperty.Name,
-                        relationshipMapping.ForeignKeyMapping );
-                }
+                    //var foreignKey = relationshipMapping.ForeignKeyMapping;
 
-                continue;
+                    if ( relationshipMapping.IsMany )
+                    {
+                        entityMapping.SetEntityCollection(
+                            entity,
+                            relationshipMapping.RelationshipProperty.Name,
+                            relationshipMapping.ForeignKeyMapping );
+                    }
+                    else
+                    {
+                        entityMapping.SetEntityReference(
+                            entity,
+                            relationshipMapping.RelationshipProperty.Name,
+                            relationshipMapping.ForeignKeyMapping );
+                    }
+
+                    continue;
+                }
             }
-
         }
 
         /// <summary>

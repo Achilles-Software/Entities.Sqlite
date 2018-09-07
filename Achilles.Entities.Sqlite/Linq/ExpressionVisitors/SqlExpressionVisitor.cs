@@ -174,6 +174,11 @@ namespace Achilles.Entities.Linq.ExpressionVisitors
             return expression;
         }
 
+        //protected override Expression VisitSubQuery( SubQueryExpression expression )
+        //{
+        //    return base.VisitSubQuery( expression );
+        //}
+
         protected override Expression VisitMember( MemberExpression expression )
         {
             Visit( expression.Expression );

@@ -29,20 +29,6 @@ namespace Achilles.Entities.Linq
 {
     public static class AsyncQueryableExtensions
     {
-        public static IJoinQueryable<TEntity, TProperty> SelectRelated<TEntity, TProperty>(
-            this IQueryable<TEntity> source,
-            Expression<Func<TEntity, bool>> predicate,
-            CancellationToken cancellationToken = default )
-            where TEntity : class
-        {
-            if ( source.Provider is IAsyncQueryProvider provider )
-            {
-                throw new NotImplementedException();
-            }
-
-            throw new InvalidOperationException( "Provider is not async" );
-        }
-
         public static Task<List<TSource>> ToListAsync<TSource>(
             this IQueryable<TSource> source,
             CancellationToken cancellationToken = default )

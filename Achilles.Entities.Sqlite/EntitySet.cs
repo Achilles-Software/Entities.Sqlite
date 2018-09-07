@@ -11,6 +11,10 @@
 #region Namespaces
 
 using Achilles.Entities.Linq;
+using Remotion.Linq.EagerFetching.Parsing;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation;
+using Remotion.Linq.Parsing.Structure;
+using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -96,7 +100,22 @@ namespace Achilles.Entities
             {
                 if ( _entityQueryable == null )
                 {
-                    _entityQueryable = new EntityQueryable<TEntity>( _context );
+                    var customNodeTypeRegistry = new MethodInfoBasedNodeTypeRegistry();
+
+                    customNodeTypeRegistry.Register( new[] { typeof( EagerFetchingExtensions ).GetMethod( "FetchOne" ) }, typeof( FetchOneExpressionNode ) );
+                    customNodeTypeRegistry.Register( new[] { typeof( EagerFetchingExtensions ).GetMethod( "FetchMany" ) }, typeof( FetchManyExpressionNode ) );
+                    customNodeTypeRegistry.Register( new[] { typeof( EagerFetchingExtensions ).GetMethod( "ThenFetchOne" ) }, typeof( ThenFetchOneExpressionNode ) );
+                    customNodeTypeRegistry.Register( new[] { typeof( EagerFetchingExtensions ).GetMethod( "ThenFetchMany" ) }, typeof( ThenFetchManyExpressionNode ) );
+
+                    var nodeTypeProvider = ExpressionTreeParser.CreateDefaultNodeTypeProvider();
+                    nodeTypeProvider.InnerProviders.Add( customNodeTypeRegistry );
+
+                    var transformerRegistry = ExpressionTransformerRegistry.CreateDefault();
+                    var processor = ExpressionTreeParser.CreateDefaultProcessor( transformerRegistry );
+                    var expressionTreeParser = new ExpressionTreeParser( nodeTypeProvider, processor );
+                    var queryParser = new QueryParser( expressionTreeParser );
+
+                    _entityQueryable = new EntityQueryable<TEntity>( _context, queryParser );
                 }
 
                 return _entityQueryable;

@@ -58,7 +58,27 @@ namespace Achilles.Entities.Extensions
                 }
                 else
                 {
-                    stringBuilder.AppendFormat( "{0}{1}", delimiter, item );
+                    stringBuilder.AppendFormat( "{0}{1}{2}", delimiter, prefix, item );
+                }
+            }
+        }
+
+        public static void AppendEnumerable( this StringBuilder stringBuilder, IEnumerable<string> e, string prefix, string delimiter, string alias )
+        {
+            bool first = true;
+
+            foreach ( var item in e )
+            {
+                if ( first )
+                {
+                    first = false;
+                    stringBuilder.AppendFormat( "{0}{1}", prefix, item );
+                    stringBuilder.AppendFormat( " AS {0}_{1}", alias, item );
+                }
+                else
+                {
+                    stringBuilder.AppendFormat( "{0} {1}{2}", delimiter, prefix, item );
+                    stringBuilder.AppendFormat( " AS {0}_{1}", alias, item );
                 }
             }
         }

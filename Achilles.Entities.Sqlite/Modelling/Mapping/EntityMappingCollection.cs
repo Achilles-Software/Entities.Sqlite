@@ -60,6 +60,11 @@ namespace Achilles.Entities.Modelling.Mapping
             return mapping;
         }
 
+        public bool TryGetEntityMapping( Type entityType, out IEntityMapping entityMapping )
+        {
+            return _entityMappings.TryGetValue( entityType, out entityMapping );
+        }
+
         public void TryAddEntityMapping( Type entityType, IEntityMapping entityMapping )
         {
             // TJT: Review this method.
@@ -77,6 +82,10 @@ namespace Achilles.Entities.Modelling.Mapping
             {
                 return entityMapping;
             }
+
+            // FIXME:
+
+            // TJT: This seems pretty harsh. Doesn't work with projections in materializer.
 
             throw new ArgumentException( nameof( entityType ) );
         }

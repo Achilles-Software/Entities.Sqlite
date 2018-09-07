@@ -16,7 +16,7 @@ namespace Entities.Sqlite.Tests.Querying
     public class DeferredLoadingTest
     {
         [Fact]
-        public void EntityReference_LazyLoading_CanLoadEntity()
+        public void Querying_LazyLoading_CanLoadEntityReference()
         {
             const string connectionString = "Data Source=:memory:";
             var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
@@ -34,13 +34,13 @@ namespace Entities.Sqlite.Tests.Querying
                 var products = query.ToList<Product>();
 
                 Assert.False( products[ 0 ].Supplier.IsLoaded );
-                Assert.Equal( "Bananas-R-US", products[ 0 ].Supplier.Value.Name );
+                Assert.Equal( "Bananas-R-Us", products[ 0 ].Supplier.Value.Name );
                 Assert.True( products[ 0 ].Supplier.IsLoaded );
             }
         }
 
         [Fact]
-        public void EntityCollection_LazyLoading_CanLoadEntityCollection()
+        public void Querying_LazyLoading_CanLoadEntityCollection()
         {
             const string connectionString = "Data Source=:memory:";
             var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;

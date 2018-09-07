@@ -16,7 +16,7 @@ namespace Entities.Sqlite.Tests.Querying
     public class QueriesTest
     {
         [Fact]
-        public void LQueries_ComplexQuery_CanReadList()
+        public void Queries_Simple_CanReadList()
         {
             const string connectionString = "Data Source=:memory:";
             var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;
@@ -39,7 +39,7 @@ namespace Entities.Sqlite.Tests.Querying
         }
 
         [Fact]
-        public async Task Querying__ComplexQuery_CanReadListAsync()
+        public async Task Querying_Simple_CanReadListAsync()
         {
             const string connectionString = "Data Source=:memory:";
             var options = new DataContextOptionsBuilder().UseSqlite( connectionString ).Options;

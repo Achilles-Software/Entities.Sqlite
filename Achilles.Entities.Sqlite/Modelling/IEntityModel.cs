@@ -27,6 +27,14 @@ namespace Achilles.Entities.Modelling
         IReadOnlyCollection<IEntityMapping> EntityMappings { get; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entityType"></param>
+        /// <param name="entityMapping"></param>
+        /// <returns></returns>
+        bool TryGetEntityMapping( Type entityType, out IEntityMapping entityMapping );
+
+        /// <summary>
         /// Gets an entity mapping by entity type.
         /// </summary>
         /// <param name="entityType">The entity type.</param>

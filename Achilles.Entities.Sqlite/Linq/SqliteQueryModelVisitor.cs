@@ -6,6 +6,7 @@ using Achilles.Entities.Relational;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
+using Remotion.Linq.EagerFetching;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -85,14 +86,29 @@ namespace Achilles.Entities.Linq
                 fromClause.ItemName= fromClause.ItemName.Replace( "<generated>_", fromTableName + "_" );
             }
 
-            _fromPart = string.Format( "{0} as {1}", fromTableName , fromClause.ItemName );
+            SubQueryFromClauseModelVisitor.Visit( _context, _parameters, queryModel );
+
+            _fromPart = string.Format( "{0} AS {1}", fromTableName , fromClause.ItemName );
 
             base.VisitMainFromClause( fromClause, queryModel );
         }
 
+        public override void VisitAdditionalFromClause( AdditionalFromClause fromClause, QueryModel queryModel, int index )
+        {
+            base.VisitAdditionalFromClause( fromClause, queryModel, index );
+        }
+
         public override void VisitResultOperator( ResultOperatorBase resultOperator, QueryModel queryModel, int index )
         {
-            if ( resultOperator is SumResultOperator )
+            if ( resultOperator is FetchOneRequest )
+            {
+                ProcessFetchRequest( resultOperator as FetchRequestBase, queryModel );
+            }
+            else if ( resultOperator is FetchManyRequest )
+            {
+                ProcessFetchRequest( resultOperator as FetchRequestBase, queryModel );
+            }
+            else if ( resultOperator is SumResultOperator )
             {
                 _selectPart = string.Format( "SUM({0})", _selectPart );
             }
@@ -183,6 +199,30 @@ namespace Achilles.Entities.Linq
                 joinClauseTableName, joinClause.ItemName, outerKey, innerKey ) );
 
             base.VisitJoinClause( joinClause, queryModel, index );
+        }
+
+        private void ProcessFetchRequest( FetchRequestBase fetchRequest, QueryModel queryModel )
+        {
+            var declaringType = fetchRequest.RelationMember.DeclaringType;
+
+            // TODO:
+
+            // INNER JOIN Vs LEFT JOIN (Perhaps use a FetchRequired for optimized INNER JOIN.
+            // Look at Required flag on Entity.
+
+            // AutoMapper can use entity prefix underscore to map related entities from fetch.
+
+            // How to update the SELECT for the fetched entity = use a join test to see how it works.
+
+            // Want something like below:
+
+            const string sql = @"SELECT tc.[ContactID] as ContactID,
+                tc.[ContactName] as ContactName
+                ,tp.[PhoneId] AS TestPhones_PhoneId
+                ,tp.[ContactId] AS TestPhones_ContactId
+                ,tp.[Number] AS TestPhones_Number
+                FROM TestContact tc
+                INNER JOIN TestPhone tp ON tc.ContactId = tp.ContactId";
         }
     }
 }

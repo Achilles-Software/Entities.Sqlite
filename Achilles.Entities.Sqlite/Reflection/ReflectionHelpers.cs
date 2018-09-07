@@ -10,6 +10,7 @@
 
 #region Namespaces
 
+using Remotion.Linq.Utilities;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -70,5 +71,56 @@ namespace Achilles.Entities.Reflection
                 }
             }
         }
+
+        public static Type GetMemberReturnType( MemberInfo member )
+        {
+            if ( member == null )
+            {
+                throw new ArgumentNullException( nameof( member ) );
+            }
+
+            var propertyInfo = member as PropertyInfo;
+            if ( propertyInfo != null )
+            {
+                return propertyInfo.PropertyType;
+            }
+
+            var fieldInfo = member as FieldInfo;
+            if ( fieldInfo != null )
+            {
+                return fieldInfo.FieldType;
+            }
+
+            var methodInfo = member as MethodInfo;
+            if ( methodInfo != null )
+            {
+                return methodInfo.ReturnType;
+            }
+
+            throw new ArgumentException( "Argument must be FieldInfo, PropertyInfo, or MethodInfo.", "member" );
+        }
+
+        public static Type GetItemTypeOfClosedGenericIEnumerable( Type enumerableType, string argumentName )
+        {
+            if ( enumerableType == null )
+            {
+                throw new ArgumentNullException( nameof( enumerableType ) );
+            }
+
+            if ( string.IsNullOrEmpty( argumentName ) )
+            {
+                throw new ArgumentException( "message", nameof( argumentName ) );
+            }
+
+            Type itemType;
+            if ( !ItemTypeReflectionUtility.TryGetItemTypeOfClosedGenericIEnumerable( enumerableType, out itemType ) )
+            {
+                var message = string.Format( "Expected a closed generic type implementing IEnumerable<T>, but found '{0}'.", enumerableType );
+                throw new ArgumentException( message, argumentName );
+            }
+
+            return itemType;
+        }
     }
 }
+

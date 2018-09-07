@@ -122,7 +122,7 @@ namespace Entities.Sqlite.Tests.Data
 
             var suppliersList = new List<Supplier>
             {
-                    new Supplier(){ Name = "Bananas-R-US" },
+                    new Supplier(){ Name = "Bananas-R-Us" },
                     new Supplier(){ Name = "Plums-R-Us" }
             };
 
